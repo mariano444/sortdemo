@@ -608,6 +608,84 @@
   .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
   .step-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
 
+  /* ---- DRAW PROCESS ---- */
+  .draw-process-section {
+    background: linear-gradient(180deg, var(--dark), var(--dark2));
+  }
+  .draw-process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .draw-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.1rem;
+    padding: 1.35rem 1.25rem;
+  }
+  .draw-card-title {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.45rem;
+  }
+  .draw-card-copy {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--text2);
+  }
+  .draw-highlight {
+    margin-top: 1.4rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(245,200,66,0.18);
+    background: rgba(245,200,66,0.06);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ---- SOCIAL PROOF ---- */
+  .proof-section {
+    background: var(--dark);
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .proof-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 1.1rem;
+    padding: 1.3rem 1.2rem;
+  }
+  .proof-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .proof-name {
+    font-weight: 800;
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+  .proof-city {
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .proof-copy {
+    color: var(--text2);
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
   /* ---- FAQ ---- */
   .faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
   .faq-item {
@@ -985,7 +1063,7 @@
   <div class="hero-badge">🔥 SORTEO NACIONAL — QUEDAN POCOS LUGARES</div>
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
-  <p class="hero-subtitle">Una chance puede cambiar tu vida</p>
+  <p class="hero-subtitle">Un sorteo claro, visible y con más posibilidades para quienes suman más chances</p>
 
   <div class="prizes-row">
     <div class="prize-card primary reveal">
@@ -1051,23 +1129,23 @@
 <div class="trust-strip">
   <div class="trust-item">
     <div class="trust-icon">🔒</div>
-    <span class="trust-label">Datos seguros<br>y protegidos</span>
+    <span class="trust-label">Reserva registrada<br>y datos protegidos</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">📋</div>
-    <span class="trust-label">Lista pública<br>de participantes</span>
+    <span class="trust-label">Lista pública<br>con participaciones activas</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">🎥</div>
-    <span class="trust-label">Participan desde<br>toda Argentina</span>
+    <span class="trust-label">Participan personas<br>de toda Argentina</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">✅</div>
-    <span class="trust-label">Premio o equivalente<br>en dinero</span>
+    <span class="trust-label">Entrega coordinada<br>con el ganador</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">🏆</div>
-    <span class="trust-label">3 premios<br>garantizados</span>
+    <span class="trust-label">3 ganadores<br>seleccionados al azar</span>
   </div>
 </div>
 
@@ -1094,7 +1172,7 @@
   <div class="section-inner">
     <span class="section-tag">💎 Elige tu pack</span>
     <h2 class="section-title">Más chances,<br><span style="color:var(--gold)">más posibilidades</span></h2>
-    <p class="section-sub">Cada chance te acerca al premio. Aprovechá los packs más grandes para multiplicar tus oportunidades.</p>
+    <p class="section-sub">Cada chance suma una participación real dentro del sistema de selección. Mientras más chances tengas, más posibilidades tenés de quedar entre los 3 ganadores.</p>
 
     <div class="packages-grid" id="packagesGrid">
       <!-- generado por JS -->
@@ -1107,7 +1185,7 @@
   <div class="section-inner">
     <span class="section-tag">👥 Transparencia total</span>
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
-    <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances. Participan usuarios de toda la Argentina.</p>
+    <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances, para que puedas ver que el ingreso quedó registrado y que el proceso se mantiene visible.</p>
 
     <div class="participants-table-wrap reveal">
       <div class="table-header">
@@ -1133,7 +1211,7 @@
     <div class="payment-status-card reveal" id="paymentStatusCard">
       <div class="payment-status-kicker" id="paymentStatusKicker">Pago confirmado</div>
       <div class="payment-status-title" id="paymentStatusTitle">Ya estás participando</div>
-      <div class="payment-status-copy" id="paymentStatusCopy">Cuando tu pago quede aprobado, tu nombre aparece en la lista y se habilita tu enlace único si corresponde.</div>
+      <div class="payment-status-copy" id="paymentStatusCopy">Cuando tu pago quede aprobado, tus chances quedan activas, tu participación aparece en la lista y se habilita tu enlace único si corresponde.</div>
       <div class="share-link-row hidden" id="shareLinkRow">
         <input class="share-link-input" id="shareLinkInput" type="text" readonly>
         <button class="share-link-btn secondary" id="copyShareBtn" type="button">Copiar enlace</button>
@@ -1157,7 +1235,7 @@
         <span class="step-num">1</span>
         <span class="step-icon">🎯</span>
         <div class="step-title">Elegí tu pack</div>
-        <p class="step-desc">Elegís el pack que más te conviene. Cada chance representa una oportunidad real de salir sorteado, y cuantos más números tengas, más participaciones acumulás.</p>
+        <p class="step-desc">Elegís el pack que más te conviene. Cada chance representa una participación real dentro del sistema de selección aleatoria, por eso mientras más chances tengas, más posibilidades acumulás.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.1s">
         <span class="step-num">2</span>
@@ -1175,7 +1253,77 @@
         <span class="step-num">4</span>
         <span class="step-icon">🎰</span>
         <div class="step-title">Sorteo nacional</div>
-        <p class="step-desc">El sorteo se realiza el 26 de julio o antes si se agotan las chances. Todo el proceso busca que sea claro, visible y fácil de verificar.</p>
+        <p class="step-desc">El sistema realiza una selección aleatoria de 3 participantes entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="draw-process-section">
+  <div class="section-inner">
+    <span class="section-tag">🎲 Selección transparente</span>
+    <h2 class="section-title">Cómo se eligen<br><span style="color:var(--gold)">los 3 ganadores</span></h2>
+    <p class="section-sub">El proceso está pensado para que cada chance cuente como una participación dentro de una selección aleatoria. No importa de dónde participes: si tu chance está activa, entra en el sorteo.</p>
+
+    <div class="draw-process-grid">
+      <div class="draw-card reveal">
+        <div class="draw-card-title">1. Se registran las chances activas</div>
+        <div class="draw-card-copy">Cada pago aprobado activa la cantidad exacta de chances compradas. Esas participaciones quedan asociadas al participante y visibles en la lista.</div>
+      </div>
+      <div class="draw-card reveal" style="transition-delay:0.1s">
+        <div class="draw-card-title">2. Un sistema avanzado selecciona al azar</div>
+        <div class="draw-card-copy">Al cierre del sorteo, un sistema de selección aleatoria toma todas las chances activas y elige 3 participantes ganadores de forma imparcial.</div>
+      </div>
+      <div class="draw-card reveal" style="transition-delay:0.2s">
+        <div class="draw-card-title">3. Más chances, más posibilidades</div>
+        <div class="draw-card-copy">Si una persona tiene más chances, participa más veces dentro del sistema. Eso no garantiza ganar, pero sí aumenta sus posibilidades frente a quien tiene menos chances.</div>
+      </div>
+      <div class="draw-card reveal" style="transition-delay:0.3s">
+        <div class="draw-card-title">4. Entrega coordinada con el ganador</div>
+        <div class="draw-card-copy">Una vez confirmados los ganadores, se coordina la entrega dentro de las 48 horas siguientes. Se organiza el retiro, envío o equivalente en dinero según corresponda al premio publicado.</div>
+      </div>
+    </div>
+
+    <div class="draw-highlight reveal" style="transition-delay:0.35s">
+      El objetivo es que el proceso sea simple de entender: comprás chances, tu pago se acredita, tus participaciones quedan activas y luego entrás en una selección aleatoria de 3 ganadores. Mientras más chances acumulás, más posibilidades tenés de ganar.
+    </div>
+  </div>
+</section>
+
+<section class="proof-section">
+  <div class="section-inner">
+    <span class="section-tag">💬 Opiniones y expectativas</span>
+    <h2 class="section-title">Mensajes que suman<br><span style="color:var(--gold)">confianza</span></h2>
+    <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pública y la coordinación de la entrega con cada ganador.</p>
+
+    <div class="proof-grid">
+      <div class="proof-card reveal">
+        <div class="proof-head">
+          <span class="proof-name">Mariana</span>
+          <span class="proof-city">Cordoba</span>
+        </div>
+        <div class="proof-copy">“Me dio confianza ver que las participaciones aparecen con fecha y cantidad de chances. Eso hace que el sorteo se sienta más claro y serio.”</div>
+      </div>
+      <div class="proof-card reveal" style="transition-delay:0.08s">
+        <div class="proof-head">
+          <span class="proof-name">Leandro</span>
+          <span class="proof-city">Rosario</span>
+        </div>
+        <div class="proof-copy">“Me gusta que expliquen que mientras más chances comprás, más veces participás en la selección aleatoria. Se entiende rápido y genera seguridad.”</div>
+      </div>
+      <div class="proof-card reveal" style="transition-delay:0.16s">
+        <div class="proof-head">
+          <span class="proof-name">Camila</span>
+          <span class="proof-city">Buenos Aires</span>
+        </div>
+        <div class="proof-copy">“Saber que la entrega se coordina directamente con el ganador y que existe opción de equivalente en dinero me transmite mucha más tranquilidad.”</div>
+      </div>
+      <div class="proof-card reveal" style="transition-delay:0.24s">
+        <div class="proof-head">
+          <span class="proof-name">Franco</span>
+          <span class="proof-city">Mendoza</span>
+        </div>
+        <div class="proof-copy">“La opción de aparecer anónimo pero seguir participando con registro visible me parece una muy buena forma de combinar privacidad con transparencia.”</div>
       </div>
     </div>
   </div>
@@ -1189,15 +1337,15 @@
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q">¿Cómo sé que el sorteo es real? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">La lista de participantes se actualiza con pagos aprobados y muestra la cantidad de chances activas de cada persona. Eso permite ver que cada participación queda registrada y que el proceso sea mucho más claro y confiable.</div>
+        <div class="faq-a">La lista de participantes se actualiza con pagos aprobados y muestra la cantidad de chances activas de cada persona. Eso permite ver que cada participación queda registrada y que el proceso sea mucho más claro, visible y confiable.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Cómo se realizará el sorteo? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Cada chance equivale a una oportunidad dentro del sorteo. Si comprás más chances, aumentás tus posibilidades porque participás más veces. El sorteo se realiza el 26 de julio o antes al agotarse los lugares disponibles.</div>
+        <div class="faq-a">Cada chance equivale a una participación dentro del sistema. Al cierre del sorteo, un sistema avanzado de selección aleatoria toma todas las chances activas y elige 3 participantes ganadores. Si comprás más chances, participás más veces y aumentás tus posibilidades.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Cuándo se entrega el premio? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Los premios se coordinan con el ganador en las 48 horas posteriores al sorteo. Se entrega el premio publicado o su equivalente en dinero.</div>
+        <div class="faq-a">Los premios se coordinan con cada ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro, envío o equivalente en dinero según el premio publicado.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Puedo comprar más de un pack? <span class="faq-arrow">▼</span></button>
@@ -1209,7 +1357,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Cómo funcionan los referidos? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Si tu compra aprobada habilita tu enlace único, podés compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automáticamente.</div>
+        <div class="faq-a">Si tu compra aprobada habilita tu enlace único, podés compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automáticamente, aumentando tus posibilidades dentro de la selección.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Hay fecha límite para participar? <span class="faq-arrow">▼</span></button>
@@ -1222,7 +1370,7 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
   <h2 class="bottom-cta-title reveal">¿Y si sos<br>el próximo ganador?</h2>
-  <p class="bottom-cta-sub reveal">No existe el "no tengo suerte" si ni siquiera intentás. Por $2.500 podés llevarte una moto.</p>
+  <p class="bottom-cta-sub reveal">Participás con un proceso claro, con registro visible y una selección aleatoria de 3 ganadores. Mientras más chances sumás, más posibilidades tenés.</p>
   <div class="reveal" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
     <a href="#paquetes" class="btn-primary">¡COMPRAR CHANCES AHORA!</a>
     <a href="#participantes" class="btn-secondary">Ver participantes</a>
