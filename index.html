@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gran Sorteo 2025 — Moto · TV 60" · $200.000</title>
+<title>Gran Sorteo — Moto · TV 60" · $200.000</title>
+<meta name="description" content="Participá desde cualquier punto de Argentina por la moto, el TV o el efectivo. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gran Sorteo - Moto, TV y efectivo">
+<meta property="og:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
+<meta property="og:image" content="./assets/share/share-sorteo.png">
+<meta property="og:image:alt" content="Imagen promocional del sorteo">
+<meta property="og:locale" content="es_AR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gran Sorteo - Moto, TV y efectivo">
+<meta name="twitter:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
+<meta name="twitter:image" content="./assets/share/share-sorteo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -321,6 +332,7 @@
     display: flex; gap: 1.5rem; justify-content: center;
     margin-top: 2.5rem;
   }
+  .countdown-bar.hidden-until-thirty { display: none; }
   .countdown-unit { text-align: center; }
   .countdown-num {
     font-family: 'Bebas Neue', sans-serif;
@@ -545,6 +557,24 @@
     font-size: 0.75rem; font-weight: 700;
     padding: 0.2rem 0.6rem; border-radius: 0.3rem;
   }
+  .chances-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .participant-main-row { cursor: pointer; }
+  .participant-detail-row td {
+    background: rgba(255,255,255,0.02);
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+  }
+  .participant-detail-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+  .participant-detail-title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .participant-detail-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .participant-detail-chip {
+    display: inline-flex; align-items: center;
+    background: rgba(245,200,66,0.08);
+    border: 1px solid rgba(245,200,66,0.18);
+    color: var(--gold);
+    font-size: 0.75rem; font-weight: 700;
+    padding: 0.28rem 0.55rem; border-radius: 999px;
+  }
   .chances-bar { display: flex; gap: 2px; }
   .chance-dot {
     width: 8px; height: 8px; border-radius: 1px;
@@ -670,6 +700,24 @@
     margin-bottom: 0.25rem;
   }
   .modal-sub { font-size: 0.85rem; color: var(--text2); margin-bottom: 1.5rem; }
+  .modal-assurance {
+    display: grid;
+    gap: 0.55rem;
+    margin: -0.25rem 0 1.1rem;
+    padding: 0.95rem 1rem;
+    border-radius: 0.9rem;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(245,200,66,0.12);
+  }
+  .modal-assurance strong {
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+  .modal-assurance span {
+    color: var(--text2);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
   .modal-pkg-display {
     background: var(--dark3);
     border: 1px solid rgba(245,200,66,0.2);
@@ -681,6 +729,22 @@
   .modal-pkg-info .label { font-size: 0.75rem; color: var(--text2); font-weight: 600; }
   .modal-pkg-info .value { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold); }
   .form-group { margin-bottom: 1rem; }
+  .form-check {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.9rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .form-check input {
+    margin-top: 0.2rem;
+    accent-color: var(--gold);
+    width: 16px;
+    height: 16px;
+  }
+  .form-check-copy { display: grid; gap: 0.2rem; }
+  .form-check-title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+  .form-check-sub { font-size: 0.8rem; line-height: 1.45; color: var(--text2); }
   .form-label { font-size: 0.78rem; font-weight: 700; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem; display: block; }
   .form-input {
     width: 100%;
@@ -695,6 +759,42 @@
   }
   .form-input:focus { border-color: var(--gold); }
   .form-input::placeholder { color: var(--text2); }
+  .form-textarea {
+    min-height: 90px;
+    resize: vertical;
+  }
+  .form-help {
+    margin-top: 0.45rem;
+    font-size: 0.76rem;
+    color: var(--text2);
+    line-height: 1.45;
+  }
+  .message-preview {
+    display: none;
+    margin: 0.2rem 0 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.8rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.16);
+  }
+  .message-preview.show {
+    display: block;
+  }
+  .message-preview-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .message-preview-copy {
+    color: var(--text);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
   .payment-methods {
     display: flex; flex-wrap: wrap; gap: 0.5rem;
     margin-bottom: 1.5rem;
@@ -742,6 +842,43 @@
     white-space: nowrap;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
+  .countdown-note {
+    position: relative; z-index: 2;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .whatsapp-float {
+    position: fixed;
+    right: 1.2rem;
+    bottom: 1.5rem;
+    z-index: 1300;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1bd741, #12a832);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    box-shadow: 0 18px 36px rgba(0,0,0,0.28);
+  }
+  .whatsapp-float small {
+    display: block;
+    font-size: 0.68rem;
+    opacity: 0.9;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  body.modal-open .whatsapp-float {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
   .payment-status-card {
     display: none;
     margin: 1.5rem auto 0;
@@ -827,6 +964,12 @@
     .prize-visual, .prize-moto-stack { height: 140px; }
     .prize-card.primary .prize-visual { height: 190px; }
     .live-feed { left: 12px; right: 12px; min-width: 0; max-width: none; }
+    .whatsapp-float {
+      right: 12px;
+      left: 12px;
+      bottom: 12px;
+      justify-content: center;
+    }
     .share-link-row { grid-template-columns: 1fr; }
     .share-link-btn { width: 100%; }
   }
@@ -839,7 +982,7 @@
   <div class="hero-bg"></div>
   <div class="hero-sparks" id="sparks"></div>
 
-  <div class="hero-badge">🔥 SORTEO OFICIAL 2025 — CUPOS LIMITADOS</div>
+  <div class="hero-badge">🔥 SORTEO NACIONAL — QUEDAN POCOS LUGARES</div>
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
   <p class="hero-subtitle">Una chance puede cambiar tu vida</p>
@@ -850,7 +993,7 @@
         <img class="prize-image" src="./assets/premios/moto-adventure.png" alt="Honda XR 190 premio principal">
       </div>
       <span class="prize-name">HONDA XR 190</span>
-      <span class="prize-detail">Premio principal · Entrega inmediata · Imagen potente y aspiracional desde el primer scroll.</span>
+      <span class="prize-detail">Entrega coordinada a todo el país o su equivalente en dinero.</span>
     </div>
     <div class="prize-card tv reveal" style="transition-delay:0.1s">
       <div class="prize-visual">
@@ -875,7 +1018,7 @@
     <a href="#paquetes" class="btn-primary">¡QUIERO MIS CHANCES!</a>
   </div>
 
-  <div class="countdown-bar reveal" style="transition-delay:0.4s">
+  <div class="countdown-bar reveal hidden-until-thirty" id="countdownBar" style="transition-delay:0.4s">
     <div class="countdown-unit">
       <span class="countdown-num" id="cd-d">00</span>
       <span class="countdown-label">Días</span>
@@ -896,11 +1039,12 @@
       <span class="countdown-label">Seg</span>
     </div>
   </div>
+  <div class="countdown-note reveal" id="countdownNote" style="transition-delay:0.45s">Quedan pocos lugares para hacer el sorteo antes.</div>
 </div>
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
-  <span>⚡ SORTEO EN VIVO CON TESTIGOS · FECHA CONFIRMADA · CUPOS LLENOS = SORTEO ASEGURADO · TRANSPARENCIA TOTAL · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · ⚡ SORTEO EN VIVO CON TESTIGOS · FECHA CONFIRMADA · CUPOS LLENOS = SORTEO ASEGURADO · TRANSPARENCIA TOTAL · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · </span>
+  <span>⚡ SORTEO NACIONAL · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · ⚡ SORTEO NACIONAL · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · </span>
 </div>
 
 <!-- TRUST STRIP -->
@@ -915,11 +1059,11 @@
   </div>
   <div class="trust-item">
     <div class="trust-icon">🎥</div>
-    <span class="trust-label">Sorteo en vivo<br>transmitido</span>
+    <span class="trust-label">Participan desde<br>toda Argentina</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">✅</div>
-    <span class="trust-label">Entrega inmediata<br>al ganador</span>
+    <span class="trust-label">Premio o equivalente<br>en dinero</span>
   </div>
   <div class="trust-item">
     <div class="trust-icon">🏆</div>
@@ -935,13 +1079,13 @@
     <span class="ticker-item">💵 $200.000 en efectivo</span>
     <span class="ticker-item">⭐ Más chances = más posibilidades</span>
     <span class="ticker-item">🔒 Sorteo 100% transparente</span>
-    <span class="ticker-item">📲 Resultado en vivo por redes</span>
+    <span class="ticker-item">🇦🇷 Participás desde toda Argentina</span>
     <span class="ticker-item">🏍️ Moto 0km lista para entrega</span>
     <span class="ticker-item">📺 Smart TV LED 60" 4K</span>
     <span class="ticker-item">💵 $200.000 en efectivo</span>
     <span class="ticker-item">⭐ Más chances = más posibilidades</span>
     <span class="ticker-item">🔒 Sorteo 100% transparente</span>
-    <span class="ticker-item">📲 Resultado en vivo por redes</span>
+    <span class="ticker-item">🇦🇷 Participás desde toda Argentina</span>
   </div>
 </div>
 
@@ -963,19 +1107,18 @@
   <div class="section-inner">
     <span class="section-tag">👥 Transparencia total</span>
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
-    <p class="section-sub">Cada persona que compró chances aparece aquí en tiempo real. Tu lugar en el sorteo es visible para todos.</p>
+    <p class="section-sub">Cada persona que compró chances aparece aquí. Participan usuarios de toda la Argentina.</p>
 
     <div class="participants-table-wrap reveal">
       <div class="table-header">
         <span class="table-title">Participantes registrados</span>
         <span class="live-badge"><span class="live-dot"></span> EN VIVO</span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre...">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o código...">
       </div>
       <div style="overflow-x:auto">
         <table>
           <thead>
             <tr>
-              <th>#</th>
               <th>Participante</th>
               <th>Ciudad</th>
               <th>Compradas</th>
@@ -1014,25 +1157,25 @@
         <span class="step-num">1</span>
         <span class="step-icon">🎯</span>
         <div class="step-title">Elegí tu pack</div>
-        <p class="step-desc">Seleccioná la cantidad de chances que querés. Podés comprar desde 1 hasta 1000.</p>
+        <p class="step-desc">Elegís el pack que más te conviene. Cada chance representa una oportunidad real de salir sorteado, y cuantos más números tengas, más participaciones acumulás.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.1s">
         <span class="step-num">2</span>
         <span class="step-icon">💳</span>
         <div class="step-title">Completá el pago</div>
-        <p class="step-desc">Pagá por transferencia, Mercado Pago o efectivo. Confirmamos en el momento.</p>
+        <p class="step-desc">Completás tus datos y pagás de forma simple. Tu reserva queda registrada y, cuando el pago se acredita, tus chances quedan activas.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.2s">
         <span class="step-num">3</span>
         <span class="step-icon">📋</span>
         <div class="step-title">Aparecés en la lista</div>
-        <p class="step-desc">Tu nombre queda visible en la lista pública. Todos pueden ver quién participa.</p>
+        <p class="step-desc">Tu participación se refleja en la lista pública o, si preferís privacidad, podés figurar como anónimo con un código único.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.3s">
         <span class="step-num">4</span>
         <span class="step-icon">🎰</span>
-        <div class="step-title">Sorteo en vivo</div>
-        <p class="step-desc">El sorteo se transmite en vivo. Se extraen 3 ganadores frente a testigos.</p>
+        <div class="step-title">Sorteo nacional</div>
+        <p class="step-desc">El sorteo se realiza el 26 de julio o antes si se agotan las chances. Todo el proceso busca que sea claro, visible y fácil de verificar.</p>
       </div>
     </div>
   </div>
@@ -1046,27 +1189,31 @@
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q">¿Cómo sé que el sorteo es real? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">El sorteo se transmite en vivo por nuestras redes sociales con testigos presenciales. La lista de participantes es pública y verificable. El sistema de selección es aleatorio y transparente.</div>
+        <div class="faq-a">La lista de participantes es pública y se actualiza con cada pago aprobado. Además, cada persona participa con la cantidad exacta de chances compradas, por lo que el proceso puede seguirse de forma clara y transparente.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Cómo se realizará el sorteo? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Cada chance tiene un número asignado. El sorteo se hace con un sistema aleatorio verificable en vivo. Se extraen 3 números ganadores para los 3 premios.</div>
+        <div class="faq-a">Cada chance equivale a una oportunidad dentro del sorteo. Si comprás más chances, aumentás tus posibilidades porque participás más veces. El sorteo se realiza el 26 de julio o antes al agotarse los lugares disponibles.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Cuándo se entrega el premio? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Los premios se coordinan con el ganador en las 48 horas posteriores al sorteo. La moto se entrega 0km, el televisor se coordina la entrega y el efectivo se transfiere o paga en el momento.</div>
+        <div class="faq-a">Los premios se coordinan con el ganador en las 48 horas posteriores al sorteo. Se entrega el premio publicado o su equivalente en dinero.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Puedo comprar más de un pack? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">¡Sí! Podés comprar todos los packs que quieras. Cada pack suma más chances al sorteo. Cuantas más chances tengas, mayor es tu probabilidad de ganar.</div>
+        <div class="faq-a">Sí. Podés comprar más de un pack y todas tus chances se acumulan en tu mismo usuario. Eso hace que tengas más oportunidades dentro del sorteo final.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Qué métodos de pago aceptan? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Aceptamos transferencia bancaria, Mercado Pago, Alias/CBU y efectivo. Una vez confirmado el pago, tu nombre aparece en la lista de participantes.</div>
+        <div class="faq-a">Podés abonar con los medios habilitados en el formulario. Una vez aprobado el pago, tus chances quedan activas y tu participación aparece en la lista pública o como anónimo, según elijas.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cómo funcionan los referidos? <span class="faq-arrow">▼</span></button>
+        <div class="faq-a">Si tu compra aprobada habilita tu enlace único, podés compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automáticamente.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Hay fecha límite para participar? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Los cupos son limitados. Una vez que se completa la lista, el sorteo se realiza en la fecha estipulada. Te recomendamos no esperar al último momento.</div>
+        <div class="faq-a">La fecha prevista es el 26 de julio o antes al agotar chances. Quedan pocos lugares, así que te recomendamos no esperar al último momento.</div>
       </div>
     </div>
   </div>
@@ -1084,9 +1231,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <strong style="color:var(--gold)">Gran Sorteo 2025</strong><br>
-  Lista pública de participantes · Sorteo en vivo transmitido · 3 premios garantizados<br><br>
-  <span style="opacity:0.5">Para consultas contactanos por WhatsApp o redes sociales · Sorteo de carácter privado sin fines de lucro</span>
+  <strong style="color:var(--gold)">Gran Sorteo</strong><br>
+  Lista pública de participantes · Nacional para toda la Argentina · 3 premios garantizados
 </footer>
 
 <!-- MODAL -->
@@ -1094,7 +1240,11 @@
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-title">¡Casi listo! 🎉</div>
-    <p class="modal-sub">Completá tus datos para reservar tus chances</p>
+    <p class="modal-sub">Completá tus datos para reservar tus chances y avanzar a un pago simple y seguro.</p>
+    <div class="modal-assurance">
+      <strong>Tu reserva queda registrada con tus datos y el pack elegido.</strong>
+      <span>Cuando el pago se acredita, tus chances se activan y tu participación se refleja en la lista pública o como anónimo si así lo elegís.</span>
+    </div>
     <div class="modal-pkg-display">
       <div class="modal-pkg-info">
         <span class="label">Pack seleccionado</span>
@@ -1118,19 +1268,37 @@
       <input class="form-input" type="text" id="f-city" placeholder="Tu ciudad">
     </div>
     <div class="form-group">
+      <label class="form-label">Mensaje opcional</label>
+      <textarea class="form-input form-textarea" id="f-message" placeholder="Ej: Si se acredita hoy, dejame confirmación por WhatsApp."></textarea>
+      <div class="form-help">Si querés, podés dejar una aclaración para revisar antes de pagar. Se muestra abajo como referencia dentro del formulario.</div>
+    </div>
+    <div class="message-preview" id="messagePreview">
+      <span class="message-preview-label">Mensaje ingresado</span>
+      <div class="message-preview-copy" id="messagePreviewCopy"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-check">
+        <input type="checkbox" id="f-anonymous">
+        <span class="form-check-copy">
+          <span class="form-check-title">Quiero aparecer de forma anónima</span>
+          <span class="form-check-sub">En la lista pública vas a figurar como “Anónimo” junto con un código único de usuario.</span>
+        </span>
+      </label>
+    </div>
+    <div class="form-group">
       <label class="form-label">Método de pago preferido</label>
       <div class="payment-methods">
-        <span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">💳 Mercado Pago</span>
-        <span class="pm-chip" data-provider="galiopay" onclick="selectPM(this)">💠 Galiopay</span>
-        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">🏦 Transferencia</span>
-        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">💵 Efectivo</span>
+        <!--span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">💳 Mercado Pago</span-->
+        <span class="pm-chip selected" data-provider="galiopay" onclick="selectPM(this)">🏦 Transferencia</span>
+        <!--span class="pm-chip" data-provider="manual" onclick="selectPM(this)">🏦 Transferencia</span>
+        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">💵 Efectivo</span-->
       </div>
     </div>
     <button class="modal-confirm" id="modalConfirm">CONFIRMAR Y PAGAR ✓</button>
     <div class="modal-trust">
-      <span>🔒 Datos seguros</span>
-      <span>✅ Confirmación inmediata</span>
-      <span>📋 Aparecés en lista</span>
+      <span>🔒 Datos cargados de forma segura</span>
+      <span>✅ Reserva registrada antes del pago</span>
+      <span>📋 Participación pública o anónima</span>
     </div>
   </div>
 </div>
@@ -1144,6 +1312,10 @@
     <div class="live-feed-sub" id="liveFeedSub">Ahora mismo</div>
   </div>
 </div>
+<a class="whatsapp-float" href="https://wa.me/543518757751?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20el%20sorteo." target="_blank" rel="noopener noreferrer">
+  <span style="font-size:1.35rem">💬</span>
+  <span><small>Consultas</small>WhatsApp</span>
+</a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1153,15 +1325,20 @@ const CAMPAIGN_SLUG = 'sorteo-moto-tv-dinero';
 const MAX_FALLBACK_CHANCES = 5000;
 const FUNCTIONS_BASE_URL = `${SUPABASE_URL}/functions/v1`;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const DEFAULT_SHARE_IMAGE = new URL('./assets/share/share-sorteo.png', window.location.href).toString();
+const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Moto, TV y efectivo';
+const DEFAULT_SHARE_DESCRIPTION = 'Participá de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances.';
+const DRAW_TARGET_ISO = '2026-07-26T20:00:00-03:00';
 
 let activeCampaign = null;
 let packages = [];
 let participants = [];
 let selectedPkg = null;
-let selectedPaymentProvider = 'mercado_pago';
+let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
 let latestOrderStatus = null;
+const expandedParticipantRows = new Set();
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
 function colorFor(i){ return COLORS[i % COLORS.length]; }
@@ -1203,6 +1380,39 @@ function buildLandingShareUrl(code) {
   return url.toString();
 }
 
+function setMetaContent(selector, content) {
+  const el = document.querySelector(selector);
+  if (el) el.setAttribute('content', content);
+}
+
+function updateShareMetadata({ title, description, image, url }) {
+  const nextTitle = title || DEFAULT_SHARE_TITLE;
+  const nextDescription = description || DEFAULT_SHARE_DESCRIPTION;
+  const nextImage = image || DEFAULT_SHARE_IMAGE;
+  const nextUrl = url || window.location.href;
+
+  document.title = nextTitle;
+  setMetaContent('meta[name="description"]', nextDescription);
+  setMetaContent('meta[property="og:title"]', nextTitle);
+  setMetaContent('meta[property="og:description"]', nextDescription);
+  setMetaContent('meta[property="og:image"]', nextImage);
+  setMetaContent('meta[name="twitter:title"]', nextTitle);
+  setMetaContent('meta[name="twitter:description"]', nextDescription);
+  setMetaContent('meta[name="twitter:image"]', nextImage);
+
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', nextUrl);
+}
+
+function buildReferralShareCopy(label, shareUrl) {
+  return `${label} te invita a participar de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances. Sumate ahora: ${shareUrl}`;
+}
+
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1229,7 +1439,8 @@ async function copyShareLink() {
   const value = document.getElementById('shareLinkInput').value;
   if (!value) return;
   try {
-    await navigator.clipboard.writeText(value);
+    const label = (document.getElementById('paymentStatusTitle').textContent || 'Te invito').replace(' ya participa del sorteo', '');
+    await navigator.clipboard.writeText(buildReferralShareCopy(label, value));
     showToast('Enlace copiado para compartir.');
   } catch (_) {
     showToast('No se pudo copiar el enlace.');
@@ -1255,6 +1466,22 @@ function randomFrom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+async function shareWhatsappLink() {
+  const value = document.getElementById('shareLinkInput').value;
+  if (!value) return;
+  const label = (document.getElementById('paymentStatusTitle').textContent || 'Te invito').replace(' ya participa del sorteo', '');
+  const text = buildReferralShareCopy(label, value);
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: DEFAULT_SHARE_TITLE, text, url: value });
+      return;
+    } catch (_) {
+      // fall through to WhatsApp
+    }
+  }
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
 function getRandomActivityMessage() {
   if (!participants.length) {
     return null;
@@ -1266,10 +1493,9 @@ function getRandomActivityMessage() {
     'esta participando ahora mismo',
     'confirmo su interes en el sorteo'
   ]);
-  const chances = person.purchasedChances || person.chances || 1;
   return {
-    text: `${person.name} de ${person.city} ${template}.`,
-    sub: `${chances} chance${chances > 1 ? 's' : ''} · hace ${randomFrom([1, 2, 3, 4, 5, 7, 9])} min`
+    text: `${person.displayName || person.name} de ${person.city} ${template}.`,
+    sub: person.date
   };
 }
 
@@ -1321,7 +1547,7 @@ function renderPackages(){
       <span class="pkg-price">$${totalPrice.toLocaleString('es-AR')}</span>
       <span class="pkg-price-unit">$${perChance} por chance</span>
       <span class="pkg-saving">${savingsLabel}</span>
-      <span class="pkg-price-unit">${chances >= 3 ? 'Al pagar habilita link unico y regala 2 chances por referido' : '&nbsp;'}</span>
+      <span class="pkg-price-unit">${chances >= 3 ? 'Con 3 o más chances se habilita tu link único y cada referido aprobado te suma 2 chances extra' : '&nbsp;'}</span>
       <button class="pkg-btn" onclick="openModal('${pkg.id}')">Quiero ${chances >= 1000 ? (chances/1000)+'K' : chances} chance${chances > 1 ? 's' : ''}</button>
     `;
     grid.appendChild(div);
@@ -1332,27 +1558,62 @@ function renderPackages(){
 
 function renderParticipants(filter=''){
   const body = document.getElementById('participantsBody');
-  const tc = Math.max(totalChances(), 1);
   body.innerHTML = '';
+  const normalizedFilter = filter.toLowerCase();
   const filtered = filter
-    ? participants.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.city.toLowerCase().includes(filter.toLowerCase()))
+    ? participants.filter(p =>
+        (p.displayName || p.name).toLowerCase().includes(normalizedFilter) ||
+        p.name.toLowerCase().includes(normalizedFilter) ||
+        p.city.toLowerCase().includes(normalizedFilter) ||
+        (p.publicCode || '').toLowerCase().includes(normalizedFilter)
+      )
     : participants;
 
-  filtered.forEach((p, i) => {
-    const globalIdx = participants.indexOf(p);
+  filtered.forEach((p) => {
+    const sourceIndex = participants.indexOf(p);
+    const purchasedChances = Math.max(1, Number(p.currentChances || p.purchasedChances || p.chances || 0));
+    const detailId = `${p.publicCode || p.name}-${sourceIndex}-${p.date}`;
     const row = document.createElement('tr');
+    row.className = 'participant-main-row';
+    row.dataset.detailId = detailId;
     row.innerHTML = `
-      <td style="color:var(--text2);font-size:0.8rem">#${globalIdx + 1}</td>
-      <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(globalIdx)}22;color:${colorFor(globalIdx)}">${initials(p.name)}</div><div><div class="td-name">${p.name}</div></div></div></td>
+      <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(sourceIndex)}22;color:${colorFor(sourceIndex)}">${initials(p.displayName || p.name)}</div><div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
       <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
-      <td><span class="chances-badge">x${Number(p.purchasedChances || p.chances || 0).toLocaleString('es-AR')}</span></td>
+      <td><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
     `;
     body.appendChild(row);
+
+    if (expandedParticipantRows.has(detailId)) {
+      Array.from({ length: purchasedChances }, (_, idx) => idx + 1).forEach((chanceNumber) => {
+        const detailRow = document.createElement('tr');
+        detailRow.className = 'participant-detail-row';
+        detailRow.innerHTML = `
+          <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(sourceIndex)}22;color:${colorFor(sourceIndex)}">${initials(p.detailLabel || p.displayName || p.name)}</div><div><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
+          <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
+          <td><span class="chances-badge">x${chanceNumber}</span></td>
+          <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+        `;
+        body.appendChild(detailRow);
+      });
+    }
+  });
+
+  body.querySelectorAll('.participant-main-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const { detailId } = row.dataset;
+      if (!detailId) return;
+      if (expandedParticipantRows.has(detailId)) {
+        expandedParticipantRows.delete(detailId);
+      } else {
+        expandedParticipantRows.add(detailId);
+      }
+      renderParticipants(document.getElementById('searchInput').value);
+    });
   });
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="5" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
   }
 
   updateStats();
@@ -1360,27 +1621,40 @@ function renderParticipants(filter=''){
 
 function setCountdown(targetIso){
   if (countdownInterval) clearInterval(countdownInterval);
-  const target = targetIso ? new Date(targetIso) : (() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 18);
-    d.setHours(20,0,0,0);
-    return d;
-  })();
+  const target = new Date(DRAW_TARGET_ISO);
+  const countdownBar = document.getElementById('countdownBar');
 
   function tick(){
     const diff = target - Date.now();
     if (diff <= 0) {
       clearInterval(countdownInterval);
+      countdownBar.classList.remove('hidden-until-thirty');
+      document.getElementById('countdownNote').textContent = 'Se acerca el cierre final. Aprovechá antes de que se agoten las chances.';
       return;
     }
     const d = Math.floor(diff / 864e5);
     const h = Math.floor((diff % 864e5) / 36e5);
     const m = Math.floor((diff % 36e5) / 6e4);
     const s = Math.floor((diff % 6e4) / 1e3);
+    if (d <= 30) {
+      countdownBar.classList.remove('hidden-until-thirty');
+    } else {
+      countdownBar.classList.add('hidden-until-thirty');
+    }
     document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
     document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
     document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
     document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+    const note = document.getElementById('countdownNote');
+    if (d <= 3) {
+      note.textContent = 'Ultimos dias. Quedan pocos lugares para hacer el sorteo antes.';
+    } else if (d <= 10) {
+      note.textContent = 'Se viene el cierre. Quedan pocos lugares y puede sortearse antes al agotar chances.';
+    } else if (d <= 30) {
+      note.textContent = 'Ya comenzo la cuenta regresiva. Quedan pocos lugares para hacer el sorteo antes.';
+    } else {
+      note.textContent = 'Quedan pocos lugares para hacer el sorteo antes.';
+    }
   }
 
   tick();
@@ -1413,11 +1687,28 @@ function openModal(pkgId){
   document.getElementById('f-name').value = '';
   document.getElementById('f-phone').value = '';
   document.getElementById('f-city').value = '';
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('f-message').value = '';
+  document.getElementById('f-anonymous').checked = false;
+  updateMessagePreview();
+  selectPaymentProvider('galiopay');
+  setModalOpen(true);
 }
 
-document.getElementById('modalClose').onclick = () => document.getElementById('modal').classList.remove('open');
-document.getElementById('modal').onclick = e => { if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); };
+function setModalOpen(isOpen) {
+  document.getElementById('modal').classList.toggle('open', isOpen);
+  document.body.classList.toggle('modal-open', isOpen);
+}
+
+function selectPaymentProvider(provider) {
+  const chip = document.querySelector(`.pm-chip[data-provider="${provider}"]`);
+  if (!chip) return;
+  document.querySelectorAll('.pm-chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  selectedPaymentProvider = chip.dataset.provider || 'manual';
+}
+
+document.getElementById('modalClose').onclick = () => setModalOpen(false);
+document.getElementById('modal').onclick = e => { if (e.target === document.getElementById('modal')) setModalOpen(false); };
 
 function selectPM(el){
   document.querySelectorAll('.pm-chip').forEach(c => c.classList.remove('selected'));
@@ -1425,10 +1716,21 @@ function selectPM(el){
   selectedPaymentProvider = el.dataset.provider || 'manual';
 }
 
+function updateMessagePreview() {
+  const value = document.getElementById('f-message').value.trim();
+  const preview = document.getElementById('messagePreview');
+  const copy = document.getElementById('messagePreviewCopy');
+  copy.textContent = value;
+  preview.classList.toggle('show', Boolean(value));
+}
+
+document.getElementById('f-message').addEventListener('input', updateMessagePreview);
+
 async function submitOrder(){
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const city = document.getElementById('f-city').value.trim() || 'Argentina';
+  const wantsAnonymous = document.getElementById('f-anonymous').checked;
   if (!selectedPkg) return showToast('Elegí un paquete.');
   if (!name || !phone) return alert('Completá nombre y WhatsApp');
 
@@ -1444,6 +1746,7 @@ async function submitOrder(){
       p_full_name: name,
       p_phone: phone,
       p_city: city,
+      p_show_public_name: !wantsAnonymous,
       p_payment_provider: selectedPaymentProvider,
       p_referral_code: getReferralCode() || null
     });
@@ -1475,7 +1778,7 @@ async function submitOrder(){
       }
     }
 
-    document.getElementById('modal').classList.remove('open');
+    setModalOpen(false);
     await loadParticipants();
     renderPackages();
     renderParticipants(document.getElementById('searchInput').value);
@@ -1518,7 +1821,7 @@ async function loadCampaign(){
 
   if (!data) throw new Error('No hay una campana activa configurada.');
   activeCampaign = data;
-  setCountdown(activeCampaign.draw_at);
+  setCountdown(DRAW_TARGET_ISO);
 }
 
 async function loadPackages(){
@@ -1542,10 +1845,15 @@ async function loadParticipants(){
   if (error) throw error;
   participants = (data || []).map(row => ({
     name: row.full_name,
+    displayName: row.display_name || row.full_name,
+    detailLabel: row.is_anonymous ? (row.display_name || 'Anónimo') : row.full_name,
+    isAnonymous: Boolean(row.is_anonymous),
+    publicCode: row.public_code || '',
     city: row.city || 'Argentina',
     purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
     chances: Number(row.total_entries || 0),
-    date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+    currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
+    date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }));
 }
 
@@ -1603,12 +1911,21 @@ async function handleReturnedPayment() {
   scheduleLiveFeed();
 
   const shareUrl = statusData.referral_link_code ? buildLandingShareUrl(statusData.referral_link_code) : '';
+  const participantLabel = statusData.participant_name || 'Te invito';
+  if (shareUrl) {
+    updateShareMetadata({
+      title: `${participantLabel} te invita al Gran Sorteo`,
+      description: buildReferralShareCopy(participantLabel, shareUrl),
+      image: DEFAULT_SHARE_IMAGE,
+      url: shareUrl
+    });
+  }
   showPaymentCard({
     kicker: 'Pago aprobado',
-    title: `${statusData.participant_name || 'Tu compra'} ya participa del sorteo`,
+    title: `${participantLabel} ya participa del sorteo`,
     copy: shareUrl
-      ? `Tus chances ya están activas y también se habilitó tu enlace único. Cada compra aprobada desde ese enlace te suma 2 chances extra.`
-      : `Tus chances ya están activas y tu nombre aparece en la lista pública de participantes.`,
+      ? `Tus chances ya están activas, tu compra quedó registrada y también se habilitó tu enlace único. Cada compra aprobada desde ese enlace te suma 2 chances extra.`
+      : `Tus chances ya están activas, tu compra quedó registrada y ya aparecés en la lista pública de participantes.`,
     shareUrl
   });
   showToast(shareUrl ? 'Pago aprobado. Ya podés compartir tu enlace único.' : 'Pago aprobado. Ya aparecés en la lista.');
@@ -1640,6 +1957,12 @@ function observeReveal(){
 
 async function bootLanding(){
   try {
+    updateShareMetadata({
+      title: DEFAULT_SHARE_TITLE,
+      description: DEFAULT_SHARE_DESCRIPTION,
+      image: DEFAULT_SHARE_IMAGE,
+      url: window.location.href
+    });
     createSparks();
     await loadCampaign();
     await loadPackages();
