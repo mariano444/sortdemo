@@ -1339,7 +1339,6 @@
     <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pública y la coordinación de la entrega con cada ganador.</p>
 
     <div class="proof-grid" id="proofGrid"></div>
-    <div class="proof-empty reveal" id="proofEmpty">Todavía no hay opiniones cargadas por participantes, pero cuando alguien deje una opinión o expectativa en el formulario va a aparecer acá para reforzar la confianza del proceso.</div>
   </div>
 </section>
 
@@ -1831,8 +1830,7 @@ function renderParticipants(filter=''){
 
 function renderProofMessages() {
   const grid = document.getElementById('proofGrid');
-  const empty = document.getElementById('proofEmpty');
-  if (!grid || !empty) return;
+  if (!grid) return;
 
   const dynamicMessages = participants
     .filter((p) => p.opinionMessage)
@@ -1843,8 +1841,7 @@ function renderProofMessages() {
       message: p.opinionMessage
     }));
 
-  const cards = dynamicMessages.length ? dynamicMessages : fallbackProofMessages;
-  empty.style.display = dynamicMessages.length ? 'none' : 'block';
+  const cards = dynamicMessages.length ? dynamicMessages : [];
   grid.innerHTML = cards.map((item, index) => `
     <div class="proof-card reveal" style="transition-delay:${Math.min(index * 0.08, 0.32)}s">
       <div class="proof-head">
