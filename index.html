@@ -2510,9 +2510,6 @@ function toggleDemoShowcase() {
   const willOpen = showcase.classList.contains('collapsed');
   showcase.classList.toggle('collapsed', !willOpen);
   button.textContent = willOpen ? 'Ocultar demostracion' : 'Iniciar demostracion';
-  if (willOpen) {
-    showcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
 }
 
 function updateDrawControls() {
@@ -2547,6 +2544,7 @@ function startDemoTrial() {
   if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
     prepareDrawShowcaseRound();
   }
+  document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   tickDrawShowcase();
   document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
   document.getElementById('drawPhaseName').textContent = 'El software esta recorriendo participantes en vivo';
@@ -2589,7 +2587,6 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
   if (shouldLockView) {
     const showcase = document.getElementById('drawShowcase');
     showcase?.classList.add('is-focus-locked');
-    showcase?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 
