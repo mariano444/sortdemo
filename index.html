@@ -559,6 +559,31 @@
   }
   .chances-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
   .participant-main-row { cursor: pointer; }
+  .message-cell {
+    text-align: right;
+  }
+  .message-trigger {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.72rem; font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  }
+  .message-trigger:hover {
+    border-color: var(--gold);
+    background: rgba(245,200,66,0.08);
+    transform: translateY(-1px);
+  }
+  .message-trigger.empty {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
+  }
+  .message-trigger-icon { font-size: 0.9rem; line-height: 1; }
   .participant-detail-row td {
     background: rgba(255,255,255,0.02);
     padding-top: 0.5rem;
@@ -684,6 +709,15 @@
     color: var(--text2);
     font-size: 0.86rem;
     line-height: 1.65;
+  }
+  .proof-empty {
+    margin-top: 2rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 1rem;
+    border: 1px dashed rgba(255,255,255,0.14);
+    color: var(--text2);
+    line-height: 1.65;
+    background: rgba(255,255,255,0.02);
   }
 
   /* ---- FAQ ---- */
@@ -903,6 +937,13 @@
     display: flex; justify-content: center; gap: 1.5rem;
     margin-top: 1rem;
     font-size: 0.72rem; color: var(--text2); flex-wrap: wrap;
+  }
+  .opinion-modal-copy {
+    color: var(--text2);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+    white-space: pre-wrap;
   }
 
   /* ---- TOAST ---- */
@@ -1201,6 +1242,7 @@
               <th>Ciudad</th>
               <th>Compradas</th>
               <th>Fecha</th>
+              <th>Mensaje</th>
             </tr>
           </thead>
           <tbody id="participantsBody"></tbody>
@@ -1296,36 +1338,8 @@
     <h2 class="section-title">Mensajes que suman<br><span style="color:var(--gold)">confianza</span></h2>
     <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pública y la coordinación de la entrega con cada ganador.</p>
 
-    <div class="proof-grid">
-      <div class="proof-card reveal">
-        <div class="proof-head">
-          <span class="proof-name">Mariana</span>
-          <span class="proof-city">Cordoba</span>
-        </div>
-        <div class="proof-copy">“Me dio confianza ver que las participaciones aparecen con fecha y cantidad de chances. Eso hace que el sorteo se sienta más claro y serio.”</div>
-      </div>
-      <div class="proof-card reveal" style="transition-delay:0.08s">
-        <div class="proof-head">
-          <span class="proof-name">Leandro</span>
-          <span class="proof-city">Rosario</span>
-        </div>
-        <div class="proof-copy">“Me gusta que expliquen que mientras más chances comprás, más veces participás en la selección aleatoria. Se entiende rápido y genera seguridad.”</div>
-      </div>
-      <div class="proof-card reveal" style="transition-delay:0.16s">
-        <div class="proof-head">
-          <span class="proof-name">Camila</span>
-          <span class="proof-city">Buenos Aires</span>
-        </div>
-        <div class="proof-copy">“Saber que la entrega se coordina directamente con el ganador y que existe opción de equivalente en dinero me transmite mucha más tranquilidad.”</div>
-      </div>
-      <div class="proof-card reveal" style="transition-delay:0.24s">
-        <div class="proof-head">
-          <span class="proof-name">Franco</span>
-          <span class="proof-city">Mendoza</span>
-        </div>
-        <div class="proof-copy">“La opción de aparecer anónimo pero seguir participando con registro visible me parece una muy buena forma de combinar privacidad con transparencia.”</div>
-      </div>
-    </div>
+    <div class="proof-grid" id="proofGrid"></div>
+    <div class="proof-empty reveal" id="proofEmpty">Todavía no hay opiniones cargadas por participantes, pero cuando alguien deje una opinión o expectativa en el formulario va a aparecer acá para reforzar la confianza del proceso.</div>
   </div>
 </section>
 
@@ -1451,6 +1465,19 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="opinionModal">
+  <div class="modal">
+    <button class="modal-close" id="opinionModalClose">✕</button>
+    <div class="modal-title">💬 Opinión o expectativa</div>
+    <p class="modal-sub">Mensaje compartido por una persona que ya participa del sorteo.</p>
+    <div class="modal-assurance">
+      <strong id="opinionAuthor">Participante</strong>
+      <span id="opinionMeta">Su mensaje aparece como parte de las opiniones visibles del sorteo.</span>
+    </div>
+    <div class="opinion-modal-copy" id="opinionModalCopy"></div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">✅ ¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
 <div class="live-feed" id="liveFeed">
@@ -1485,6 +1512,28 @@ let selectedPkg = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
+const fallbackProofMessages = [
+  {
+    name: 'Mariana',
+    city: 'Cordoba',
+    message: 'Me dio confianza ver que las participaciones aparecen con fecha y cantidad de chances. Eso hace que el sorteo se sienta más claro y serio.'
+  },
+  {
+    name: 'Leandro',
+    city: 'Rosario',
+    message: 'Me gusta que expliquen que mientras más chances comprás, más veces participás en la selección aleatoria. Se entiende rápido y genera seguridad.'
+  },
+  {
+    name: 'Camila',
+    city: 'Buenos Aires',
+    message: 'Saber que la entrega se coordina directamente con el ganador y que existe opción de equivalente en dinero me transmite mucha más tranquilidad.'
+  },
+  {
+    name: 'Franco',
+    city: 'Mendoza',
+    message: 'La opción de aparecer anónimo pero seguir participando con registro visible me parece una muy buena forma de combinar privacidad con transparencia.'
+  }
+];
 let latestOrderStatus = null;
 const expandedParticipantRows = new Set();
 
@@ -1729,6 +1778,7 @@ function renderParticipants(filter=''){
       <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
       <td><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+      <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(p.city || 'Argentina')}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     body.appendChild(row);
 
@@ -1741,10 +1791,22 @@ function renderParticipants(filter=''){
           <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
           <td><span class="chances-badge">x${chanceNumber}</span></td>
           <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+          <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(p.city || 'Argentina')}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         body.appendChild(detailRow);
       });
     }
+  });
+
+  body.querySelectorAll('.message-trigger:not(.empty)').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      openOpinionModal({
+        message: decodeURIComponent(button.dataset.opinion || ''),
+        author: decodeURIComponent(button.dataset.author || 'Participante'),
+        city: decodeURIComponent(button.dataset.city || 'Argentina')
+      });
+    });
   });
 
   body.querySelectorAll('.participant-main-row').forEach((row) => {
@@ -1761,10 +1823,39 @@ function renderParticipants(filter=''){
   });
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
   }
 
   updateStats();
+}
+
+function renderProofMessages() {
+  const grid = document.getElementById('proofGrid');
+  const empty = document.getElementById('proofEmpty');
+  if (!grid || !empty) return;
+
+  const dynamicMessages = participants
+    .filter((p) => p.opinionMessage)
+    .slice(0, 6)
+    .map((p) => ({
+      name: p.displayName || p.name,
+      city: p.city || 'Argentina',
+      message: p.opinionMessage
+    }));
+
+  const cards = dynamicMessages.length ? dynamicMessages : fallbackProofMessages;
+  empty.style.display = dynamicMessages.length ? 'none' : 'block';
+  grid.innerHTML = cards.map((item, index) => `
+    <div class="proof-card reveal" style="transition-delay:${Math.min(index * 0.08, 0.32)}s">
+      <div class="proof-head">
+        <span class="proof-name">${escapeHtml(item.name)}</span>
+        <span class="proof-city">${escapeHtml(item.city)}</span>
+      </div>
+      <div class="proof-copy">"${escapeHtml(item.message)}"</div>
+    </div>
+  `).join('');
+
+  observeReveal();
 }
 
 function setCountdown(targetIso){
@@ -1873,11 +1964,30 @@ function updateMessagePreview() {
 }
 
 document.getElementById('f-message').addEventListener('input', updateMessagePreview);
+document.getElementById('opinionModalClose').onclick = () => document.getElementById('opinionModal').classList.remove('open');
+document.getElementById('opinionModal').onclick = e => { if (e.target === document.getElementById('opinionModal')) document.getElementById('opinionModal').classList.remove('open'); };
+
+function openOpinionModal({ message, author, city }) {
+  document.getElementById('opinionAuthor').textContent = author;
+  document.getElementById('opinionMeta').textContent = `${city} · Mensaje compartido desde el formulario del sorteo.`;
+  document.getElementById('opinionModalCopy').textContent = message;
+  document.getElementById('opinionModal').classList.add('open');
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
 async function submitOrder(){
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const city = document.getElementById('f-city').value.trim() || 'Argentina';
+  const opinionMessage = document.getElementById('f-message').value.trim();
   const wantsAnonymous = document.getElementById('f-anonymous').checked;
   if (!selectedPkg) return showToast('Elegí un paquete.');
   if (!name || !phone) return alert('Completá nombre y WhatsApp');
@@ -1896,7 +2006,8 @@ async function submitOrder(){
       p_city: city,
       p_show_public_name: !wantsAnonymous,
       p_payment_provider: selectedPaymentProvider,
-      p_referral_code: getReferralCode() || null
+      p_referral_code: getReferralCode() || null,
+      p_opinion_message: opinionMessage || null
     });
 
     if (error) throw error;
@@ -2001,8 +2112,10 @@ async function loadParticipants(){
     purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
     chances: Number(row.total_entries || 0),
     currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
+    opinionMessage: (row.opinion_message || '').trim(),
     date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }));
+  renderProofMessages();
 }
 
 async function loadPublicOrderStatus(orderRef) {
