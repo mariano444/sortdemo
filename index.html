@@ -705,6 +705,59 @@
     font-size: 0.85rem;
     color: var(--text2);
   }
+  .draw-intel {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.85rem;
+  }
+  .draw-intel-bar {
+    position: relative;
+    height: 9px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .draw-intel-fill {
+    width: 24%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--blue), var(--gold), #fff2b8);
+    box-shadow: 0 0 16px rgba(245,200,66,0.22);
+    transition: width 0.28s ease;
+  }
+  .draw-intel-glow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: translateX(-100%);
+    animation: drawSweep 1.8s linear infinite;
+    opacity: 0.45;
+  }
+  @keyframes drawSweep {
+    to { transform: translateX(100%); }
+  }
+  .draw-intel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .draw-intel-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.38rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .draw-intel-chip strong {
+    color: var(--text);
+    font-weight: 800;
+  }
   .draw-rail {
     position: relative;
     z-index: 1;
@@ -870,12 +923,17 @@
     background: linear-gradient(90deg, rgba(245,200,66,0.16), rgba(245,200,66,0.06));
     box-shadow: inset 3px 0 0 rgba(245,200,66,0.92), inset 0 0 0 1px rgba(245,200,66,0.22);
     transform: translateX(8px) scale(1.005);
+    animation: drawRowPulse 1.15s ease-in-out infinite;
   }
   .participant-main-row.is-draw-spotlight .td-name {
     color: var(--gold);
   }
   .participant-main-row.is-draw-spotlight .td-avatar {
     box-shadow: 0 0 0 6px rgba(245,200,66,0.08), 0 0 22px rgba(245,200,66,0.12);
+  }
+  @keyframes drawRowPulse {
+    0%, 100% { box-shadow: inset 3px 0 0 rgba(245,200,66,0.92), inset 0 0 0 1px rgba(245,200,66,0.22); }
+    50% { box-shadow: inset 3px 0 0 rgba(245,200,66,1), inset 0 0 0 1px rgba(245,200,66,0.36); }
   }
   .message-cell {
     text-align: right;
@@ -1591,6 +1649,16 @@
             <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
+            <div class="draw-intel">
+              <div class="draw-intel-bar">
+                <div class="draw-intel-fill" id="drawIntelFill"></div>
+                <div class="draw-intel-glow"></div>
+              </div>
+              <div class="draw-intel-meta" id="drawIntelMeta">
+                <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
+                <span class="draw-intel-chip"><strong>Ritmo</strong> Standby</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2055,6 +2123,32 @@ function getParticipantChances(participant) {
   return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
 }
 
+function getDrawTempoLabel(delay) {
+  if (delay <= 125) return 'Explosivo';
+  if (delay <= 175) return 'Agil';
+  if (delay <= 260) return 'Controlado';
+  return 'Suspenso';
+}
+
+function getDrawModeLabel(participant, isSpotlight) {
+  if (isSpotlight) return participant.opinionMessage ? 'Lectura profunda' : 'Foco ganador';
+  if (getParticipantChances(participant) >= 8) return 'Peso alto';
+  if (participant.isAnonymous) return 'Registro reservado';
+  return 'Barrido activo';
+}
+
+function getDrawNarrative(participant, isSpotlight, cycleProgress) {
+  if (isSpotlight) {
+    return participant.opinionMessage
+      ? 'El sistema detecto una historia visible y sostiene el foco un poco mas.'
+      : 'La ruleta entra en pausa dramatica antes de volver a mezclar.';
+  }
+  if (cycleProgress < 0.2) return 'Acelerando el barrido para recorrer mas participantes al inicio.';
+  if (cycleProgress > 0.72) return 'Bajando el ritmo para aumentar la tension de la vuelta.';
+  if (getParticipantChances(participant) >= 8) return 'Se nota un perfil fuerte por cantidad de chances activas.';
+  return 'Movimiento continuo y parejo para mantener toda la lista viva.';
+}
+
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const rows = document.querySelectorAll('.participant-main-row');
   rows.forEach((row) => {
@@ -2110,12 +2204,17 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseLabel').textContent = 'Estado del sistema';
   document.getElementById('drawPhaseName').textContent = 'Esperando el listado en vivo';
   document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.';
+  document.getElementById('drawIntelFill').style.width = '18%';
+  document.getElementById('drawIntelMeta').innerHTML = `
+    <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
+    <span class="draw-intel-chip"><strong>Ritmo</strong> Standby</span>
+  `;
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
   }
 }
 
-function renderDrawShowcase(activeIndex, isSpotlight) {
+function renderDrawShowcase(activeIndex, isSpotlight, delay) {
   if (!participants.length) {
     renderDrawShowcaseEmpty();
     return;
@@ -2135,6 +2234,11 @@ function renderDrawShowcase(activeIndex, isSpotlight) {
   const phaseLabel = document.getElementById('drawPhaseLabel');
   const phaseName = document.getElementById('drawPhaseName');
   const phaseHint = document.getElementById('drawPhaseHint');
+  const intelFill = document.getElementById('drawIntelFill');
+  const intelMeta = document.getElementById('drawIntelMeta');
+  const cycleProgress = drawShowcaseState.cycle.length
+    ? (drawShowcaseState.cyclePosition + 1) / drawShowcaseState.cycle.length
+    : 0;
 
   featuredCard.classList.toggle('spotlight', Boolean(isSpotlight));
   featuredAvatar.textContent = initials(participant.displayName || participant.name);
@@ -2153,9 +2257,13 @@ function renderDrawShowcase(activeIndex, isSpotlight) {
   phaseName.textContent = isSpotlight
     ? `${participant.displayName || participant.name} quedo resaltado en esta vuelta`
     : `Recorriendo participante ${Math.min(drawShowcaseState.cyclePosition + 1, drawShowcaseState.cycle.length)} de ${drawShowcaseState.cycle.length}`;
-  phaseHint.textContent = isSpotlight
-    ? 'El sistema extiende unos segundos la pausa sobre un nombre elegido al azar y despues vuelve a mezclar.'
-    : 'Cada ronda visita a todos sin repetir y mantiene la animacion activa de forma continua.';
+  phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
+  intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
+  intelMeta.innerHTML = `
+    <span class="draw-intel-chip"><strong>Modo</strong> ${getDrawModeLabel(participant, isSpotlight)}</span>
+    <span class="draw-intel-chip"><strong>Ritmo</strong> ${getDrawTempoLabel(delay)}</span>
+    <span class="draw-intel-chip"><strong>Focus</strong> ${participant.isAnonymous ? 'Anonimo visible' : (participant.city || 'Argentina')}</span>
+  `;
 
   const visibleCards = [];
   const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
@@ -2205,10 +2313,9 @@ function tickDrawShowcase() {
   const participantIndex = drawShowcaseState.cycle[cyclePosition];
   const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
   const participant = participants[participantIndex];
-  renderDrawShowcase(participantIndex, isSpotlight);
-  drawShowcaseState.cyclePosition += 1;
-
   const delay = getDrawDelay(participant, isSpotlight);
+  renderDrawShowcase(participantIndex, isSpotlight, delay);
+  drawShowcaseState.cyclePosition += 1;
   drawAnimationTimeout = setTimeout(() => {
     if (drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
       prepareDrawShowcaseRound();
