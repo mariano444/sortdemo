@@ -1924,7 +1924,7 @@
           <thead>
             <tr>
               <th>Participante</th>
-              <th>Ciudad</th>
+              <th>Provincia</th>
               <th>Compradas</th>
               <th>Fecha</th>
               <th>Mensaje</th>
@@ -3168,9 +3168,9 @@ function renderParticipantAvatar(participant, fallbackLabel, color) {
 }
 
 function participantLocation(participant) {
-  const city = participant.city || '';
   const province = participant.province || '';
-  return [city, province].filter(Boolean).join(', ') || 'Argentina';
+  const city = participant.city || '';
+  return province || city || 'Argentina';
 }
 
 async function submitOrder(){
