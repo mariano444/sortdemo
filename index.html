@@ -2424,6 +2424,7 @@ function getParticipantChances(participant) {
 function buildDrawEntryPool() {
   const pool = [];
   participants.forEach((participant, participantIndex) => {
+    if (!participant) return;
     const chances = getParticipantChances(participant);
     for (let chanceNumber = 1; chanceNumber <= chances; chanceNumber += 1) {
       pool.push({
@@ -2659,13 +2660,17 @@ async function saveCurrentDemoResult() {
 }
 
 function renderDrawShowcase(entry, isSpotlight, delay) {
-  if (!participants.length) {
+  if (!participants.length || !entry || typeof entry.participantIndex !== 'number') {
     renderDrawShowcaseEmpty();
     return;
   }
 
   const activeIndex = entry.participantIndex;
   const participant = participants[activeIndex];
+  if (!participant) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
   const activeColor = colorFor(activeIndex);
   drawShowcaseState.activeParticipantIndex = activeIndex;
   drawShowcaseState.activeEntryNumber = entry.chanceNumber;
@@ -2755,9 +2760,21 @@ function tickDrawShowcase() {
   if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
     prepareDrawShowcaseRound();
   }
+  if (!drawShowcaseState.cycle.length) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
 
   const cyclePosition = drawShowcaseState.cyclePosition;
   const entry = drawShowcaseState.cycle[cyclePosition];
+  if (!entry || typeof entry.participantIndex !== 'number' || !participants[entry.participantIndex]) {
+    drawShowcaseState.cyclePosition += 1;
+    if (drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+      prepareDrawShowcaseRound();
+    }
+    tickDrawShowcase();
+    return;
+  }
   const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
   const participant = participants[entry.participantIndex];
   const delay = getDrawDelay(participant, isSpotlight);
@@ -2787,7 +2804,15 @@ function startDrawShowcase() {
   drawShowcaseState.hasStarted = false;
   updateDrawControls();
   prepareDrawShowcaseRound();
+  if (!drawShowcaseState.cycle.length) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
   const entry = drawShowcaseState.cycle[drawShowcaseState.cyclePosition];
+  if (!entry || typeof entry.participantIndex !== 'number' || !participants[entry.participantIndex]) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
   const participant = participants[entry.participantIndex];
   const delay = getDrawDelay(participant, false);
   renderDrawShowcase(entry, false, delay);
