@@ -1790,7 +1790,6 @@
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
             <button class="draw-control-btn" type="button" id="drawPauseBtn">Detener donde freno</button>
-            <button class="draw-control-btn" type="button" id="drawNextBtn">Mover foco</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
             <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
           </div>
@@ -2373,19 +2372,14 @@ function updateDrawControls() {
   const showcase = document.getElementById('drawShowcase');
   const startBtn = document.getElementById('drawStartBtn');
   const pauseBtn = document.getElementById('drawPauseBtn');
-  const nextBtn = document.getElementById('drawNextBtn');
   const saveBtn = document.getElementById('saveDemoResultBtn');
-  if (!showcase || !startBtn || !pauseBtn || !nextBtn || !saveBtn) return;
+  if (!showcase || !startBtn || !pauseBtn || !saveBtn) return;
   showcase.classList.toggle('paused', drawShowcaseState.paused);
-  startBtn.disabled = !participants.length || (!drawShowcaseState.paused && drawShowcaseState.hasStarted);
+  startBtn.disabled = !participants.length || drawShowcaseState.hasStarted;
   startBtn.style.opacity = startBtn.disabled ? '0.5' : '1';
-  pauseBtn.textContent = !drawShowcaseState.hasStarted
-    ? 'Detener donde freno'
-    : (drawShowcaseState.paused ? 'Reanudar prueba' : 'Detener donde freno');
-  pauseBtn.disabled = !participants.length || !drawShowcaseState.hasStarted;
+  pauseBtn.textContent = 'Detener donde freno';
+  pauseBtn.disabled = !participants.length || !drawShowcaseState.hasStarted || drawShowcaseState.paused;
   pauseBtn.style.opacity = pauseBtn.disabled ? '0.5' : '1';
-  nextBtn.disabled = !participants.length || !drawShowcaseState.paused;
-  nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
   saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.hasStarted;
   saveBtn.style.opacity = saveBtn.disabled ? '0.5' : '1';
 }
@@ -2397,13 +2391,6 @@ function pauseDrawShowcase() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba detenida';
   document.getElementById('drawPhaseName').textContent = 'El software freno en el foco actual';
   document.getElementById('drawPhaseHint').textContent = 'Ahora podes registrar este resultado o mover manualmente el foco antes de guardarlo.';
-}
-
-function resumeDrawShowcase() {
-  drawShowcaseState.paused = false;
-  drawShowcaseState.hasStarted = true;
-  updateDrawControls();
-  tickDrawShowcase();
 }
 
 function startDemoTrial() {
@@ -2424,40 +2411,18 @@ function startDemoTrial() {
 }
 
 function toggleDrawShowcasePause() {
-  if (drawShowcaseState.paused) {
-    resumeDrawShowcase();
-    return;
-  }
   pauseDrawShowcase();
-}
-
-function advanceDrawShowcaseStep() {
-  stopDrawShowcase();
-  drawShowcaseState.paused = true;
-  drawShowcaseState.hasStarted = true;
-  if (!participants.length) {
-    renderDrawShowcaseEmpty();
-    updateDrawControls();
-    return;
-  }
-  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
-    prepareDrawShowcaseRound();
-  }
-  const cyclePosition = drawShowcaseState.cyclePosition;
-  const participantIndex = drawShowcaseState.cycle[cyclePosition];
-  const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
-  const participant = participants[participantIndex];
-  const delay = getDrawDelay(participant, isSpotlight);
-  renderDrawShowcase(participantIndex, isSpotlight, delay);
-  drawShowcaseState.cyclePosition += 1;
-  updateDrawControls();
-  document.getElementById('drawPhaseLabel').textContent = 'Revision manual';
-  document.getElementById('drawPhaseName').textContent = 'Ajustando el punto exacto donde freno la prueba';
-  document.getElementById('drawPhaseHint').textContent = 'Cada toque mueve el foco al siguiente participante sin reactivar el recorrido automatico.';
 }
 
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const rows = document.querySelectorAll('.participant-main-row');
+  if (!drawShowcaseState.hasStarted) {
+    rows.forEach((row) => {
+      row.classList.remove('is-draw-active', 'is-draw-spotlight');
+    });
+    document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
+    return;
+  }
   rows.forEach((row) => {
     const rowIndex = Number(row.dataset.participantIndex);
     const isActive = rowIndex === activeIndex;
@@ -3245,7 +3210,6 @@ document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('drawPauseBtn').onclick = toggleDrawShowcasePause;
-document.getElementById('drawNextBtn').onclick = advanceDrawShowcaseStep;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
 
