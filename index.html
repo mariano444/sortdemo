@@ -478,6 +478,38 @@
     position: relative;
     box-shadow: 0 22px 54px rgba(0,0,0,0.28);
   }
+  .draw-showcase.collapsed {
+    display: none;
+  }
+  .demo-launcher {
+    margin: 1.3rem 0 1.1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(145deg, rgba(19,19,28,0.96), rgba(28,28,42,0.88));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .demo-launcher-copy {
+    display: grid;
+    gap: 0.28rem;
+  }
+  .demo-launcher-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .demo-launcher-sub {
+    font-size: 0.88rem;
+    color: var(--text2);
+    max-width: 64ch;
+    line-height: 1.55;
+  }
   .draw-showcase::before {
     content: '';
     position: absolute;
@@ -550,7 +582,7 @@
   }
   .draw-showcase-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 4vw, 3.3rem);
+    font-size: clamp(1.9rem, 4vw, 3rem);
     line-height: 0.92;
     letter-spacing: 0.02em;
     margin-bottom: 0.65rem;
@@ -561,7 +593,7 @@
     text-shadow: 0 0 28px rgba(245,200,66,0.18);
   }
   .draw-showcase-sub {
-    max-width: 44ch;
+    max-width: 56ch;
     color: var(--text2);
     line-height: 1.65;
     font-size: 0.95rem;
@@ -754,11 +786,6 @@
     font-size: 0.85rem;
     color: var(--text2);
   }
-  .draw-intel {
-    display: grid;
-    gap: 0.6rem;
-    margin-top: 0.85rem;
-  }
   .draw-intel-bar {
     position: relative;
     height: 9px;
@@ -785,27 +812,6 @@
   }
   @keyframes drawSweep {
     to { transform: translateX(100%); }
-  }
-  .draw-intel-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-  .draw-intel-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.38rem 0.65rem;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text2);
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .draw-intel-chip strong {
-    color: var(--text);
-    font-weight: 800;
   }
   .draw-controls {
     display: flex;
@@ -1663,6 +1669,7 @@
     .draw-showcase-panel { grid-template-columns: 1fr; }
     .draw-showcase-copy { padding: 0.2rem 0 0; }
     .draw-showcase-stage { min-height: 0; }
+    .demo-launcher { align-items: flex-start; }
     .draw-featured-card {
       grid-template-columns: auto 1fr;
       align-items: start;
@@ -1824,15 +1831,23 @@
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
     <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances, para que puedas ver que el ingreso quedó registrado y que el proceso se mantiene visible.</p>
 
-    <div class="draw-showcase reveal" id="drawShowcase">
+    <div class="demo-launcher reveal">
+      <div class="demo-launcher-copy">
+        <div class="demo-launcher-title">Demostracion en tiempo real</div>
+        <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
+      </div>
+      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Iniciar demostracion</button>
+    </div>
+
+    <div class="draw-showcase reveal collapsed" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
-            <span class="draw-showcase-kicker">Sistema aleatorio en movimiento</span>
+            <span class="draw-showcase-kicker">Demostracion de transparencia</span>
             <span class="draw-demo-badge">Demostracion</span>
           </div>
-          <h3 class="draw-showcase-title">La animacion <span>recorre a todos</span> y en cada vuelta se queda unos segundos mas en un participante elegido al azar.</h3>
-          <p class="draw-showcase-sub">El recorrido nunca se detiene: cambia de ritmo, vuelve a mezclar el orden y mantiene una sensacion de sorteo vivo, claro y visualmente fuerte.</p>
+          <h3 class="draw-showcase-title">Probador visual del <span>software de seleccion</span></h3>
+          <p class="draw-showcase-sub">Inicia la demostracion para observar en tiempo real como el sistema recorre participantes, se detiene automaticamente y deja asentado el punto exacto donde finaliza la prueba. Este modulo existe solo para demostrar el funcionamiento y no define resultados oficiales.</p>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
@@ -1859,15 +1874,9 @@
             <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
-            <div class="draw-intel">
-              <div class="draw-intel-bar">
-                <div class="draw-intel-fill" id="drawIntelFill"></div>
-                <div class="draw-intel-glow"></div>
-              </div>
-              <div class="draw-intel-meta" id="drawIntelMeta">
-                <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
-                <span class="draw-intel-chip"><strong>Ritmo</strong> Standby</span>
-              </div>
+            <div class="draw-intel-bar">
+              <div class="draw-intel-fill" id="drawIntelFill"></div>
+              <div class="draw-intel-glow"></div>
             </div>
           </div>
         </div>
@@ -2390,30 +2399,13 @@ function getParticipantChances(participant) {
   return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
 }
 
-function getDrawTempoLabel(delay) {
-  if (delay <= 125) return 'Explosivo';
-  if (delay <= 175) return 'Agil';
-  if (delay <= 260) return 'Controlado';
-  return 'Suspenso';
-}
-
-function getDrawModeLabel(participant, isSpotlight) {
-  if (isSpotlight) return participant.opinionMessage ? 'Lectura profunda' : 'Foco ganador';
-  if (getParticipantChances(participant) >= 8) return 'Peso alto';
-  if (participant.isAnonymous) return 'Registro reservado';
-  return 'Barrido activo';
-}
-
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   if (isSpotlight) {
-    return participant.opinionMessage
-      ? 'El sistema detecto una historia visible y sostiene el foco un poco mas.'
-      : 'La ruleta entra en pausa dramatica antes de volver a mezclar.';
+    return 'La demostracion alcanzo el punto final de la prueba y deja visible al participante seleccionado.';
   }
-  if (cycleProgress < 0.2) return 'Acelerando el barrido para recorrer mas participantes al inicio.';
-  if (cycleProgress > 0.72) return 'Bajando el ritmo para aumentar la tension de la vuelta.';
-  if (getParticipantChances(participant) >= 8) return 'Se nota un perfil fuerte por cantidad de chances activas.';
-  return 'Movimiento continuo y parejo para mantener toda la lista viva.';
+  if (cycleProgress < 0.2) return 'La demostracion inicio el recorrido visible sobre la lista para mostrar el comportamiento del software.';
+  if (cycleProgress > 0.72) return 'La prueba esta entrando en su tramo final para detenerse automaticamente de forma visible.';
+  return 'El sistema sigue recorriendo participantes en tiempo real para mostrar transparencia operativa.';
 }
 
 function getActiveDemoParticipant() {
@@ -2455,6 +2447,18 @@ function toggleDemoHistory() {
   }
 }
 
+function toggleDemoShowcase() {
+  const showcase = document.getElementById('drawShowcase');
+  const button = document.getElementById('toggleDemoBtn');
+  if (!showcase || !button) return;
+  const willOpen = showcase.classList.contains('collapsed');
+  showcase.classList.toggle('collapsed', !willOpen);
+  button.textContent = willOpen ? 'Ocultar demostracion' : 'Iniciar demostracion';
+  if (willOpen) {
+    showcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function updateDrawControls() {
   const showcase = document.getElementById('drawShowcase');
   const startBtn = document.getElementById('drawStartBtn');
@@ -2473,7 +2477,7 @@ function pauseDrawShowcase() {
   updateDrawControls();
   document.getElementById('drawPhaseLabel').textContent = 'Prueba detenida';
   document.getElementById('drawPhaseName').textContent = 'El software freno en el foco actual';
-  document.getElementById('drawPhaseHint').textContent = 'Ahora podes registrar este resultado o mover manualmente el foco antes de guardarlo.';
+  document.getElementById('drawPhaseHint').textContent = 'Ahora puedes registrar este resultado de demostracion. Este dato sirve solo como evidencia visual del funcionamiento y no como resultado oficial.';
 }
 
 function startDemoTrial() {
@@ -2565,10 +2569,6 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseName').textContent = 'Lista para iniciar la demostracion del funcionamiento';
   document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
   document.getElementById('drawIntelFill').style.width = '18%';
-  document.getElementById('drawIntelMeta').innerHTML = `
-    <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
-    <span class="draw-intel-chip"><strong>Ritmo</strong> Standby</span>
-  `;
   updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
@@ -2640,7 +2640,6 @@ function renderDrawShowcase(activeIndex, isSpotlight, delay) {
   const phaseName = document.getElementById('drawPhaseName');
   const phaseHint = document.getElementById('drawPhaseHint');
   const intelFill = document.getElementById('drawIntelFill');
-  const intelMeta = document.getElementById('drawIntelMeta');
   const cycleProgress = drawShowcaseState.cycle.length
     ? (drawShowcaseState.cyclePosition + 1) / drawShowcaseState.cycle.length
     : 0;
@@ -2665,11 +2664,6 @@ function renderDrawShowcase(activeIndex, isSpotlight, delay) {
     : `Recorriendo participante ${Math.min(drawShowcaseState.cyclePosition + 1, drawShowcaseState.cycle.length)} de ${drawShowcaseState.cycle.length}`;
   phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
   intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
-  intelMeta.innerHTML = `
-    <span class="draw-intel-chip"><strong>Modo</strong> ${getDrawModeLabel(participant, isSpotlight)}</span>
-    <span class="draw-intel-chip"><strong>Ritmo</strong> ${getDrawTempoLabel(delay)}</span>
-    <span class="draw-intel-chip"><strong>Focus</strong> ${participant.isAnonymous ? 'Anonimo visible' : (participant.city || 'Argentina')}</span>
-  `;
 
   const visibleCards = [];
   const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
@@ -3313,6 +3307,7 @@ document.getElementById('searchInput').addEventListener('input', e => renderPart
 document.getElementById('modalConfirm').onclick = submitOrder;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
+document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
