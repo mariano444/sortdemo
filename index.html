@@ -1834,7 +1834,6 @@ function renderProofMessages() {
 
   const dynamicMessages = participants
     .filter((p) => p.opinionMessage)
-    .slice(0, 6)
     .map((p) => ({
       name: p.displayName || p.name,
       city: p.city || 'Argentina',
