@@ -857,11 +857,7 @@
     animation: none;
   }
   .draw-rail {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.75rem;
+    display: none;
   }
   .draw-rail-card {
     min-width: 0;
@@ -1235,11 +1231,31 @@
     padding: 1.3rem 1.2rem;
   }
   .proof-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .proof-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .proof-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .proof-head-copy {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.8rem;
-    margin-bottom: 0.75rem;
   }
   .proof-name {
     font-weight: 800;
@@ -2094,6 +2110,10 @@
       <input class="form-input" type="tel" id="f-phone" placeholder="Ej: 3516012345">
     </div>
     <div class="form-group">
+      <label class="form-label">Provincia</label>
+      <input class="form-input" type="text" id="f-province" placeholder="Tu provincia">
+    </div>
+    <div class="form-group">
       <label class="form-label">Ciudad</label>
       <input class="form-input" type="text" id="f-city" placeholder="Tu ciudad">
     </div>
@@ -2426,7 +2446,7 @@ function renderDemoHistory() {
     <div class="demo-history-card">
       <strong>${escapeHtml(item.display_name || item.full_name || 'Participante')}</strong>
       <div class="demo-history-meta">
-        <span>${escapeHtml(item.city || 'Argentina')}</span>
+        <span>${escapeHtml([item.city || '', item.province || ''].filter(Boolean).join(', ') || 'Argentina')}</span>
         <span>${escapeHtml(item.recorded_at_label || '')}</span>
       </div>
       <div class="demo-history-meta">
@@ -2651,7 +2671,7 @@ function renderDrawShowcase(activeIndex, isSpotlight, delay) {
   featuredAvatar.style.color = activeColor;
   featuredName.textContent = participant.displayName || participant.name;
   featuredMeta.innerHTML = `
-    <span class="draw-featured-pill">${escapeHtml(participant.city || 'Argentina')}</span>
+    <span class="draw-featured-pill">${escapeHtml(participantLocation(participant))}</span>
     <span class="draw-featured-pill">${escapeHtml(participant.date || 'Hoy')}</span>
     <span class="draw-featured-pill">${participant.publicCode ? escapeHtml(participant.publicCode) : 'Registro visible'}</span>
   `;
@@ -2778,7 +2798,7 @@ function getRandomActivityMessage() {
     'confirmo su interes en el sorteo'
   ]);
   return {
-    text: `${person.displayName || person.name} de ${person.city} ${template}.`,
+    text: `${person.displayName || person.name} de ${participantLocation(person)} ${template}.`,
     sub: person.date
   };
 }
@@ -2848,7 +2868,8 @@ function renderParticipants(filter=''){
     ? participants.filter(p =>
         (p.displayName || p.name).toLowerCase().includes(normalizedFilter) ||
         p.name.toLowerCase().includes(normalizedFilter) ||
-        p.city.toLowerCase().includes(normalizedFilter) ||
+        (p.city || '').toLowerCase().includes(normalizedFilter) ||
+        (p.province || '').toLowerCase().includes(normalizedFilter) ||
         (p.publicCode || '').toLowerCase().includes(normalizedFilter)
       )
     : participants;
@@ -2864,10 +2885,10 @@ function renderParticipants(filter=''){
     const avatarHtml = renderParticipantAvatar(p, p.displayName || p.name, colorFor(sourceIndex));
     row.innerHTML = `
       <td><div class="td-name-cell">${avatarHtml}<div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
-      <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
+      <td><span style="font-size:0.8rem;color:var(--text2)">${participantLocation(p)}</span></td>
       <td><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-      <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(p.city || 'Argentina')}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+      <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     body.appendChild(row);
 
@@ -2878,10 +2899,10 @@ function renderParticipants(filter=''){
         detailRow.className = 'participant-detail-row';
         detailRow.innerHTML = `
           <td><div class="td-name-cell">${detailAvatarHtml}<div><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
-          <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
+          <td><span style="font-size:0.8rem;color:var(--text2)">${participantLocation(p)}</span></td>
           <td><span class="chances-badge">x${chanceNumber}</span></td>
           <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-          <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(p.city || 'Argentina')}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+          <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         body.appendChild(detailRow);
       });
@@ -2929,16 +2950,20 @@ function renderProofMessages() {
     .filter((p) => p.opinionMessage)
     .map((p) => ({
       name: p.displayName || p.name,
-      city: p.city || 'Argentina',
-      message: p.opinionMessage
+      city: participantLocation(p),
+      message: p.opinionMessage,
+      photoUrl: p.photoUrl || ''
     }));
 
   const cards = dynamicMessages.length ? dynamicMessages : [];
   grid.innerHTML = cards.map((item, index) => `
     <div class="proof-card reveal" style="transition-delay:${Math.min(index * 0.08, 0.32)}s">
       <div class="proof-head">
-        <span class="proof-name">${escapeHtml(item.name)}</span>
-        <span class="proof-city">${escapeHtml(item.city)}</span>
+        <div class="proof-avatar">${item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.name)}">` : ''}</div>
+        <div class="proof-head-copy">
+          <span class="proof-name">${escapeHtml(item.name)}</span>
+          <span class="proof-city">${escapeHtml(item.city)}</span>
+        </div>
       </div>
       <div class="proof-copy">"${escapeHtml(item.message)}"</div>
     </div>
@@ -3014,6 +3039,7 @@ function openModal(pkgId){
   document.getElementById('modal-pkg-price').textContent = '$' + Number(selectedPkg.price_ars || 0).toLocaleString('es-AR');
   document.getElementById('f-name').value = '';
   document.getElementById('f-phone').value = '';
+  document.getElementById('f-province').value = '';
   document.getElementById('f-city').value = '';
   document.getElementById('f-photo').value = '';
   document.getElementById('f-message').value = '';
@@ -3087,10 +3113,17 @@ function renderParticipantAvatar(participant, fallbackLabel, color) {
   return `<div class="td-avatar" style="background:${color}22;color:${color}">${escapeHtml(initials(fallbackLabel))}</div>`;
 }
 
+function participantLocation(participant) {
+  const city = participant.city || '';
+  const province = participant.province || '';
+  return [city, province].filter(Boolean).join(', ') || 'Argentina';
+}
+
 async function submitOrder(){
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
-  const city = document.getElementById('f-city').value.trim() || 'Argentina';
+  const province = document.getElementById('f-province').value.trim() || 'Argentina';
+  const city = document.getElementById('f-city').value.trim() || '';
   const opinionMessage = document.getElementById('f-message').value.trim();
   const wantsAnonymous = document.getElementById('f-anonymous').checked;
   if (!selectedPkg) return showToast('Elegí un paquete.');
@@ -3108,6 +3141,7 @@ async function submitOrder(){
       p_package_id: selectedPkg.id,
       p_full_name: name,
       p_phone: phone,
+      p_province: province,
       p_city: city,
       p_photo_url: photoUrl,
       p_show_public_name: !wantsAnonymous,
@@ -3215,6 +3249,7 @@ async function loadParticipants(){
     isAnonymous: Boolean(row.is_anonymous),
     publicCode: row.public_code || '',
     photoUrl: row.photo_url || '',
+    province: row.province || '',
     city: row.city || 'Argentina',
     purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
     chances: Number(row.total_entries || 0),
