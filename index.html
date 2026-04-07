@@ -1788,9 +1788,10 @@
           <h3 class="draw-showcase-title">La animacion <span>recorre a todos</span> y en cada vuelta se queda unos segundos mas en un participante elegido al azar.</h3>
           <p class="draw-showcase-sub">El recorrido nunca se detiene: cambia de ritmo, vuelve a mezclar el orden y mantiene una sensacion de sorteo vivo, claro y visualmente fuerte.</p>
           <div class="draw-controls">
-            <button class="draw-control-btn primary" type="button" id="drawPauseBtn">Pausar demostracion</button>
-            <button class="draw-control-btn" type="button" id="drawNextBtn">Siguiente foco</button>
-            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar resultado demo</button>
+            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
+            <button class="draw-control-btn" type="button" id="drawPauseBtn">Detener donde freno</button>
+            <button class="draw-control-btn" type="button" id="drawNextBtn">Mover foco</button>
+            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
             <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
           </div>
         </div>
@@ -2160,7 +2161,8 @@ const drawShowcaseState = {
   activeParticipantIndex: -1,
   activeSpotlight: false,
   paused: false,
-  historyOpen: false
+  historyOpen: false,
+  hasStarted: false
 };
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
@@ -2369,31 +2371,56 @@ function toggleDemoHistory() {
 
 function updateDrawControls() {
   const showcase = document.getElementById('drawShowcase');
+  const startBtn = document.getElementById('drawStartBtn');
   const pauseBtn = document.getElementById('drawPauseBtn');
   const nextBtn = document.getElementById('drawNextBtn');
   const saveBtn = document.getElementById('saveDemoResultBtn');
-  if (!showcase || !pauseBtn || !nextBtn || !saveBtn) return;
+  if (!showcase || !startBtn || !pauseBtn || !nextBtn || !saveBtn) return;
   showcase.classList.toggle('paused', drawShowcaseState.paused);
-  pauseBtn.textContent = drawShowcaseState.paused ? 'Reanudar demostracion' : 'Pausar demostracion';
-  nextBtn.disabled = !participants.length;
-  nextBtn.style.opacity = participants.length ? '1' : '0.5';
-  saveBtn.disabled = !getActiveDemoParticipant();
-  saveBtn.style.opacity = getActiveDemoParticipant() ? '1' : '0.5';
+  startBtn.disabled = !participants.length || (!drawShowcaseState.paused && drawShowcaseState.hasStarted);
+  startBtn.style.opacity = startBtn.disabled ? '0.5' : '1';
+  pauseBtn.textContent = !drawShowcaseState.hasStarted
+    ? 'Detener donde freno'
+    : (drawShowcaseState.paused ? 'Reanudar prueba' : 'Detener donde freno');
+  pauseBtn.disabled = !participants.length || !drawShowcaseState.hasStarted;
+  pauseBtn.style.opacity = pauseBtn.disabled ? '0.5' : '1';
+  nextBtn.disabled = !participants.length || !drawShowcaseState.paused;
+  nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+  saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.hasStarted;
+  saveBtn.style.opacity = saveBtn.disabled ? '0.5' : '1';
 }
 
 function pauseDrawShowcase() {
   drawShowcaseState.paused = true;
   stopDrawShowcase();
   updateDrawControls();
-  document.getElementById('drawPhaseLabel').textContent = 'Demostracion pausada';
-  document.getElementById('drawPhaseName').textContent = 'El sistema quedo congelado en el foco actual';
-  document.getElementById('drawPhaseHint').textContent = 'Podes reanudar cuando quieras o avanzar manualmente al siguiente participante.';
+  document.getElementById('drawPhaseLabel').textContent = 'Prueba detenida';
+  document.getElementById('drawPhaseName').textContent = 'El software freno en el foco actual';
+  document.getElementById('drawPhaseHint').textContent = 'Ahora podes registrar este resultado o mover manualmente el foco antes de guardarlo.';
 }
 
 function resumeDrawShowcase() {
   drawShowcaseState.paused = false;
+  drawShowcaseState.hasStarted = true;
   updateDrawControls();
   tickDrawShowcase();
+}
+
+function startDemoTrial() {
+  if (!participants.length) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
+  drawShowcaseState.hasStarted = true;
+  drawShowcaseState.paused = false;
+  updateDrawControls();
+  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+    prepareDrawShowcaseRound();
+  }
+  tickDrawShowcase();
+  document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
+  document.getElementById('drawPhaseName').textContent = 'El software esta recorriendo participantes en vivo';
+  document.getElementById('drawPhaseHint').textContent = 'Cuando quieras, presiona detener para dejar asentado donde freno la prueba.';
 }
 
 function toggleDrawShowcasePause() {
@@ -2407,6 +2434,7 @@ function toggleDrawShowcasePause() {
 function advanceDrawShowcaseStep() {
   stopDrawShowcase();
   drawShowcaseState.paused = true;
+  drawShowcaseState.hasStarted = true;
   if (!participants.length) {
     renderDrawShowcaseEmpty();
     updateDrawControls();
@@ -2423,9 +2451,9 @@ function advanceDrawShowcaseStep() {
   renderDrawShowcase(participantIndex, isSpotlight, delay);
   drawShowcaseState.cyclePosition += 1;
   updateDrawControls();
-  document.getElementById('drawPhaseLabel').textContent = 'Demostracion manual';
-  document.getElementById('drawPhaseName').textContent = 'Avance controlado paso a paso';
-  document.getElementById('drawPhaseHint').textContent = 'Cada toque mueve el foco al siguiente participante sin reactivar el bucle.';
+  document.getElementById('drawPhaseLabel').textContent = 'Revision manual';
+  document.getElementById('drawPhaseName').textContent = 'Ajustando el punto exacto donde freno la prueba';
+  document.getElementById('drawPhaseHint').textContent = 'Cada toque mueve el foco al siguiente participante sin reactivar el recorrido automatico.';
 }
 
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
@@ -2448,12 +2476,13 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const currentTop = scroller.scrollTop;
   const visibleTop = currentTop + 54;
   const visibleBottom = currentTop + scroller.clientHeight - 54;
-  if (rowTop < visibleTop || rowBottom > visibleBottom) {
-    const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.42));
+  const shouldLockView = isSpotlight || !drawShowcaseState.paused;
+  if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
+    const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.45));
     scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
   }
 
-  if (isSpotlight) {
+  if (shouldLockView) {
     const showcase = document.getElementById('drawShowcase');
     showcase?.classList.add('is-focus-locked');
     showcase?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2478,6 +2507,7 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
   drawShowcaseState.activeParticipantIndex = -1;
   drawShowcaseState.activeSpotlight = false;
+  drawShowcaseState.hasStarted = false;
   if (card) card.classList.remove('spotlight');
   syncParticipantTableFocus(-1, false);
   document.getElementById('drawRoundCounter').textContent = '0';
@@ -2487,9 +2517,9 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawFeaturedName').textContent = 'La animacion se activara sola';
   document.getElementById('drawFeaturedMeta').innerHTML = '<span class="draw-featured-pill">Sin datos todavia</span>';
   document.getElementById('drawFeaturedScore').textContent = '0';
-  document.getElementById('drawPhaseLabel').textContent = 'Estado del sistema';
-  document.getElementById('drawPhaseName').textContent = 'Esperando el listado en vivo';
-  document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.';
+  document.getElementById('drawPhaseLabel').textContent = 'Prueba disponible';
+  document.getElementById('drawPhaseName').textContent = 'Lista para iniciar la demostracion del funcionamiento';
+  document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
   document.getElementById('drawIntelFill').style.width = '18%';
   document.getElementById('drawIntelMeta').innerHTML = `
     <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
@@ -2523,7 +2553,7 @@ async function loadDemoResults() {
 async function saveCurrentDemoResult() {
   const participant = getActiveDemoParticipant();
   if (!participant) {
-    showToast('Todavia no hay un participante seleccionado en la demostracion.');
+    showToast('Todavia no hay un participante seleccionado donde freno la prueba.');
     return;
   }
   try {
@@ -2538,10 +2568,10 @@ async function saveCurrentDemoResult() {
     if (!drawShowcaseState.historyOpen) {
       toggleDemoHistory();
     }
-    showToast(`Resultado demo guardado para ${participant.displayName || participant.name}.`);
+    showToast(`Resultado registrado donde freno: ${participant.displayName || participant.name}.`);
   } catch (error) {
     console.error(error);
-    showToast('No se pudo guardar el resultado de la demostracion. Revisa la migracion SQL.');
+    showToast('No se pudo registrar donde freno la prueba. Revisa la migracion SQL.');
   }
 }
 
@@ -2666,10 +2696,14 @@ function startDrawShowcase() {
     renderDrawShowcaseEmpty();
     return;
   }
-  drawShowcaseState.paused = false;
+  drawShowcaseState.paused = true;
+  drawShowcaseState.hasStarted = false;
   updateDrawControls();
   prepareDrawShowcaseRound();
-  tickDrawShowcase();
+  const participantIndex = drawShowcaseState.cycle[drawShowcaseState.cyclePosition];
+  const participant = participants[participantIndex];
+  const delay = getDrawDelay(participant, false);
+  renderDrawShowcase(participantIndex, false, delay);
 }
 
 async function shareWhatsappLink() {
@@ -3209,6 +3243,7 @@ document.getElementById('searchInput').addEventListener('input', e => renderPart
 document.getElementById('modalConfirm').onclick = submitOrder;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
+document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('drawPauseBtn').onclick = toggleDrawShowcasePause;
 document.getElementById('drawNextBtn').onclick = advanceDrawShowcaseStep;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
