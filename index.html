@@ -500,6 +500,13 @@
   .draw-showcase-copy {
     padding: 1rem 0.9rem 0.8rem;
   }
+  .draw-showcase-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
   .draw-showcase-kicker {
     display: inline-flex;
     align-items: center;
@@ -510,6 +517,28 @@
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.9rem;
+  }
+  .draw-demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.42rem 0.68rem;
+    border-radius: 999px;
+    background: rgba(59,139,255,0.12);
+    border: 1px solid rgba(59,139,255,0.26);
+    color: #cfe3ff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .draw-demo-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
   }
   .draw-showcase-kicker::before {
     content: '';
@@ -757,6 +786,43 @@
   .draw-intel-chip strong {
     color: var(--text);
     font-weight: 800;
+  }
+  .draw-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.95rem;
+  }
+  .draw-control-btn {
+    appearance: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  }
+  .draw-control-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(245,200,66,0.35);
+    background: rgba(245,200,66,0.08);
+  }
+  .draw-control-btn.primary {
+    background: linear-gradient(135deg, rgba(245,200,66,0.22), rgba(230,168,0,0.16));
+    border-color: rgba(245,200,66,0.34);
+    color: var(--gold);
+  }
+  .draw-showcase.paused .draw-intel-glow {
+    animation-play-state: paused;
+    opacity: 0.18;
+  }
+  .draw-showcase.paused .draw-featured-card {
+    border-color: rgba(255,255,255,0.12);
+    transform: none;
   }
   .draw-rail {
     position: relative;
@@ -1625,9 +1691,16 @@
     <div class="draw-showcase reveal" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
-          <span class="draw-showcase-kicker">Sistema aleatorio en movimiento</span>
+          <div class="draw-showcase-topline">
+            <span class="draw-showcase-kicker">Sistema aleatorio en movimiento</span>
+            <span class="draw-demo-badge">Demostracion</span>
+          </div>
           <h3 class="draw-showcase-title">La animacion <span>recorre a todos</span> y en cada vuelta se queda unos segundos mas en un participante elegido al azar.</h3>
           <p class="draw-showcase-sub">El recorrido nunca se detiene: cambia de ritmo, vuelve a mezclar el orden y mantiene una sensacion de sorteo vivo, claro y visualmente fuerte.</p>
+          <div class="draw-controls">
+            <button class="draw-control-btn primary" type="button" id="drawPauseBtn">Pausar demostracion</button>
+            <button class="draw-control-btn" type="button" id="drawNextBtn">Siguiente foco</button>
+          </div>
         </div>
         <div class="draw-showcase-stage">
           <div class="draw-stage-chip">Ronda actual <strong id="drawRoundCounter">0</strong></div>
@@ -1981,7 +2054,8 @@ const drawShowcaseState = {
   spotlightPosition: -1,
   round: 0,
   activeParticipantIndex: -1,
-  activeSpotlight: false
+  activeSpotlight: false,
+  paused: false
 };
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
@@ -2149,6 +2223,64 @@ function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   return 'Movimiento continuo y parejo para mantener toda la lista viva.';
 }
 
+function updateDrawControls() {
+  const showcase = document.getElementById('drawShowcase');
+  const pauseBtn = document.getElementById('drawPauseBtn');
+  const nextBtn = document.getElementById('drawNextBtn');
+  if (!showcase || !pauseBtn || !nextBtn) return;
+  showcase.classList.toggle('paused', drawShowcaseState.paused);
+  pauseBtn.textContent = drawShowcaseState.paused ? 'Reanudar demostracion' : 'Pausar demostracion';
+  nextBtn.disabled = !participants.length;
+  nextBtn.style.opacity = participants.length ? '1' : '0.5';
+}
+
+function pauseDrawShowcase() {
+  drawShowcaseState.paused = true;
+  stopDrawShowcase();
+  updateDrawControls();
+  document.getElementById('drawPhaseLabel').textContent = 'Demostracion pausada';
+  document.getElementById('drawPhaseName').textContent = 'El sistema quedo congelado en el foco actual';
+  document.getElementById('drawPhaseHint').textContent = 'Podes reanudar cuando quieras o avanzar manualmente al siguiente participante.';
+}
+
+function resumeDrawShowcase() {
+  drawShowcaseState.paused = false;
+  updateDrawControls();
+  tickDrawShowcase();
+}
+
+function toggleDrawShowcasePause() {
+  if (drawShowcaseState.paused) {
+    resumeDrawShowcase();
+    return;
+  }
+  pauseDrawShowcase();
+}
+
+function advanceDrawShowcaseStep() {
+  stopDrawShowcase();
+  drawShowcaseState.paused = true;
+  if (!participants.length) {
+    renderDrawShowcaseEmpty();
+    updateDrawControls();
+    return;
+  }
+  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+    prepareDrawShowcaseRound();
+  }
+  const cyclePosition = drawShowcaseState.cyclePosition;
+  const participantIndex = drawShowcaseState.cycle[cyclePosition];
+  const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
+  const participant = participants[participantIndex];
+  const delay = getDrawDelay(participant, isSpotlight);
+  renderDrawShowcase(participantIndex, isSpotlight, delay);
+  drawShowcaseState.cyclePosition += 1;
+  updateDrawControls();
+  document.getElementById('drawPhaseLabel').textContent = 'Demostracion manual';
+  document.getElementById('drawPhaseName').textContent = 'Avance controlado paso a paso';
+  document.getElementById('drawPhaseHint').textContent = 'Cada toque mueve el foco al siguiente participante sin reactivar el bucle.';
+}
+
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const rows = document.querySelectorAll('.participant-main-row');
   rows.forEach((row) => {
@@ -2209,6 +2341,7 @@ function renderDrawShowcaseEmpty() {
     <span class="draw-intel-chip"><strong>Modo</strong> Espera</span>
     <span class="draw-intel-chip"><strong>Ritmo</strong> Standby</span>
   `;
+  updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
   }
@@ -2304,6 +2437,10 @@ function tickDrawShowcase() {
     renderDrawShowcaseEmpty();
     return;
   }
+  if (drawShowcaseState.paused) {
+    updateDrawControls();
+    return;
+  }
 
   if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
     prepareDrawShowcaseRound();
@@ -2330,6 +2467,8 @@ function startDrawShowcase() {
     renderDrawShowcaseEmpty();
     return;
   }
+  drawShowcaseState.paused = false;
+  updateDrawControls();
   prepareDrawShowcaseRound();
   tickDrawShowcase();
 }
@@ -2871,6 +3010,8 @@ document.getElementById('searchInput').addEventListener('input', e => renderPart
 document.getElementById('modalConfirm').onclick = submitOrder;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
+document.getElementById('drawPauseBtn').onclick = toggleDrawShowcasePause;
+document.getElementById('drawNextBtn').onclick = advanceDrawShowcaseStep;
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
