@@ -2407,7 +2407,7 @@ async function uploadParticipantPhoto(file, phone) {
   const { error } = await supabaseClient.storage.from('participant-profiles').upload(filePath, file, {
     cacheControl: '3600',
     upsert: true
-  });
+  }).filter((participant) => participant.purchasedChances > 0);
   if (error) throw error;
   const { data } = supabaseClient.storage.from('participant-profiles').getPublicUrl(filePath);
   return data?.publicUrl || null;
@@ -3367,6 +3367,7 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
+    const approvedEntries = Number(row.purchased_entries || 0);
     return {
       sourceIndex: index,
       name: fullName,
@@ -3377,9 +3378,9 @@ async function loadParticipants(){
       photoUrl: row.photo_url || '',
       province: location.province,
       city: location.city,
-      purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
-      chances: Number(row.total_entries || 0),
-      currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
+      purchasedChances: approvedEntries,
+      chances: approvedEntries,
+      currentChances: approvedEntries,
       opinionMessage: (row.opinion_message || '').trim(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
