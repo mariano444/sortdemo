@@ -2954,7 +2954,7 @@ function renderParticipants(filter=''){
     const avatarHtml = renderParticipantAvatar(p, p.displayName || p.name, colorFor(sourceIndex));
     row.innerHTML = `
       <td><div class="td-name-cell">${avatarHtml}<div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
-      <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || 'Argentina'}</span></td>
+      <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
       <td><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
       <td><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
@@ -2969,7 +2969,7 @@ function renderParticipants(filter=''){
         detailRow.className = 'participant-detail-row';
         detailRow.innerHTML = `
           <td><div class="td-name-cell">${detailAvatarHtml}<div><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
-          <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || 'Argentina'}</span></td>
+          <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
           <td><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
           <td><span class="chances-badge">x${chanceNumber}</span></td>
           <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
@@ -3190,6 +3190,17 @@ function participantLocation(participant) {
   return province || city || 'Argentina';
 }
 
+function normalizeParticipantLocation(row) {
+  const rawProvince = (row.province || '').trim();
+  const rawCity = (row.city || '').trim();
+  const normalizedCity = rawCity.toLowerCase();
+  const hasLegacyLocation = !rawProvince && rawCity && normalizedCity !== 'argentina';
+  return {
+    province: hasLegacyLocation ? rawCity : rawProvince,
+    city: hasLegacyLocation || normalizedCity === 'argentina' ? '' : rawCity
+  };
+}
+
 async function submitOrder(){
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
@@ -3313,21 +3324,24 @@ async function loadParticipants(){
   });
 
   if (error) throw error;
-  participants = (data || []).map(row => ({
-    name: row.full_name,
-    displayName: row.display_name || row.full_name,
+  participants = (data || []).map(row => {
+    const location = normalizeParticipantLocation(row);
+    return {
+      name: row.full_name,
+      displayName: row.display_name || row.full_name,
     detailLabel: row.is_anonymous ? (row.display_name || 'Anónimo') : row.full_name,
-    isAnonymous: Boolean(row.is_anonymous),
-    publicCode: row.public_code || '',
-    photoUrl: row.photo_url || '',
-    province: row.province || '',
-    city: row.city || 'Argentina',
-    purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
-    chances: Number(row.total_entries || 0),
-    currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
-    opinionMessage: (row.opinion_message || '').trim(),
-    date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
-  }));
+      isAnonymous: Boolean(row.is_anonymous),
+      publicCode: row.public_code || '',
+      photoUrl: row.photo_url || '',
+      province: location.province,
+      city: location.city,
+      purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
+      chances: Number(row.total_entries || 0),
+      currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
+      opinionMessage: (row.opinion_message || '').trim(),
+      date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    };
+  });
   renderProofMessages();
   startDrawShowcase();
 }
