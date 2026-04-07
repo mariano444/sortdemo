@@ -836,6 +836,11 @@
     border-color: rgba(245,200,66,0.34);
     color: var(--gold);
   }
+  .draw-control-btn.accent {
+    background: linear-gradient(135deg, rgba(0,212,106,0.16), rgba(0,212,106,0.08));
+    border-color: rgba(0,212,106,0.3);
+    color: #8ff0be;
+  }
   .draw-showcase.paused .draw-intel-glow {
     animation-play-state: paused;
     opacity: 0.18;
@@ -1024,6 +1029,67 @@
   }
   .draw-showcase.is-focus-locked {
     scroll-margin-top: 84px;
+  }
+  .demo-history {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(145deg, rgba(19,19,28,0.96), rgba(28,28,42,0.88));
+    display: none;
+  }
+  .demo-history.open {
+    display: block;
+  }
+  .demo-history-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .demo-history-title {
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .demo-history-sub {
+    font-size: 0.84rem;
+    color: var(--text2);
+  }
+  .demo-history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+  }
+  .demo-history-card {
+    padding: 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    display: grid;
+    gap: 0.28rem;
+  }
+  .demo-history-card strong {
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .demo-history-meta {
+    color: var(--text2);
+    font-size: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .demo-history-empty {
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px dashed rgba(255,255,255,0.14);
+    color: var(--text2);
+    background: rgba(255,255,255,0.03);
   }
   .message-cell {
     text-align: right;
@@ -1724,6 +1790,8 @@
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawPauseBtn">Pausar demostracion</button>
             <button class="draw-control-btn" type="button" id="drawNextBtn">Siguiente foco</button>
+            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar resultado demo</button>
+            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
           </div>
         </div>
         <div class="draw-showcase-stage">
@@ -1761,6 +1829,17 @@
       </div>
       <div class="draw-rail" id="drawRail">
         <div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>
+      </div>
+      <div class="demo-history" id="demoHistoryPanel">
+        <div class="demo-history-head">
+          <div>
+            <div class="demo-history-title">Participantes demostracion</div>
+            <div class="demo-history-sub">Historial de participantes asentados manualmente desde esta demostracion.</div>
+          </div>
+        </div>
+        <div class="demo-history-grid" id="demoHistoryGrid">
+          <div class="demo-history-empty">Todavia no hay resultados de demostracion guardados.</div>
+        </div>
       </div>
     </div>
 
@@ -2043,6 +2122,7 @@ const DRAW_TARGET_ISO = '2026-07-26T20:00:00-03:00';
 let activeCampaign = null;
 let packages = [];
 let participants = [];
+let demoResults = [];
 let selectedPkg = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
@@ -2079,7 +2159,8 @@ const drawShowcaseState = {
   round: 0,
   activeParticipantIndex: -1,
   activeSpotlight: false,
-  paused: false
+  paused: false,
+  historyOpen: false
 };
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
@@ -2247,15 +2328,57 @@ function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   return 'Movimiento continuo y parejo para mantener toda la lista viva.';
 }
 
+function getActiveDemoParticipant() {
+  if (drawShowcaseState.activeParticipantIndex < 0 || !participants[drawShowcaseState.activeParticipantIndex]) {
+    return null;
+  }
+  return participants[drawShowcaseState.activeParticipantIndex];
+}
+
+function renderDemoHistory() {
+  const grid = document.getElementById('demoHistoryGrid');
+  if (!grid) return;
+  if (!demoResults.length) {
+    grid.innerHTML = '<div class="demo-history-empty">Todavia no hay resultados de demostracion guardados.</div>';
+    return;
+  }
+  grid.innerHTML = demoResults.map((item) => `
+    <div class="demo-history-card">
+      <strong>${escapeHtml(item.display_name || item.full_name || 'Participante')}</strong>
+      <div class="demo-history-meta">
+        <span>${escapeHtml(item.city || 'Argentina')}</span>
+        <span>${escapeHtml(item.recorded_at_label || '')}</span>
+      </div>
+      <div class="demo-history-meta">
+        <span>${escapeHtml(item.public_code || 'Registro demo')}</span>
+        <span>x${Number(item.chances || 0).toLocaleString('es-AR')}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDemoHistory() {
+  drawShowcaseState.historyOpen = !drawShowcaseState.historyOpen;
+  const panel = document.getElementById('demoHistoryPanel');
+  const button = document.getElementById('toggleDemoHistoryBtn');
+  panel?.classList.toggle('open', drawShowcaseState.historyOpen);
+  if (button) {
+    button.textContent = drawShowcaseState.historyOpen ? 'Ocultar participantes demo' : 'Participantes demostracion';
+  }
+}
+
 function updateDrawControls() {
   const showcase = document.getElementById('drawShowcase');
   const pauseBtn = document.getElementById('drawPauseBtn');
   const nextBtn = document.getElementById('drawNextBtn');
-  if (!showcase || !pauseBtn || !nextBtn) return;
+  const saveBtn = document.getElementById('saveDemoResultBtn');
+  if (!showcase || !pauseBtn || !nextBtn || !saveBtn) return;
   showcase.classList.toggle('paused', drawShowcaseState.paused);
   pauseBtn.textContent = drawShowcaseState.paused ? 'Reanudar demostracion' : 'Pausar demostracion';
   nextBtn.disabled = !participants.length;
   nextBtn.style.opacity = participants.length ? '1' : '0.5';
+  saveBtn.disabled = !getActiveDemoParticipant();
+  saveBtn.style.opacity = getActiveDemoParticipant() ? '1' : '0.5';
 }
 
 function pauseDrawShowcase() {
@@ -2375,6 +2498,50 @@ function renderDrawShowcaseEmpty() {
   updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
+  }
+}
+
+async function loadDemoResults() {
+  try {
+    const { data, error } = await supabaseClient.rpc('list_demo_draw_results', {
+      p_campaign_slug: CAMPAIGN_SLUG
+    });
+    if (error) throw error;
+    demoResults = (data || []).map((row) => ({
+      ...row,
+      recorded_at_label: row.recorded_at
+        ? new Date(row.recorded_at).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : ''
+    }));
+  } catch (error) {
+    console.warn('No se pudo cargar el historial demo.', error);
+    demoResults = [];
+  }
+  renderDemoHistory();
+}
+
+async function saveCurrentDemoResult() {
+  const participant = getActiveDemoParticipant();
+  if (!participant) {
+    showToast('Todavia no hay un participante seleccionado en la demostracion.');
+    return;
+  }
+  try {
+    const { error } = await supabaseClient.rpc('record_demo_draw_result', {
+      p_campaign_slug: CAMPAIGN_SLUG,
+      p_participant_public_code: participant.publicCode || '',
+      p_display_name: participant.displayName || participant.name,
+      p_full_name: participant.name || participant.displayName || ''
+    });
+    if (error) throw error;
+    await loadDemoResults();
+    if (!drawShowcaseState.historyOpen) {
+      toggleDemoHistory();
+    }
+    showToast(`Resultado demo guardado para ${participant.displayName || participant.name}.`);
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo guardar el resultado de la demostracion. Revisa la migracion SQL.');
   }
 }
 
@@ -3044,6 +3211,8 @@ document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
 document.getElementById('drawPauseBtn').onclick = toggleDrawShowcasePause;
 document.getElementById('drawNextBtn').onclick = advanceDrawShowcaseStep;
+document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
+document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
@@ -3074,6 +3243,7 @@ async function bootLanding(){
     await loadCampaign();
     await loadPackages();
     await loadParticipants();
+    await loadDemoResults();
     renderPackages();
     renderParticipants();
     startDrawShowcase();
