@@ -466,6 +466,296 @@
 
   /* ---- PARTICIPANTS ---- */
   .participants-section { background: var(--dark); }
+  .draw-showcase {
+    margin: 2.2rem 0 1.5rem;
+    background:
+      radial-gradient(circle at top, rgba(245,200,66,0.15), transparent 45%),
+      linear-gradient(145deg, rgba(28,28,42,0.96), rgba(10,10,15,0.96));
+    border: 1px solid rgba(245,200,66,0.16);
+    border-radius: 1.35rem;
+    padding: 1.3rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 22px 54px rgba(0,0,0,0.28);
+  }
+  .draw-showcase::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,0.03), transparent 45%, rgba(245,200,66,0.06));
+    pointer-events: none;
+  }
+  .draw-showcase-panel {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.1fr) minmax(280px, 0.9fr);
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1rem;
+  }
+  .draw-showcase-copy,
+  .draw-showcase-stage {
+    position: relative;
+    z-index: 1;
+  }
+  .draw-showcase-copy {
+    padding: 1rem 0.9rem 0.8rem;
+  }
+  .draw-showcase-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+  .draw-showcase-kicker::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 14px rgba(245,200,66,0.8);
+  }
+  .draw-showcase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.65rem;
+    color: var(--text);
+  }
+  .draw-showcase-title span {
+    color: var(--gold);
+    text-shadow: 0 0 28px rgba(245,200,66,0.18);
+  }
+  .draw-showcase-sub {
+    max-width: 44ch;
+    color: var(--text2);
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+  .draw-showcase-stage {
+    min-height: 250px;
+    border-radius: 1.2rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    background:
+      radial-gradient(circle at top, rgba(59,139,255,0.16), transparent 40%),
+      linear-gradient(160deg, rgba(19,19,28,0.96), rgba(28,28,42,0.88));
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .draw-showcase-stage::before,
+  .draw-showcase-stage::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(4px);
+  }
+  .draw-showcase-stage::before {
+    width: 160px;
+    height: 160px;
+    right: -20px;
+    top: -30px;
+    background: radial-gradient(circle, rgba(245,200,66,0.22), rgba(245,200,66,0));
+    animation: showcaseOrb 6s ease-in-out infinite;
+  }
+  .draw-showcase-stage::after {
+    width: 120px;
+    height: 120px;
+    left: -10px;
+    bottom: -24px;
+    background: radial-gradient(circle, rgba(59,139,255,0.18), rgba(59,139,255,0));
+    animation: showcaseOrb 7.5s ease-in-out infinite reverse;
+  }
+  @keyframes showcaseOrb {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(0, -10px, 0) scale(1.08); }
+  }
+  .draw-stage-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .draw-stage-chip strong {
+    color: var(--text);
+    font-size: 0.76rem;
+  }
+  .draw-featured-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 1.15rem;
+    min-height: 132px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(245,200,66,0.04));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
+  }
+  .draw-featured-card.spotlight {
+    transform: scale(1.02);
+    border-color: rgba(245,200,66,0.45);
+    box-shadow: 0 0 0 1px rgba(245,200,66,0.14), 0 18px 44px rgba(245,200,66,0.1);
+  }
+  .draw-featured-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    box-shadow: 0 0 0 6px rgba(255,255,255,0.02);
+  }
+  .draw-featured-body {
+    display: grid;
+    gap: 0.22rem;
+    min-width: 0;
+  }
+  .draw-featured-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text2);
+    font-weight: 800;
+  }
+  .draw-featured-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 0.92;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .draw-featured-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    color: var(--text2);
+    font-size: 0.82rem;
+  }
+  .draw-featured-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .draw-featured-score {
+    display: grid;
+    gap: 0.4rem;
+    justify-items: end;
+    min-width: 110px;
+  }
+  .draw-featured-score-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .draw-featured-score-value {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--gold);
+    font-size: 2.3rem;
+    line-height: 1;
+    text-shadow: 0 0 26px rgba(245,200,66,0.22);
+  }
+  .draw-showcase-status {
+    display: grid;
+    gap: 0.18rem;
+  }
+  .draw-showcase-status-label {
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .draw-showcase-status-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .draw-showcase-status-hint {
+    font-size: 0.85rem;
+    color: var(--text2);
+  }
+  .draw-rail {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .draw-rail-card {
+    min-width: 0;
+    padding: 0.8rem 0.9rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    transition: transform 0.32s ease, border-color 0.32s ease, background 0.32s ease, opacity 0.32s ease;
+    opacity: 0.66;
+  }
+  .draw-rail-card.active {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(59,139,255,0.4);
+    background: rgba(59,139,255,0.1);
+    opacity: 1;
+  }
+  .draw-rail-card.spotlight {
+    border-color: rgba(245,200,66,0.42);
+    background: rgba(245,200,66,0.1);
+    opacity: 1;
+  }
+  .draw-rail-name {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.22rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .draw-rail-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.74rem;
+    color: var(--text2);
+  }
+  .draw-rail-empty {
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    border: 1px dashed rgba(255,255,255,0.14);
+    color: var(--text2);
+    background: rgba(255,255,255,0.02);
+  }
   .stats-row {
     display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem;
   }
@@ -1077,6 +1367,20 @@
   @media (max-width: 600px) {
     .prizes-row { grid-template-columns: 1fr; }
     .packages-grid { grid-template-columns: 1fr 1fr; }
+    .draw-showcase { padding: 1rem; }
+    .draw-showcase-panel { grid-template-columns: 1fr; }
+    .draw-showcase-copy { padding: 0.2rem 0 0; }
+    .draw-showcase-stage { min-height: 0; }
+    .draw-featured-card {
+      grid-template-columns: auto 1fr;
+      align-items: start;
+    }
+    .draw-featured-score {
+      grid-column: 1 / -1;
+      justify-items: start;
+      min-width: 0;
+    }
+    .draw-rail { grid-template-columns: 1fr; }
     th, td { padding: 0.6rem 0.75rem; }
     .modal { padding: 1.5rem; }
     .hero-title { font-size: 4.5rem; }
@@ -1227,6 +1531,41 @@
     <span class="section-tag">👥 Transparencia total</span>
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
     <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances, para que puedas ver que el ingreso quedó registrado y que el proceso se mantiene visible.</p>
+
+    <div class="draw-showcase reveal" id="drawShowcase">
+      <div class="draw-showcase-panel">
+        <div class="draw-showcase-copy">
+          <span class="draw-showcase-kicker">Sistema aleatorio en movimiento</span>
+          <h3 class="draw-showcase-title">La animacion <span>recorre a todos</span> y en cada vuelta se queda unos segundos mas en un participante elegido al azar.</h3>
+          <p class="draw-showcase-sub">El recorrido nunca se detiene: cambia de ritmo, vuelve a mezclar el orden y mantiene una sensacion de sorteo vivo, claro y visualmente fuerte.</p>
+        </div>
+        <div class="draw-showcase-stage">
+          <div class="draw-stage-chip">Ronda actual <strong id="drawRoundCounter">0</strong></div>
+          <div class="draw-featured-card" id="drawFeaturedCard">
+            <div class="draw-featured-avatar" id="drawFeaturedAvatar">--</div>
+            <div class="draw-featured-body">
+              <span class="draw-featured-label">Esperando participantes</span>
+              <strong class="draw-featured-name" id="drawFeaturedName">La animacion se activara sola</strong>
+              <div class="draw-featured-meta" id="drawFeaturedMeta">
+                <span class="draw-featured-pill">Se mostrara aqui</span>
+              </div>
+            </div>
+            <div class="draw-featured-score">
+              <span class="draw-featured-score-label">Chances</span>
+              <strong class="draw-featured-score-value" id="drawFeaturedScore">0</strong>
+            </div>
+          </div>
+          <div class="draw-showcase-status">
+            <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
+            <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
+            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
+          </div>
+        </div>
+      </div>
+      <div class="draw-rail" id="drawRail">
+        <div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>
+      </div>
+    </div>
 
     <div class="participants-table-wrap reveal">
       <div class="table-header">
@@ -1511,6 +1850,7 @@ let selectedPkg = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
+let drawAnimationTimeout = null;
 const fallbackProofMessages = [
   {
     name: 'Mariana',
@@ -1535,6 +1875,12 @@ const fallbackProofMessages = [
 ];
 let latestOrderStatus = null;
 const expandedParticipantRows = new Set();
+const drawShowcaseState = {
+  cycle: [],
+  cyclePosition: 0,
+  spotlightPosition: -1,
+  round: 0
+};
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
 function colorFor(i){ return COLORS[i % COLORS.length]; }
@@ -1660,6 +2006,146 @@ async function shareWhatsappLink() {
 
 function randomFrom(list) {
   return list[Math.floor(Math.random() * list.length)];
+}
+
+function shuffleList(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function getParticipantChances(participant) {
+  return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
+}
+
+function renderDrawShowcaseEmpty() {
+  const rail = document.getElementById('drawRail');
+  const card = document.getElementById('drawFeaturedCard');
+  if (card) card.classList.remove('spotlight');
+  document.getElementById('drawRoundCounter').textContent = '0';
+  document.getElementById('drawFeaturedAvatar').textContent = '--';
+  document.getElementById('drawFeaturedAvatar').style.background = 'rgba(255,255,255,0.06)';
+  document.getElementById('drawFeaturedAvatar').style.color = 'var(--text)';
+  document.getElementById('drawFeaturedName').textContent = 'La animacion se activara sola';
+  document.getElementById('drawFeaturedMeta').innerHTML = '<span class="draw-featured-pill">Sin datos todavia</span>';
+  document.getElementById('drawFeaturedScore').textContent = '0';
+  document.getElementById('drawPhaseLabel').textContent = 'Estado del sistema';
+  document.getElementById('drawPhaseName').textContent = 'Esperando el listado en vivo';
+  document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.';
+  if (rail) {
+    rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
+  }
+}
+
+function renderDrawShowcase(activeIndex, isSpotlight) {
+  if (!participants.length) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
+
+  const participant = participants[activeIndex];
+  const activeColor = colorFor(activeIndex);
+  const rail = document.getElementById('drawRail');
+  const featuredCard = document.getElementById('drawFeaturedCard');
+  const featuredAvatar = document.getElementById('drawFeaturedAvatar');
+  const featuredName = document.getElementById('drawFeaturedName');
+  const featuredMeta = document.getElementById('drawFeaturedMeta');
+  const featuredScore = document.getElementById('drawFeaturedScore');
+  const phaseLabel = document.getElementById('drawPhaseLabel');
+  const phaseName = document.getElementById('drawPhaseName');
+  const phaseHint = document.getElementById('drawPhaseHint');
+
+  featuredCard.classList.toggle('spotlight', Boolean(isSpotlight));
+  featuredAvatar.textContent = initials(participant.displayName || participant.name);
+  featuredAvatar.style.background = `${activeColor}22`;
+  featuredAvatar.style.color = activeColor;
+  featuredName.textContent = participant.displayName || participant.name;
+  featuredMeta.innerHTML = `
+    <span class="draw-featured-pill">${escapeHtml(participant.city || 'Argentina')}</span>
+    <span class="draw-featured-pill">${escapeHtml(participant.date || 'Hoy')}</span>
+    <span class="draw-featured-pill">${participant.publicCode ? escapeHtml(participant.publicCode) : 'Registro visible'}</span>
+  `;
+  featuredScore.textContent = getParticipantChances(participant).toLocaleString('es-AR');
+  document.getElementById('drawRoundCounter').textContent = String(drawShowcaseState.round);
+
+  phaseLabel.textContent = isSpotlight ? 'Pausa aleatoria' : 'Recorrido dinamico';
+  phaseName.textContent = isSpotlight
+    ? `${participant.displayName || participant.name} quedo resaltado en esta vuelta`
+    : `Recorriendo participante ${Math.min(drawShowcaseState.cyclePosition + 1, drawShowcaseState.cycle.length)} de ${drawShowcaseState.cycle.length}`;
+  phaseHint.textContent = isSpotlight
+    ? 'El sistema extiende unos segundos la pausa sobre un nombre elegido al azar y despues vuelve a mezclar.'
+    : 'Cada ronda visita a todos sin repetir y mantiene la animacion activa de forma continua.';
+
+  const visibleCards = [];
+  const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
+  for (let offset = 0; offset < cardCount; offset += 1) {
+    const cyclePosition = (drawShowcaseState.cyclePosition + offset) % drawShowcaseState.cycle.length;
+    const participantIndex = drawShowcaseState.cycle[cyclePosition];
+    const item = participants[participantIndex];
+    visibleCards.push(`
+      <div class="draw-rail-card${offset === 0 ? ' active' : ''}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
+        <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
+        <div class="draw-rail-meta">
+          <span>${escapeHtml(item.city || 'Argentina')}</span>
+          <span>x${getParticipantChances(item).toLocaleString('es-AR')}</span>
+        </div>
+      </div>
+    `);
+  }
+  rail.innerHTML = visibleCards.join('');
+}
+
+function stopDrawShowcase() {
+  if (drawAnimationTimeout) {
+    clearTimeout(drawAnimationTimeout);
+    drawAnimationTimeout = null;
+  }
+}
+
+function prepareDrawShowcaseRound() {
+  drawShowcaseState.cycle = shuffleList(participants.map((_, index) => index));
+  drawShowcaseState.cyclePosition = 0;
+  drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? Math.floor(Math.random() * drawShowcaseState.cycle.length) : -1;
+  drawShowcaseState.round += 1;
+}
+
+function tickDrawShowcase() {
+  if (!participants.length) {
+    stopDrawShowcase();
+    renderDrawShowcaseEmpty();
+    return;
+  }
+
+  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+    prepareDrawShowcaseRound();
+  }
+
+  const cyclePosition = drawShowcaseState.cyclePosition;
+  const participantIndex = drawShowcaseState.cycle[cyclePosition];
+  const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
+  renderDrawShowcase(participantIndex, isSpotlight);
+  drawShowcaseState.cyclePosition += 1;
+
+  const delay = isSpotlight ? 2600 + Math.random() * 1400 : 130 + Math.random() * 110;
+  drawAnimationTimeout = setTimeout(() => {
+    if (drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+      prepareDrawShowcaseRound();
+    }
+    tickDrawShowcase();
+  }, delay);
+}
+
+function startDrawShowcase() {
+  stopDrawShowcase();
+  if (!participants.length) {
+    renderDrawShowcaseEmpty();
+    return;
+  }
+  prepareDrawShowcaseRound();
+  tickDrawShowcase();
 }
 
 async function shareWhatsappLink() {
@@ -2112,6 +2598,7 @@ async function loadParticipants(){
     date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }));
   renderProofMessages();
+  startDrawShowcase();
 }
 
 async function loadPublicOrderStatus(orderRef) {
@@ -2165,6 +2652,7 @@ async function handleReturnedPayment() {
 
   await loadParticipants();
   renderParticipants(document.getElementById('searchInput').value);
+  startDrawShowcase();
   scheduleLiveFeed();
 
   const shareUrl = statusData.referral_link_code ? buildLandingShareUrl(statusData.referral_link_code) : '';
@@ -2226,6 +2714,7 @@ async function bootLanding(){
     await loadParticipants();
     renderPackages();
     renderParticipants();
+    startDrawShowcase();
     observeReveal();
     scheduleLiveFeed();
     await handleReturnedPayment();
