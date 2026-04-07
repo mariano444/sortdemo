@@ -779,6 +779,11 @@
     border-radius: 1.2rem;
     overflow: hidden;
   }
+  #participantsTableScroller {
+    max-height: min(62vh, 640px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
   .table-header {
     display: flex; align-items: center; justify-content: space-between;
     padding: 1rem 1.5rem;
@@ -827,7 +832,7 @@
     padding: 0.85rem 1.25rem;
     font-size: 0.9rem;
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    transition: background 0.15s;
+    transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease, border-color 0.22s ease;
   }
   tr:hover td { background: rgba(255,255,255,0.02); }
   tr:last-child td { border-bottom: none; }
@@ -848,7 +853,30 @@
     padding: 0.2rem 0.6rem; border-radius: 0.3rem;
   }
   .chances-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-  .participant-main-row { cursor: pointer; }
+  .participant-main-row {
+    cursor: pointer;
+    position: relative;
+  }
+  .participant-main-row.is-draw-active td {
+    background: rgba(59,139,255,0.12);
+    box-shadow: inset 0 0 0 1px rgba(59,139,255,0.22);
+    transform: translateX(4px);
+  }
+  .participant-main-row.is-draw-active .td-name,
+  .participant-main-row.is-draw-active .chances-badge {
+    color: #dcecff;
+  }
+  .participant-main-row.is-draw-spotlight td {
+    background: linear-gradient(90deg, rgba(245,200,66,0.16), rgba(245,200,66,0.06));
+    box-shadow: inset 3px 0 0 rgba(245,200,66,0.92), inset 0 0 0 1px rgba(245,200,66,0.22);
+    transform: translateX(8px) scale(1.005);
+  }
+  .participant-main-row.is-draw-spotlight .td-name {
+    color: var(--gold);
+  }
+  .participant-main-row.is-draw-spotlight .td-avatar {
+    box-shadow: 0 0 0 6px rgba(245,200,66,0.08), 0 0 22px rgba(245,200,66,0.12);
+  }
   .message-cell {
     text-align: right;
   }
@@ -878,6 +906,10 @@
     background: rgba(255,255,255,0.02);
     padding-top: 0.5rem;
     padding-bottom: 1rem;
+  }
+  .participant-main-row.is-draw-active + .participant-detail-row td,
+  .participant-main-row.is-draw-spotlight + .participant-detail-row td {
+    background: rgba(255,255,255,0.045);
   }
   .participant-detail-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
   .participant-detail-title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
@@ -1573,7 +1605,7 @@
         <span class="live-badge"><span class="live-dot"></span> EN VIVO</span>
         <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o código...">
       </div>
-      <div style="overflow-x:auto">
+      <div style="overflow-x:auto" id="participantsTableScroller">
         <table>
           <thead>
             <tr>
@@ -1879,7 +1911,9 @@ const drawShowcaseState = {
   cycle: [],
   cyclePosition: 0,
   spotlightPosition: -1,
-  round: 0
+  round: 0,
+  activeParticipantIndex: -1,
+  activeSpotlight: false
 };
 
 const COLORS = ['#F5C842','#3B8BFF','#00D46A','#FF6B3B','#BF5FFF','#FF3B7A'];
@@ -2021,10 +2055,51 @@ function getParticipantChances(participant) {
   return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
 }
 
+function syncParticipantTableFocus(activeIndex, isSpotlight) {
+  const rows = document.querySelectorAll('.participant-main-row');
+  rows.forEach((row) => {
+    const rowIndex = Number(row.dataset.participantIndex);
+    const isActive = rowIndex === activeIndex;
+    row.classList.toggle('is-draw-active', isActive && !isSpotlight);
+    row.classList.toggle('is-draw-spotlight', isActive && isSpotlight);
+  });
+
+  const activeRow = document.querySelector(`.participant-main-row[data-participant-index="${activeIndex}"]`);
+  if (!activeRow) return;
+
+  const scroller = document.getElementById('participantsTableScroller');
+  if (!scroller) return;
+
+  const rowTop = activeRow.offsetTop;
+  const rowBottom = rowTop + activeRow.offsetHeight;
+  const currentTop = scroller.scrollTop;
+  const visibleTop = currentTop + 54;
+  const visibleBottom = currentTop + scroller.clientHeight - 54;
+  if (rowTop < visibleTop || rowBottom > visibleBottom) {
+    const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.35));
+    scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
+  }
+}
+
+function getDrawDelay(participant, isSpotlight) {
+  const chanceWeight = Math.min(getParticipantChances(participant), 12);
+  const cycleProgress = drawShowcaseState.cycle.length
+    ? drawShowcaseState.cyclePosition / drawShowcaseState.cycle.length
+    : 0;
+  const introBoost = cycleProgress < 0.18 ? -32 : cycleProgress > 0.72 ? 42 : 0;
+  if (isSpotlight) {
+    return 2400 + (chanceWeight * 45) + Math.random() * 1200;
+  }
+  return Math.max(95, 150 + introBoost + (chanceWeight * 4) + (Math.random() * 90));
+}
+
 function renderDrawShowcaseEmpty() {
   const rail = document.getElementById('drawRail');
   const card = document.getElementById('drawFeaturedCard');
+  drawShowcaseState.activeParticipantIndex = -1;
+  drawShowcaseState.activeSpotlight = false;
   if (card) card.classList.remove('spotlight');
+  syncParticipantTableFocus(-1, false);
   document.getElementById('drawRoundCounter').textContent = '0';
   document.getElementById('drawFeaturedAvatar').textContent = '--';
   document.getElementById('drawFeaturedAvatar').style.background = 'rgba(255,255,255,0.06)';
@@ -2048,6 +2123,9 @@ function renderDrawShowcase(activeIndex, isSpotlight) {
 
   const participant = participants[activeIndex];
   const activeColor = colorFor(activeIndex);
+  drawShowcaseState.activeParticipantIndex = activeIndex;
+  drawShowcaseState.activeSpotlight = Boolean(isSpotlight);
+  syncParticipantTableFocus(activeIndex, isSpotlight);
   const rail = document.getElementById('drawRail');
   const featuredCard = document.getElementById('drawFeaturedCard');
   const featuredAvatar = document.getElementById('drawFeaturedAvatar');
@@ -2126,10 +2204,11 @@ function tickDrawShowcase() {
   const cyclePosition = drawShowcaseState.cyclePosition;
   const participantIndex = drawShowcaseState.cycle[cyclePosition];
   const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
+  const participant = participants[participantIndex];
   renderDrawShowcase(participantIndex, isSpotlight);
   drawShowcaseState.cyclePosition += 1;
 
-  const delay = isSpotlight ? 2600 + Math.random() * 1400 : 130 + Math.random() * 110;
+  const delay = getDrawDelay(participant, isSpotlight);
   drawAnimationTimeout = setTimeout(() => {
     if (drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
       prepareDrawShowcaseRound();
@@ -2258,6 +2337,7 @@ function renderParticipants(filter=''){
     const row = document.createElement('tr');
     row.className = 'participant-main-row';
     row.dataset.detailId = detailId;
+    row.dataset.participantIndex = String(sourceIndex);
     row.innerHTML = `
       <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(sourceIndex)}22;color:${colorFor(sourceIndex)}">${initials(p.displayName || p.name)}</div><div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
       <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
@@ -2282,6 +2362,8 @@ function renderParticipants(filter=''){
       });
     }
   });
+
+  syncParticipantTableFocus(drawShowcaseState.activeParticipantIndex, drawShowcaseState.activeSpotlight);
 
   body.querySelectorAll('.message-trigger:not(.empty)').forEach((button) => {
     button.addEventListener('click', (event) => {
