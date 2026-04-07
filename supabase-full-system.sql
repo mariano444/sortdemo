@@ -127,6 +127,41 @@ create table if not exists public.participants (
   updated_at timestamptz not null default now()
 );
 
+alter table public.participants
+add column if not exists is_public_name boolean not null default true;
+
+alter table public.participants
+add column if not exists public_display_code text;
+
+create unique index if not exists participants_public_display_code_uidx
+on public.participants (public_display_code)
+where public_display_code is not null;
+
+create or replace function public.generate_public_participant_code()
+returns text
+language plpgsql
+as $$
+declare
+  v_code text;
+begin
+  loop
+    v_code := 'USR-' || upper(substr(encode(gen_random_bytes(5), 'hex'), 1, 8));
+    exit when not exists (
+      select 1
+      from public.participants
+      where public_display_code = v_code
+    );
+  end loop;
+
+  return v_code;
+end;
+$$;
+
+update public.participants
+set public_display_code = public.generate_public_participant_code()
+where coalesce(is_public_name, true) = false
+  and public_display_code is null;
+
 create unique index if not exists participants_campaign_phone_uidx
 on public.participants (campaign_id, phone)
 where phone is not null;
@@ -513,7 +548,10 @@ $$;
 
 create or replace function public.list_public_participants(p_campaign_slug text)
 returns table (
+  display_name text,
   full_name text,
+  is_anonymous boolean,
+  public_code text,
   city text,
   purchased_entries integer,
   total_entries integer,
@@ -524,7 +562,13 @@ security definer
 set search_path = public
 as $$
   select
+    case
+      when coalesce(p.is_public_name, true) then p.full_name
+      else 'Anonimo ' || coalesce(p.public_display_code, public.generate_public_participant_code())
+    end as display_name,
     p.full_name,
+    not coalesce(p.is_public_name, true) as is_anonymous,
+    p.public_display_code as public_code,
     coalesce(p.city, 'Argentina') as city,
     coalesce((
       select sum(o.total_entries)::int
@@ -544,12 +588,15 @@ as $$
   limit 200;
 $$;
 
+drop function if exists public.create_order_from_landing(text, uuid, text, text, text, payment_provider, text);
+
 create or replace function public.create_order_from_landing(
   p_campaign_slug text,
   p_package_id uuid,
   p_full_name text,
   p_phone text,
   p_city text default null,
+  p_show_public_name boolean default true,
   p_payment_provider payment_provider default 'manual',
   p_referral_code text default null
 )
@@ -605,6 +652,8 @@ begin
       full_name,
       phone,
       city,
+      is_public_name,
+      public_display_code,
       source,
       status
     )
@@ -613,6 +662,11 @@ begin
       trim(p_full_name),
       trim(p_phone),
       nullif(trim(coalesce(p_city, '')), ''),
+      coalesce(p_show_public_name, true),
+      case
+        when coalesce(p_show_public_name, true) then null
+        else public.generate_public_participant_code()
+      end,
       case when p_referral_code is not null then 'referral_link' else 'landing' end,
       'active'
     )
@@ -621,6 +675,11 @@ begin
     update public.participants
     set full_name = trim(p_full_name),
         city = coalesce(nullif(trim(coalesce(p_city, '')), ''), city),
+        is_public_name = coalesce(p_show_public_name, true),
+        public_display_code = case
+          when coalesce(p_show_public_name, true) then public_display_code
+          else coalesce(public_display_code, public.generate_public_participant_code())
+        end,
         updated_at = now()
     where id = v_participant.id
     returning * into v_participant;
@@ -852,7 +911,7 @@ grant usage on schema app_private to anon, authenticated;
 grant execute on function app_private.is_admin(uuid) to anon, authenticated;
 grant execute on function public.current_user_is_admin() to anon, authenticated;
 grant execute on function public.list_public_participants(text) to anon, authenticated;
-grant execute on function public.create_order_from_landing(text, uuid, text, text, text, payment_provider, text) to anon, authenticated;
+grant execute on function public.create_order_from_landing(text, uuid, text, text, text, boolean, payment_provider, text) to anon, authenticated;
 grant execute on function public.get_public_order_status(text) to anon, authenticated;
 grant execute on function public.admin_mark_order_paid(uuid) to authenticated;
 grant execute on function public.admin_get_provider_config(payment_provider, payment_environment) to authenticated;
@@ -1210,3 +1269,131 @@ comment on function public.apply_paid_order_effects() is
 -- on conflict (user_id) do update
 -- set role = excluded.role,
 --     is_active = true;
+
+create table if not exists public.demo_draw_results (
+  id uuid primary key default gen_random_uuid(),
+  campaign_id uuid not null references public.campaigns(id) on delete cascade,
+  participant_id uuid not null references public.participants(id) on delete cascade,
+  snapshot_display_name text not null,
+  snapshot_full_name text not null,
+  snapshot_public_code text,
+  snapshot_city text,
+  snapshot_total_entries integer not null default 0,
+  source text not null default 'landing_demo',
+  recorded_at timestamptz not null default now()
+);
+
+create index if not exists demo_draw_results_campaign_recorded_idx
+on public.demo_draw_results (campaign_id, recorded_at desc);
+
+create or replace function public.record_demo_draw_result(
+  p_campaign_slug text,
+  p_participant_public_code text default null,
+  p_display_name text default null,
+  p_full_name text default null
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_campaign public.campaigns%rowtype;
+  v_participant public.participants%rowtype;
+  v_display_name text;
+begin
+  select *
+  into v_campaign
+  from public.campaigns
+  where slug = p_campaign_slug
+  limit 1;
+
+  if v_campaign.id is null then
+    raise exception 'Campana no encontrada.';
+  end if;
+
+  select p.*
+  into v_participant
+  from public.participants p
+  where p.campaign_id = v_campaign.id
+    and p.status = 'active'
+    and p.total_entries > 0
+    and (
+      (coalesce(p_participant_public_code, '') <> '' and p.public_display_code = p_participant_public_code)
+      or (coalesce(p_full_name, '') <> '' and p.full_name = p_full_name)
+    )
+  order by p.created_at desc
+  limit 1;
+
+  if v_participant.id is null then
+    raise exception 'Participante no encontrado para guardar la demostracion.';
+  end if;
+
+  v_display_name := coalesce(
+    nullif(p_display_name, ''),
+    case
+      when coalesce(v_participant.is_public_name, true) then v_participant.full_name
+      else 'Anonimo ' || coalesce(v_participant.public_display_code, public.generate_public_participant_code())
+    end
+  );
+
+  insert into public.demo_draw_results (
+    campaign_id,
+    participant_id,
+    snapshot_display_name,
+    snapshot_full_name,
+    snapshot_public_code,
+    snapshot_city,
+    snapshot_total_entries,
+    source
+  )
+  values (
+    v_campaign.id,
+    v_participant.id,
+    v_display_name,
+    v_participant.full_name,
+    v_participant.public_display_code,
+    coalesce(v_participant.city, 'Argentina'),
+    coalesce(v_participant.total_entries, 0),
+    'landing_demo'
+  );
+
+  return jsonb_build_object(
+    'ok', true,
+    'participant_id', v_participant.id,
+    'display_name', v_display_name
+  );
+end;
+$$;
+
+create or replace function public.list_demo_draw_results(p_campaign_slug text)
+returns table (
+  id uuid,
+  display_name text,
+  full_name text,
+  public_code text,
+  city text,
+  chances integer,
+  recorded_at timestamptz
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select
+    d.id,
+    d.snapshot_display_name as display_name,
+    d.snapshot_full_name as full_name,
+    d.snapshot_public_code as public_code,
+    d.snapshot_city as city,
+    d.snapshot_total_entries as chances,
+    d.recorded_at
+  from public.demo_draw_results d
+  join public.campaigns c on c.id = d.campaign_id
+  where c.slug = p_campaign_slug
+  order by d.recorded_at desc
+  limit 60;
+$$;
+
+grant execute on function public.record_demo_draw_result(text, text, text, text) to anon, authenticated;
+grant execute on function public.list_demo_draw_results(text) to anon, authenticated;
