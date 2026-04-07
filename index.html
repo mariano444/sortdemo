@@ -975,6 +975,9 @@
     text-align: left;
     border-bottom: 1px solid rgba(255,255,255,0.07);
   }
+  th[data-col="participant-head"] {
+    padding-left: 1rem;
+  }
   td {
     padding: 0.85rem 1.25rem;
     font-size: 0.9rem;
@@ -999,11 +1002,12 @@
   .participant-cell {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.55rem;
     min-width: 0;
   }
   td[data-col="participant"] {
-    min-width: 280px;
+    min-width: 220px;
+    padding-left: 1rem;
   }
   .participant-label {
     display: block;
@@ -1011,6 +1015,10 @@
     font-weight: 600;
     line-height: 1.2;
     color: var(--text);
+  }
+  .participant-main-row td[data-col="participant"],
+  .participant-detail-row td[data-col="participant"] {
+    padding-right: 0.9rem;
   }
   .td-city { font-size: 0.75rem; color: var(--text2); }
   .chances-badge {
@@ -1963,7 +1971,7 @@
           </colgroup>
           <thead>
             <tr>
-              <th>Participante</th>
+              <th data-col="participant-head">Participante</th>
               <th>Provincia</th>
               <th>Ciudad</th>
               <th>Compradas</th>
