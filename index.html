@@ -2244,6 +2244,8 @@ const drawShowcaseState = {
   spotlightPosition: -1,
   round: 0,
   activeParticipantIndex: -1,
+  activeEntryNumber: 0,
+  activeEntryPosition: 0,
   activeSpotlight: false,
   paused: false,
   historyOpen: false,
@@ -2419,13 +2421,28 @@ function getParticipantChances(participant) {
   return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
 }
 
+function buildDrawEntryPool() {
+  const pool = [];
+  participants.forEach((participant, participantIndex) => {
+    const chances = getParticipantChances(participant);
+    for (let chanceNumber = 1; chanceNumber <= chances; chanceNumber += 1) {
+      pool.push({
+        participantIndex,
+        chanceNumber,
+        chanceLabel: `${participant.displayName || participant.name} · chance ${chanceNumber}`
+      });
+    }
+  });
+  return shuffleList(pool);
+}
+
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   if (isSpotlight) {
-    return 'La demostracion alcanzo el punto final de la prueba y deja visible al participante seleccionado.';
+    return 'La demostracion alcanzo el punto final de la prueba y deja visible la chance exacta seleccionada dentro de la urna.';
   }
-  if (cycleProgress < 0.2) return 'La demostracion inicio el recorrido visible sobre la lista para mostrar el comportamiento del software.';
-  if (cycleProgress > 0.72) return 'La prueba esta entrando en su tramo final para detenerse automaticamente de forma visible.';
-  return 'El sistema sigue recorriendo participantes en tiempo real para mostrar transparencia operativa.';
+  if (cycleProgress < 0.2) return 'La demostracion comenzo a recorrer la urna completa, incluyendo cada chance activa de cada participante.';
+  if (cycleProgress > 0.72) return 'La prueba entra en su tramo final y empieza a acercarse a la chance donde se detendra automaticamente.';
+  return 'El sistema sigue recorriendo chances individuales en tiempo real para mostrar una simulacion mas fiel del mecanismo de seleccion.';
 }
 
 function getActiveDemoParticipant() {
@@ -2574,6 +2591,8 @@ function renderDrawShowcaseEmpty() {
   const card = document.getElementById('drawFeaturedCard');
   document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
   drawShowcaseState.activeParticipantIndex = -1;
+  drawShowcaseState.activeEntryNumber = 0;
+  drawShowcaseState.activeEntryPosition = 0;
   drawShowcaseState.activeSpotlight = false;
   drawShowcaseState.hasStarted = false;
   if (card) card.classList.remove('spotlight');
@@ -2639,15 +2658,18 @@ async function saveCurrentDemoResult() {
   }
 }
 
-function renderDrawShowcase(activeIndex, isSpotlight, delay) {
+function renderDrawShowcase(entry, isSpotlight, delay) {
   if (!participants.length) {
     renderDrawShowcaseEmpty();
     return;
   }
 
+  const activeIndex = entry.participantIndex;
   const participant = participants[activeIndex];
   const activeColor = colorFor(activeIndex);
   drawShowcaseState.activeParticipantIndex = activeIndex;
+  drawShowcaseState.activeEntryNumber = entry.chanceNumber;
+  drawShowcaseState.activeEntryPosition = drawShowcaseState.cyclePosition + 1;
   drawShowcaseState.activeSpotlight = Boolean(isSpotlight);
   syncParticipantTableFocus(activeIndex, isSpotlight);
   const rail = document.getElementById('drawRail');
@@ -2673,6 +2695,7 @@ function renderDrawShowcase(activeIndex, isSpotlight, delay) {
   featuredMeta.innerHTML = `
     <span class="draw-featured-pill">${escapeHtml(participantLocation(participant))}</span>
     <span class="draw-featured-pill">${escapeHtml(participant.date || 'Hoy')}</span>
+    <span class="draw-featured-pill">Chance ${entry.chanceNumber} de ${getParticipantChances(participant)}</span>
     <span class="draw-featured-pill">${participant.publicCode ? escapeHtml(participant.publicCode) : 'Registro visible'}</span>
   `;
   featuredScore.textContent = getParticipantChances(participant).toLocaleString('es-AR');
@@ -2680,8 +2703,8 @@ function renderDrawShowcase(activeIndex, isSpotlight, delay) {
 
   phaseLabel.textContent = isSpotlight ? 'Pausa aleatoria' : 'Recorrido dinamico';
   phaseName.textContent = isSpotlight
-    ? `${participant.displayName || participant.name} quedo resaltado en esta vuelta`
-    : `Recorriendo participante ${Math.min(drawShowcaseState.cyclePosition + 1, drawShowcaseState.cycle.length)} de ${drawShowcaseState.cycle.length}`;
+    ? `${participant.displayName || participant.name} quedo seleccionado por la chance ${entry.chanceNumber}`
+    : `Recorriendo chance ${Math.min(drawShowcaseState.cyclePosition + 1, drawShowcaseState.cycle.length)} de ${drawShowcaseState.cycle.length}`;
   phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
   intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
 
@@ -2712,7 +2735,7 @@ function stopDrawShowcase() {
 }
 
 function prepareDrawShowcaseRound() {
-  drawShowcaseState.cycle = shuffleList(participants.map((_, index) => index));
+  drawShowcaseState.cycle = buildDrawEntryPool();
   drawShowcaseState.cyclePosition = 0;
   drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? Math.floor(Math.random() * drawShowcaseState.cycle.length) : -1;
   drawShowcaseState.round += 1;
@@ -2734,11 +2757,11 @@ function tickDrawShowcase() {
   }
 
   const cyclePosition = drawShowcaseState.cyclePosition;
-  const participantIndex = drawShowcaseState.cycle[cyclePosition];
+  const entry = drawShowcaseState.cycle[cyclePosition];
   const isSpotlight = cyclePosition === drawShowcaseState.spotlightPosition;
-  const participant = participants[participantIndex];
+  const participant = participants[entry.participantIndex];
   const delay = getDrawDelay(participant, isSpotlight);
-  renderDrawShowcase(participantIndex, isSpotlight, delay);
+  renderDrawShowcase(entry, isSpotlight, delay);
   drawShowcaseState.cyclePosition += 1;
   if (isSpotlight) {
     drawAnimationTimeout = setTimeout(() => {
@@ -2764,10 +2787,10 @@ function startDrawShowcase() {
   drawShowcaseState.hasStarted = false;
   updateDrawControls();
   prepareDrawShowcaseRound();
-  const participantIndex = drawShowcaseState.cycle[drawShowcaseState.cyclePosition];
-  const participant = participants[participantIndex];
+  const entry = drawShowcaseState.cycle[drawShowcaseState.cyclePosition];
+  const participant = participants[entry.participantIndex];
   const delay = getDrawDelay(participant, false);
-  renderDrawShowcase(participantIndex, false, delay);
+  renderDrawShowcase(entry, false, delay);
 }
 
 async function shareWhatsappLink() {
