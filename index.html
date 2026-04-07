@@ -1031,25 +1031,27 @@
   .chances-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
   .participant-main-row {
     cursor: pointer;
+  }
+  .participant-main-row.is-draw-active td {
+    background: rgba(59,139,255,0.12);
+    box-shadow: inset 0 0 0 1px rgba(59,139,255,0.22);
+  }
+  .participant-main-row.is-draw-active,
+  .participant-main-row.is-draw-spotlight {
     position: relative;
   }
-  .participant-main-row::before {
+  .participant-main-row.is-draw-active::before,
+  .participant-main-row.is-draw-spotlight::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 0;
-    background: linear-gradient(180deg, rgba(59,139,255,0.9), rgba(59,139,255,0.35));
     transition: width 0.22s ease, background 0.22s ease;
-  }
-  .participant-main-row.is-draw-active td {
-    background: rgba(59,139,255,0.12);
-    box-shadow: inset 0 0 0 1px rgba(59,139,255,0.22);
-    transform: translateX(4px);
   }
   .participant-main-row.is-draw-active::before {
     width: 4px;
+    background: linear-gradient(180deg, rgba(59,139,255,0.9), rgba(59,139,255,0.35));
   }
   .participant-main-row.is-draw-active .participant-label,
   .participant-main-row.is-draw-active .chances-badge {
@@ -1058,7 +1060,6 @@
   .participant-main-row.is-draw-spotlight td {
     background: linear-gradient(90deg, rgba(245,200,66,0.16), rgba(245,200,66,0.06));
     box-shadow: inset 3px 0 0 rgba(245,200,66,0.92), inset 0 0 0 1px rgba(245,200,66,0.22);
-    transform: translateX(8px) scale(1.005);
     animation: drawRowPulse 1.15s ease-in-out infinite;
   }
   .participant-main-row.is-draw-spotlight::before {
