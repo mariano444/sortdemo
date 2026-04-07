@@ -2717,14 +2717,20 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
   const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
   for (let offset = 0; offset < cardCount; offset += 1) {
     const cyclePosition = (drawShowcaseState.cyclePosition + offset) % drawShowcaseState.cycle.length;
-    const participantIndex = drawShowcaseState.cycle[cyclePosition];
-    const item = participants[participantIndex];
+    const cycleEntry = drawShowcaseState.cycle[cyclePosition];
+    if (!cycleEntry || typeof cycleEntry.participantIndex !== 'number') {
+      continue;
+    }
+    const item = participants[cycleEntry.participantIndex];
+    if (!item) {
+      continue;
+    }
     visibleCards.push(`
       <div class="draw-rail-card${offset === 0 ? ' active' : ''}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
         <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
         <div class="draw-rail-meta">
-          <span>${escapeHtml(item.city || 'Argentina')}</span>
-          <span>x${getParticipantChances(item).toLocaleString('es-AR')}</span>
+          <span>${escapeHtml(participantLocation(item))}</span>
+          <span>Chance ${cycleEntry.chanceNumber}</span>
         </div>
       </div>
     `);
