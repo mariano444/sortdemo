@@ -978,6 +978,7 @@
   td {
     padding: 0.85rem 1.25rem;
     font-size: 0.9rem;
+    vertical-align: middle;
     border-bottom: 1px solid rgba(255,255,255,0.04);
     transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease, border-color 0.22s ease;
   }
@@ -995,18 +996,22 @@
     height: 100%;
     object-fit: cover;
   }
-  .td-name-cell { display: flex; align-items: center; gap: 0.75rem; }
-  .td-name-copy {
+  .participant-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     min-width: 0;
-    flex: 1 1 auto;
   }
   td[data-col="participant"] {
     min-width: 280px;
   }
-  td[data-col="participant"] .td-name-cell {
-    min-width: 240px;
+  .participant-label {
+    display: block;
+    min-width: 0;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text);
   }
-  .td-name { font-weight: 600; }
   .td-city { font-size: 0.75rem; color: var(--text2); }
   .chances-badge {
     display: inline-flex; align-items: center;
@@ -1038,7 +1043,7 @@
   .participant-main-row.is-draw-active::before {
     width: 4px;
   }
-  .participant-main-row.is-draw-active .td-name,
+  .participant-main-row.is-draw-active .participant-label,
   .participant-main-row.is-draw-active .chances-badge {
     color: #dcecff;
   }
@@ -1052,7 +1057,7 @@
     width: 6px;
     background: linear-gradient(180deg, rgba(245,200,66,1), rgba(230,168,0,0.52));
   }
-  .participant-main-row.is-draw-spotlight .td-name {
+  .participant-main-row.is-draw-spotlight .participant-label {
     color: var(--gold);
   }
   .participant-main-row.is-draw-spotlight .td-avatar {
@@ -2275,6 +2280,7 @@ const fallbackProofMessages = [
 let latestOrderStatus = null;
 const expandedParticipantRows = new Set();
 const drawShowcaseState = {
+  basePool: [],
   cycle: [],
   cyclePosition: 0,
   spotlightPosition: -1,
@@ -2457,7 +2463,7 @@ function getParticipantChances(participant) {
   return Math.max(1, Number(participant.currentChances || participant.purchasedChances || participant.chances || 0));
 }
 
-function buildDrawEntryPool() {
+function buildDrawEntryPoolBase() {
   const pool = [];
   participants.forEach((participant, participantIndex) => {
     if (!participant) return;
@@ -2470,7 +2476,11 @@ function buildDrawEntryPool() {
       });
     }
   });
-  return shuffleList(pool);
+  return pool;
+}
+
+function refreshDrawEntryPool() {
+  drawShowcaseState.basePool = buildDrawEntryPoolBase();
 }
 
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
@@ -2779,7 +2789,7 @@ function stopDrawShowcase() {
 }
 
 function prepareDrawShowcaseRound() {
-  drawShowcaseState.cycle = buildDrawEntryPool();
+  drawShowcaseState.cycle = shuffleList(drawShowcaseState.basePool);
   drawShowcaseState.cyclePosition = 0;
   drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? Math.floor(Math.random() * drawShowcaseState.cycle.length) : -1;
   drawShowcaseState.round += 1;
@@ -3342,11 +3352,16 @@ async function loadParticipants(){
   });
 
   if (error) throw error;
-  participants = (data || []).map(row => {
+  participants = (data || []).map((row, index) => {
     const location = normalizeParticipantLocation(row);
+    const displayName = row.display_name || row.full_name;
+    const fullName = row.full_name || displayName;
+    const province = location.province;
+    const city = location.city;
     return {
-      name: row.full_name,
-      displayName: row.display_name || row.full_name,
+      sourceIndex: index,
+      name: fullName,
+      displayName,
     detailLabel: row.is_anonymous ? (row.display_name || 'Anónimo') : row.full_name,
       isAnonymous: Boolean(row.is_anonymous),
       publicCode: row.public_code || '',
@@ -3371,6 +3386,125 @@ async function loadPublicOrderStatus(orderRef) {
   if (error) throw error;
   latestOrderStatus = data || null;
   return latestOrderStatus;
+}
+
+function renderParticipants(filter=''){
+  const body = document.getElementById('participantsBody');
+  if (!body) return;
+  body.innerHTML = '';
+
+  const normalizedFilter = (filter || '').trim().toLowerCase();
+  const filtered = normalizedFilter
+    ? participants.filter((participant) => (participant.searchIndex || '').includes(normalizedFilter))
+    : participants;
+
+  if (!filtered.length) {
+    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    updateStats();
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  filtered.forEach((participant) => {
+    const sourceIndex = Number.isInteger(participant.sourceIndex) ? participant.sourceIndex : participants.indexOf(participant);
+    const purchasedChances = getParticipantChances(participant);
+    const detailId = `${participant.publicCode || participant.name}-${sourceIndex}-${participant.date}`;
+    const avatarHtml = renderParticipantAvatar(participant, participant.displayName || participant.name, colorFor(sourceIndex));
+
+    const row = document.createElement('tr');
+    row.className = 'participant-main-row';
+    row.dataset.detailId = detailId;
+    row.dataset.participantIndex = String(sourceIndex);
+    row.innerHTML = `
+      <td data-col="participant"><div class="participant-cell">${avatarHtml}<span class="participant-label">${escapeHtml(participant.displayName || participant.name)}</span></div></td>
+      <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.province || '-')}</span></td>
+      <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
+      <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
+      <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
+      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">💬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+    `;
+    fragment.appendChild(row);
+
+    if (expandedParticipantRows.has(detailId)) {
+      Array.from({ length: purchasedChances }, (_, idx) => idx + 1).forEach((chanceNumber) => {
+        const detailRow = document.createElement('tr');
+        detailRow.className = 'participant-detail-row';
+        detailRow.innerHTML = `
+          <td data-col="participant"><div class="participant-cell">${avatarHtml}<span class="participant-label">${escapeHtml(participant.detailLabel || participant.displayName || participant.name)}</span></div></td>
+          <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.province || '-')}</span></td>
+          <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
+          <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
+          <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
+          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">💬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+        `;
+        fragment.appendChild(detailRow);
+      });
+    }
+  });
+
+  body.appendChild(fragment);
+  syncParticipantTableFocus(drawShowcaseState.activeParticipantIndex, drawShowcaseState.activeSpotlight);
+
+  body.querySelectorAll('.message-trigger:not(.empty)').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      openOpinionModal({
+        message: decodeURIComponent(button.dataset.opinion || ''),
+        author: decodeURIComponent(button.dataset.author || 'Participante'),
+        city: decodeURIComponent(button.dataset.city || 'Argentina')
+      });
+    });
+  });
+
+  body.querySelectorAll('.participant-main-row').forEach((row) => {
+    row.addEventListener('click', () => {
+      const { detailId } = row.dataset;
+      if (!detailId) return;
+      if (expandedParticipantRows.has(detailId)) {
+        expandedParticipantRows.delete(detailId);
+      } else {
+        expandedParticipantRows.add(detailId);
+      }
+      renderParticipants(document.getElementById('searchInput')?.value || '');
+    });
+  });
+
+  updateStats();
+}
+
+async function loadParticipants(){
+  const { data, error } = await supabaseClient.rpc('list_public_participants', {
+    p_campaign_slug: CAMPAIGN_SLUG
+  });
+
+  if (error) throw error;
+  participants = (data || []).map((row, index) => {
+    const location = normalizeParticipantLocation(row);
+    const displayName = row.display_name || row.full_name;
+    const fullName = row.full_name || displayName;
+    const province = location.province;
+    const city = location.city;
+    return {
+      sourceIndex: index,
+      name: fullName,
+      displayName,
+      detailLabel: row.is_anonymous ? (displayName || 'AnÃ³nimo') : fullName,
+      isAnonymous: Boolean(row.is_anonymous),
+      publicCode: row.public_code || '',
+      photoUrl: row.photo_url || '',
+      province,
+      city,
+      purchasedChances: Number(row.purchased_entries || row.total_entries || 0),
+      chances: Number(row.total_entries || 0),
+      currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
+      opinionMessage: (row.opinion_message || '').trim(),
+      searchIndex: [displayName, fullName, province, city, row.public_code || ''].join(' ').toLowerCase(),
+      date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    };
+  });
+  refreshDrawEntryPool();
+  renderProofMessages();
+  startDrawShowcase();
 }
 
 async function handleReturnedPayment() {
