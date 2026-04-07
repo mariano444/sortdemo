@@ -965,7 +965,11 @@
   .search-input:focus { border-color: var(--gold); }
   .search-input::placeholder { color: var(--text2); }
 
-  table { width: 100%; border-collapse: collapse; }
+  table { width: 100%; min-width: 980px; border-collapse: collapse; table-layout: fixed; }
+  th:first-child,
+  td:first-child {
+    width: 32%;
+  }
   th {
     background: var(--dark3);
     font-size: 0.7rem; font-weight: 700;
@@ -996,6 +1000,9 @@
     object-fit: cover;
   }
   .td-name-cell { display: flex; align-items: center; gap: 0.75rem; }
+  td[data-col="participant"] {
+    min-width: 280px;
+  }
   .td-name { font-weight: 600; }
   .td-city { font-size: 0.75rem; color: var(--text2); }
   .chances-badge {
@@ -2953,12 +2960,12 @@ function renderParticipants(filter=''){
     row.dataset.participantIndex = String(sourceIndex);
     const avatarHtml = renderParticipantAvatar(p, p.displayName || p.name, colorFor(sourceIndex));
     row.innerHTML = `
-      <td><div class="td-name-cell">${avatarHtml}<div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
-      <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
-      <td><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
-      <td><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
-      <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-      <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+      <td data-col="participant"><div class="td-name-cell">${avatarHtml}<div><div class="td-name">${p.displayName || p.name}</div></div></div></td>
+      <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
+      <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
+      <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
+      <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     body.appendChild(row);
 
@@ -2968,12 +2975,12 @@ function renderParticipants(filter=''){
         const detailAvatarHtml = renderParticipantAvatar(p, p.detailLabel || p.displayName || p.name, colorFor(sourceIndex));
         detailRow.className = 'participant-detail-row';
         detailRow.innerHTML = `
-          <td><div class="td-name-cell">${detailAvatarHtml}<div><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
-          <td><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
-          <td><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
-          <td><span class="chances-badge">x${chanceNumber}</span></td>
-          <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-          <td class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+          <td data-col="participant"><div class="td-name-cell">${detailAvatarHtml}<div><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
+          <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
+          <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
+          <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
+          <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         body.appendChild(detailRow);
       });
