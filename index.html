@@ -836,6 +836,24 @@
     background: var(--blue);
     box-shadow: 0 0 16px rgba(59,139,255,0.45);
   }
+  .draw-sweep-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .draw-sweep-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.38rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
   .draw-intel-bar {
     position: relative;
     height: 9px;
@@ -862,6 +880,36 @@
   }
   @keyframes drawSweep {
     to { transform: translateX(100%); }
+  }
+  .draw-chance-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+  }
+  .draw-chance-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 0.32rem 0.52rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.72rem;
+    font-weight: 700;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+  .draw-chance-chip.active {
+    background: rgba(245,200,66,0.14);
+    border-color: rgba(245,200,66,0.42);
+    color: var(--gold);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 10px 18px rgba(245,200,66,0.1);
+  }
+  .draw-chance-chip.dimmed {
+    opacity: 0.55;
   }
   .draw-controls {
     display: flex;
@@ -2012,9 +2060,16 @@
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
             <div class="draw-focus-line" id="drawFocusLine">La demo se prepara con todas las chances visibles para construir un recorrido ponderado.</div>
+            <div class="draw-sweep-status">
+              <span class="draw-sweep-pill" id="drawSweepDirection">Barrido descendente</span>
+              <span class="draw-sweep-pill" id="drawSweepSpan">Recorriendo toda la lista</span>
+            </div>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
+            </div>
+            <div class="draw-chance-cloud" id="drawChanceCloud">
+              <span class="draw-chance-chip">La urna mostrara aqui las chances del participante activo.</span>
             </div>
           </div>
         </div>
@@ -2375,6 +2430,8 @@ const drawShowcaseState = {
   cyclePosition: 0,
   spotlightPosition: -1,
   round: 0,
+  direction: 1,
+  sweepOffset: 0,
   activeParticipantIndex: -1,
   activeEntryNumber: 0,
   activeEntryPosition: 0,
@@ -2590,21 +2647,26 @@ function buildIntelligentDrawCycle() {
     }))
     .filter((bucket) => bucket.entries.length);
 
+  const participantsOrderBase = buckets.map((bucket) => bucket.participantIndex);
   const cycle = [];
-  let lastParticipantIndex = -1;
+  let lap = 0;
 
   while (cycle.length < drawShowcaseState.basePool.length) {
     const available = buckets.filter((bucket) => bucket.entries.length);
     if (!available.length) break;
+    const direction = lap % 2 === 0 ? drawShowcaseState.direction : drawShowcaseState.direction * -1;
+    const sourceOrder = direction >= 0 ? [...participantsOrderBase] : [...participantsOrderBase].reverse();
+    const rotatedOrder = sourceOrder.length
+      ? sourceOrder.map((_, index) => sourceOrder[(index + drawShowcaseState.sweepOffset) % sourceOrder.length])
+      : [];
 
-    const preferred = available.filter((bucket) => bucket.participantIndex !== lastParticipantIndex);
-    const candidates = preferred.length ? preferred : available;
-    const maxLoad = Math.max(...candidates.map((bucket) => bucket.entries.length));
-    const balanced = candidates.filter((bucket) => bucket.entries.length >= Math.max(1, maxLoad - 1));
-    const chosen = balanced[secureRandomInt(balanced.length)];
+    rotatedOrder.forEach((participantIndex) => {
+      const bucket = available.find((item) => item.participantIndex === participantIndex && item.entries.length);
+      if (!bucket) return;
+      cycle.push(bucket.entries.shift());
+    });
 
-    cycle.push(chosen.entries.shift());
-    lastParticipantIndex = chosen.participantIndex;
+    lap += 1;
   }
 
   return cycle;
@@ -2620,6 +2682,49 @@ function chooseSpotlightPosition(length) {
 function refreshDrawEntryPool() {
   drawShowcaseState.basePool = buildDrawEntryPoolBase();
   updateDrawTelemetry();
+}
+
+function updateSweepIndicators() {
+  const directionLabel = document.getElementById('drawSweepDirection');
+  const spanLabel = document.getElementById('drawSweepSpan');
+  if (directionLabel) {
+    directionLabel.textContent = drawShowcaseState.direction >= 0 ? 'Barrido descendente' : 'Barrido ascendente';
+  }
+  if (spanLabel) {
+    spanLabel.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused
+      ? 'Recorriendo toda la lista'
+      : drawShowcaseState.activeSpotlight
+        ? 'Foco fijo en una chance'
+        : 'Listo para recorrer de punta a punta';
+  }
+}
+
+function renderChanceCloud(participant, activeChanceNumber = 0) {
+  const cloud = document.getElementById('drawChanceCloud');
+  if (!cloud) return;
+  if (!participant) {
+    cloud.innerHTML = '<span class="draw-chance-chip">La urna mostrara aqui las chances del participante activo.</span>';
+    return;
+  }
+
+  const total = getParticipantChances(participant);
+  const focusStart = Math.max(1, activeChanceNumber > 0 ? activeChanceNumber - 4 : 1);
+  const focusEnd = Math.min(total, focusStart + 8);
+  const chips = [];
+
+  if (focusStart > 1) {
+    chips.push('<span class="draw-chance-chip dimmed">...</span>');
+  }
+
+  for (let chance = focusStart; chance <= focusEnd; chance += 1) {
+    chips.push(`<span class="draw-chance-chip${chance === activeChanceNumber ? ' active' : ''}">#${chance}</span>`);
+  }
+
+  if (focusEnd < total) {
+    chips.push(`<span class="draw-chance-chip dimmed">+${(total - focusEnd).toLocaleString('es-AR')}</span>`);
+  }
+
+  cloud.innerHTML = chips.join('');
 }
 
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
@@ -2641,6 +2746,7 @@ function updateDrawTelemetry(modeOverride) {
     modeLabel.textContent = modeOverride
       || (drawShowcaseState.hasStarted && !drawShowcaseState.paused ? 'Simulando' : drawShowcaseState.paused && drawShowcaseState.activeSpotlight ? 'Pausado en foco' : 'En espera');
   }
+  updateSweepIndicators();
 }
 
 function getActiveDemoParticipant() {
@@ -2766,7 +2872,15 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const visibleTop = currentTop + 54;
   const visibleBottom = currentTop + scroller.clientHeight - 54;
   const shouldLockView = isSpotlight || !drawShowcaseState.paused;
-  if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
+  const totalScrollable = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+  const cycleProgress = drawShowcaseState.cycle.length
+    ? drawShowcaseState.cyclePosition / drawShowcaseState.cycle.length
+    : 0;
+  const sweepProgress = drawShowcaseState.direction >= 0 ? cycleProgress : 1 - cycleProgress;
+  const sweepTarget = totalScrollable * sweepProgress;
+  if (!isSpotlight && !drawShowcaseState.paused) {
+    scroller.scrollTo({ top: Math.max(0, Math.min(totalScrollable, sweepTarget)), behavior: 'smooth' });
+  } else if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
     const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.45));
     scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
   }
@@ -2823,6 +2937,7 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
   document.getElementById('drawFocusLine').textContent = 'La demo se prepara con todas las chances visibles para construir un recorrido ponderado.';
   document.getElementById('drawIntelFill').style.width = '18%';
+  renderChanceCloud(null, 0);
   updateDrawTelemetry('En espera');
   updateDrawControls();
   if (rail) {
@@ -2931,6 +3046,7 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     ? `La demo se detuvo en la chance ${entry.chanceNumber} de ${participant.displayName || participant.name}.`
     : `Chance ${entry.chanceNumber} en foco. Restan ${remainingEntries.toLocaleString('es-AR')} pasos aproximados hasta el punto de detencion.`;
   intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
+  renderChanceCloud(participant, entry.chanceNumber);
   updateDrawTelemetry(isSpotlight ? 'Foco final' : 'Simulando');
 
   const visibleCards = [];
@@ -2967,6 +3083,8 @@ function stopDrawShowcase() {
 }
 
 function prepareDrawShowcaseRound() {
+  drawShowcaseState.direction = drawShowcaseState.round % 2 === 0 ? 1 : -1;
+  drawShowcaseState.sweepOffset = participants.length ? secureRandomInt(participants.length) : 0;
   drawShowcaseState.cycle = buildIntelligentDrawCycle();
   drawShowcaseState.cyclePosition = 0;
   drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? chooseSpotlightPosition(drawShowcaseState.cycle.length) : -1;
