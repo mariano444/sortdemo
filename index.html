@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gran Sorteo â€” Fiat Uno 2014 Â· TV 60" Â· $200.000</title>
-<meta name="description" content="ParticipÃ¡ desde cualquier punto de Argentina por un Fiat Uno 2014 impecable, un Smart TV o efectivo. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
+<title>Gran Sorteo - Fiat Uno 2014 Impecable</title>
+<meta name="description" content="Participa desde cualquier punto de Argentina por un Fiat Uno 2014 impecable. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Gran Sorteo - Fiat Uno 2014, TV y efectivo">
-<meta property="og:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
+<meta property="og:title" content="Gran Sorteo - Fiat Uno 2014 Impecable">
+<meta property="og:description" content="Te invito a participar de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede realizarse antes al agotar chances.">
 <meta property="og:image" content="./assets/share/share-sorteo.png">
 <meta property="og:image:alt" content="Imagen promocional del sorteo">
 <meta property="og:locale" content="es_AR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gran Sorteo - Fiat Uno 2014, TV y efectivo">
-<meta name="twitter:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
+<meta name="twitter:title" content="Gran Sorteo - Fiat Uno 2014 Impecable">
+<meta name="twitter:description" content="Te invito a participar de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede realizarse antes al agotar chances.">
 <meta name="twitter:image" content="./assets/share/share-sorteo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
 <style>
@@ -117,7 +117,8 @@
   .prizes-row {
     position: relative; z-index: 2;
     display: grid;
-    grid-template-columns: minmax(340px, 520px) repeat(2, minmax(180px, 240px));
+    grid-template-columns: minmax(320px, 1100px);
+    justify-content: center;
     gap: 1rem;
     align-items: stretch;
     margin-bottom: 3rem;
@@ -202,32 +203,73 @@
     height: 180px;
   }
   .prize-card.primary {
+    width: min(100%, 1100px);
     text-align: left;
     padding: 1.6rem 1.6rem 1.25rem;
   }
   .prize-card.primary .prize-name {
-    font-size: 2rem;
+    font-size: clamp(2.3rem, 4vw, 3.4rem);
     line-height: 0.92;
   }
   .prize-card.primary .prize-detail {
-    max-width: 24ch;
+    max-width: 34ch;
   }
   .prize-card.primary .prize-visual {
-    height: 240px;
-    margin-bottom: 0.35rem;
+    height: auto;
+    margin-bottom: 1rem;
   }
   .prize-card.primary .prize-visual::before {
-    inset: 12% 10% 2%;
+    inset: 2% 4% 0;
     background: radial-gradient(circle at center, rgba(255,232,180,0.46) 0%, rgba(255,255,255,0.12) 36%, rgba(255,255,255,0) 74%);
   }
   .prize-card.primary .prize-image {
     width: 100%;
-    max-width: 330px;
-    max-height: 220px;
+    max-width: none;
+    max-height: none;
   }
   .prize-card.tv .prize-image {
     width: 100%;
     max-width: 220px;
+  }
+  .prize-gallery {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+  .prize-shot {
+    position: relative;
+    min-height: 180px;
+    border-radius: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    padding: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .prize-shot img {
+    width: 100%;
+    height: 170px;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 24px rgba(0,0,0,0.32));
+  }
+  .prize-summary {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .prize-eyebrow {
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .prize-specs {
+    color: var(--text2);
+    font-size: 0.98rem;
+    line-height: 1.5;
   }
   .live-feed {
     position: fixed;
@@ -1741,7 +1783,10 @@
     .modal { padding: 1.5rem; }
     .hero-title { font-size: 4.5rem; }
     .prize-visual, .prize-moto-stack { height: 140px; }
-    .prize-card.primary .prize-visual { height: 190px; }
+    .prize-card.primary .prize-visual { height: auto; }
+    .prize-gallery { grid-template-columns: 1fr 1fr; }
+    .prize-shot { min-height: 150px; }
+    .prize-shot img { height: 140px; }
     .live-feed { left: 12px; right: 12px; min-width: 0; max-width: none; }
     .whatsapp-float {
       right: 12px;
@@ -1761,40 +1806,34 @@
   <div class="hero-bg"></div>
   <div class="hero-sparks" id="sparks"></div>
 
-  <div class="hero-badge">ðŸ”¥ SORTEO NACIONAL â€” QUEDAN POCOS LUGARES</div>
+  <div class="hero-badge">SORTEO NACIONAL - QUEDAN POCOS LUGARES</div>
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
-  <p class="hero-subtitle">Un sorteo claro, visible y con mÃ¡s posibilidades para quienes suman mÃ¡s chances</p>
+  <p class="hero-subtitle">Un solo premio. Un Fiat Uno 2014 impecable.</p>
 
   <div class="prizes-row">
     <div class="prize-card primary reveal">
       <div class="prize-visual">
-        <img class="prize-image" src="./assets/premios/fiat-uno-frente-angulo.png" alt="Fiat Uno 2014 impecable premio principal">
-      </div>
-      <span class="prize-name">FIAT UNO 2014</span>
-      <span class="prize-detail">Impecable Â· Entrega coordinada con el ganador.</span>
-    </div>
-    <div class="prize-card tv reveal" style="transition-delay:0.1s">
-      <div class="prize-visual">
-        <img class="prize-image" src="./assets/premios/tv-premio.png" alt="Smart TV premio">
-      </div>
-      <span class="prize-name">Smart TV</span>
-      <span class="prize-detail">LED 60" Â· 4K Ultra HD</span>
-    </div>
-    <div class="prize-card cash reveal" style="transition-delay:0.2s">
-      <div class="prize-visual">
-        <div>
-          <span class="prize-amount">$200K</span>
-          <span class="prize-icon">ðŸ’µ</span>
+        <div class="prize-gallery">
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-frente-angulo.png" alt="Fiat Uno 2014 vista frontal en angulo"></div>
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-frente.png" alt="Fiat Uno 2014 vista frontal"></div>
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-interior.png" alt="Fiat Uno 2014 interior"></div>
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-atras-angulo-1.png" alt="Fiat Uno 2014 vista trasera lateral"></div>
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-atras.png" alt="Fiat Uno 2014 vista trasera"></div>
+          <div class="prize-shot"><img class="prize-image" src="./assets/premios/fiat-uno-atras-angulo-2.png" alt="Fiat Uno 2014 vista trasera en angulo"></div>
         </div>
       </div>
-      <span class="prize-name">Efectivo</span>
-      <span class="prize-detail">Efectivo Â· Transferencia</span>
+      <div class="prize-summary">
+        <span class="prize-eyebrow">Premio unico</span>
+        <span class="prize-name">FIAT UNO 2014</span>
+        <span class="prize-detail">Impecable. Entrega coordinada con el ganador.</span>
+        <span class="prize-specs">Se participa por un solo premio: el auto publicado en esta pagina, con todas sus fotos visibles para que el premio quede claro desde el primer vistazo.</span>
+      </div>
     </div>
   </div>
 
   <div class="hero-cta reveal" style="transition-delay:0.3s">
-    <a href="#paquetes" class="btn-primary">Â¡QUIERO MIS CHANCES!</a>
+    <a href="#paquetes" class="btn-primary">QUIERO MIS CHANCES</a>
   </div>
 
   <div class="countdown-bar reveal hidden-until-thirty" id="countdownBar" style="transition-delay:0.4s">
@@ -1823,48 +1862,48 @@
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
-  <span>âš¡ SORTEO NACIONAL Â· 26 DE JULIO O ANTES AL AGOTAR CHANCES Â· QUEDAN POCOS LUGARES Â· MÃS CHANCES = MÃS POSIBILIDADES DE GANAR Â· âš¡ SORTEO NACIONAL Â· 26 DE JULIO O ANTES AL AGOTAR CHANCES Â· QUEDAN POCOS LUGARES Â· MÃS CHANCES = MÃS POSIBILIDADES DE GANAR Â· </span>
+  <span>SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · </span>
 </div>
 
 <!-- TRUST STRIP -->
 <div class="trust-strip">
   <div class="trust-item">
-    <div class="trust-icon">ðŸ”’</div>
+    <div class="trust-icon">OK</div>
     <span class="trust-label">Reserva registrada<br>y datos protegidos</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">ðŸ“‹</div>
-    <span class="trust-label">Lista pÃºblica<br>con participaciones activas</span>
+    <div class="trust-icon">VIP</div>
+    <span class="trust-label">Lista publica<br>con participaciones activas</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">ðŸŽ¥</div>
+    <div class="trust-icon">AR</div>
     <span class="trust-label">Participan personas<br>de toda Argentina</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">âœ…</div>
+    <div class="trust-icon">GO</div>
     <span class="trust-label">Entrega coordinada<br>con el ganador</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">ðŸ†</div>
-    <span class="trust-label">3 ganadores<br>seleccionados al azar</span>
+    <div class="trust-icon">1</div>
+    <span class="trust-label">1 ganador<br>seleccionado al azar</span>
   </div>
 </div>
 
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner" id="ticker">
-    <span class="ticker-item">ðŸš— Fiat Uno 2014 impecable</span>
-    <span class="ticker-item">ðŸ“º Smart TV LED 60" 4K</span>
-    <span class="ticker-item">ðŸ’µ $200.000 en efectivo</span>
-    <span class="ticker-item">â­ MÃ¡s chances = mÃ¡s posibilidades</span>
-    <span class="ticker-item">ðŸ”’ Sorteo 100% transparente</span>
-    <span class="ticker-item">ðŸ‡¦ðŸ‡· ParticipÃ¡s desde toda Argentina</span>
-    <span class="ticker-item">ðŸš— Fiat Uno 2014 impecable</span>
-    <span class="ticker-item">ðŸ“º Smart TV LED 60" 4K</span>
-    <span class="ticker-item">ðŸ’µ $200.000 en efectivo</span>
-    <span class="ticker-item">â­ MÃ¡s chances = mÃ¡s posibilidades</span>
-    <span class="ticker-item">ðŸ”’ Sorteo 100% transparente</span>
-    <span class="ticker-item">ðŸ‡¦ðŸ‡· ParticipÃ¡s desde toda Argentina</span>
+    <span class="ticker-item">Fiat Uno 2014 impecable</span>
+    <span class="ticker-item">Premio unico publicado con 6 fotos reales</span>
+    <span class="ticker-item">1 ganador seleccionado al azar</span>
+    <span class="ticker-item">Mas chances = mas posibilidades</span>
+    <span class="ticker-item">Sorteo 100% transparente</span>
+    <span class="ticker-item">Participas desde toda Argentina</span>
+    <span class="ticker-item">Fiat Uno 2014 impecable</span>
+    <span class="ticker-item">Premio unico publicado con 6 fotos reales</span>
+    <span class="ticker-item">1 ganador seleccionado al azar</span>
+    <span class="ticker-item">Mas chances = mas posibilidades</span>
+    <span class="ticker-item">Sorteo 100% transparente</span>
+    <span class="ticker-item">Participas desde toda Argentina</span>
   </div>
 </div>
 
@@ -1873,7 +1912,7 @@
   <div class="section-inner">
     <span class="section-tag">ðŸ’Ž Elige tu pack</span>
     <h2 class="section-title">MÃ¡s chances,<br><span style="color:var(--gold)">mÃ¡s posibilidades</span></h2>
-    <p class="section-sub">Cada chance suma una participaciÃ³n real dentro del sistema de selecciÃ³n. Mientras mÃ¡s chances tengas, mÃ¡s posibilidades tenÃ©s de quedar entre los 3 ganadores.</p>
+    <p class="section-sub">Cada chance suma una participacion real dentro del sistema de seleccion. Mientras mas chances tengas, mas posibilidades tenes de quedarte con el Fiat Uno 2014.</p>
 
     <div class="packages-grid" id="packagesGrid">
       <!-- generado por JS -->
@@ -2030,7 +2069,7 @@
         <span class="step-num">4</span>
         <span class="step-icon">ðŸŽ°</span>
         <div class="step-title">Sorteo nacional</div>
-        <p class="step-desc">El sistema realiza una selecciÃ³n aleatoria de 3 participantes entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
+        <p class="step-desc">El sistema realiza una seleccion aleatoria de 1 participante entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
       </div>
     </div>
   </div>
@@ -2039,8 +2078,8 @@
 <section class="draw-process-section">
   <div class="section-inner">
     <span class="section-tag">ðŸŽ² SelecciÃ³n transparente</span>
-    <h2 class="section-title">CÃ³mo se eligen<br><span style="color:var(--gold)">los 3 ganadores</span></h2>
-    <p class="section-sub">El proceso estÃ¡ pensado para que cada chance cuente como una participaciÃ³n dentro de una selecciÃ³n aleatoria. No importa de dÃ³nde participes: si tu chance estÃ¡ activa, entra en el sorteo.</p>
+    <h2 class="section-title">Como se elige<br><span style="color:var(--gold)">al ganador</span></h2>
+    <p class="section-sub">El proceso esta pensado para que cada chance cuente como una participacion dentro de una seleccion aleatoria. No importa de donde participes: si tu chance esta activa, entra en el sorteo.</p>
 
     <div class="draw-process-grid">
       <div class="draw-card reveal">
@@ -2049,7 +2088,7 @@
       </div>
       <div class="draw-card reveal" style="transition-delay:0.1s">
         <div class="draw-card-title">2. Un sistema avanzado selecciona al azar</div>
-        <div class="draw-card-copy">Al cierre del sorteo, un sistema de selecciÃ³n aleatoria toma todas las chances activas y elige 3 participantes ganadores de forma imparcial.</div>
+        <div class="draw-card-copy">Al cierre del sorteo, un sistema de seleccion aleatoria toma todas las chances activas y elige 1 ganador de forma imparcial.</div>
       </div>
       <div class="draw-card reveal" style="transition-delay:0.2s">
         <div class="draw-card-title">3. MÃ¡s chances, mÃ¡s posibilidades</div>
@@ -2057,12 +2096,12 @@
       </div>
       <div class="draw-card reveal" style="transition-delay:0.3s">
         <div class="draw-card-title">4. Entrega coordinada con el ganador</div>
-        <div class="draw-card-copy">Una vez confirmados los ganadores, se coordina la entrega dentro de las 48 horas siguientes. Se organiza el retiro, envÃ­o o equivalente en dinero segÃºn corresponda al premio publicado.</div>
+        <div class="draw-card-copy">Una vez confirmado el ganador, se coordina la entrega dentro de las 48 horas siguientes. Se organiza el retiro del Fiat Uno 2014 publicado.</div>
       </div>
     </div>
 
     <div class="draw-highlight reveal" style="transition-delay:0.35s">
-      El objetivo es que el proceso sea simple de entender: comprÃ¡s chances, tu pago se acredita, tus participaciones quedan activas y luego entrÃ¡s en una selecciÃ³n aleatoria de 3 ganadores. Mientras mÃ¡s chances acumulÃ¡s, mÃ¡s posibilidades tenÃ©s de ganar.
+      El objetivo es que el proceso sea simple de entender: compras chances, tu pago se acredita, tus participaciones quedan activas y luego entras en una seleccion aleatoria de 1 ganador. Mientras mas chances acumulas, mas posibilidades tenes de ganar.
     </div>
   </div>
 </section>
@@ -2089,11 +2128,11 @@
       </div>
       <div class="faq-item">
         <button class="faq-q">Â¿CÃ³mo se realizarÃ¡ el sorteo? <span class="faq-arrow">â–¼</span></button>
-        <div class="faq-a">Cada chance equivale a una participaciÃ³n dentro del sistema. Al cierre del sorteo, un sistema avanzado de selecciÃ³n aleatoria toma todas las chances activas y elige 3 participantes ganadores. Si comprÃ¡s mÃ¡s chances, participÃ¡s mÃ¡s veces y aumentÃ¡s tus posibilidades.</div>
+        <div class="faq-a">Cada chance equivale a una participacion dentro del sistema. Al cierre del sorteo, un sistema avanzado de seleccion aleatoria toma todas las chances activas y elige 1 ganador. Si compras mas chances, participas mas veces y aumentas tus posibilidades.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Â¿CuÃ¡ndo se entrega el premio? <span class="faq-arrow">â–¼</span></button>
-        <div class="faq-a">Los premios se coordinan con cada ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro, envÃ­o o equivalente en dinero segÃºn el premio publicado.</div>
+        <div class="faq-a">El premio se coordina con el ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro del Fiat Uno 2014 publicado.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Â¿Puedo comprar mÃ¡s de un pack? <span class="faq-arrow">â–¼</span></button>
@@ -2118,7 +2157,7 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
   <h2 class="bottom-cta-title reveal">Â¿Y si sos<br>el prÃ³ximo ganador?</h2>
-  <p class="bottom-cta-sub reveal">ParticipÃ¡s con un proceso claro, con registro visible y una selecciÃ³n aleatoria de 3 ganadores. Mientras mÃ¡s chances sumÃ¡s, mÃ¡s posibilidades tenÃ©s.</p>
+  <p class="bottom-cta-sub reveal">Participas con un proceso claro, con registro visible y una seleccion aleatoria de 1 ganador. Mientras mas chances sumas, mas posibilidades tenes.</p>
   <div class="reveal" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
     <a href="#paquetes" class="btn-primary">Â¡COMPRAR CHANCES AHORA!</a>
     <a href="#participantes" class="btn-secondary">Ver participantes</a>
@@ -2128,7 +2167,7 @@
 <!-- FOOTER -->
 <footer>
   <strong style="color:var(--gold)">Gran Sorteo</strong><br>
-  Lista pÃºblica de participantes Â· Nacional para toda la Argentina Â· 3 premios garantizados
+  Lista publica de participantes · Nacional para toda la Argentina · 1 premio garantizado
 </footer>
 
 <!-- MODAL -->
@@ -2250,8 +2289,8 @@ const MAX_FALLBACK_CHANCES = 5000;
 const FUNCTIONS_BASE_URL = `${SUPABASE_URL}/functions/v1`;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const DEFAULT_SHARE_IMAGE = new URL('./assets/share/share-sorteo.png', window.location.href).toString();
-const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Fiat Uno 2014, TV y efectivo';
-const DEFAULT_SHARE_DESCRIPTION = 'ParticipÃ¡ de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances.';
+const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Fiat Uno 2014 Impecable';
+const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede hacerse antes al agotar chances.';
 const DRAW_TARGET_ISO = '2026-07-26T20:00:00-03:00';
 
 let activeCampaign = null;
@@ -2278,7 +2317,7 @@ const fallbackProofMessages = [
   {
     name: 'Camila',
     city: 'Buenos Aires',
-    message: 'Saber que la entrega se coordina directamente con el ganador y que existe opciÃ³n de equivalente en dinero me transmite mucha mÃ¡s tranquilidad.'
+    message: 'Saber que la entrega se coordina directamente con el ganador del Fiat Uno 2014 me transmite mucha mas tranquilidad.'
   },
   {
     name: 'Franco',
@@ -2349,8 +2388,8 @@ function setMetaContent(selector, content) {
 }
 
 function updateShareMetadata({ title, description, image, url }) {
-  const nextTitle = title || DEFAULT_SHARE_TITLE;
-  const nextDescription = description || DEFAULT_SHARE_DESCRIPTION;
+  const nextTitle = cleanMojibakeText(title || DEFAULT_SHARE_TITLE);
+  const nextDescription = cleanMojibakeText(description || DEFAULT_SHARE_DESCRIPTION);
   const nextImage = image || DEFAULT_SHARE_IMAGE;
   const nextUrl = url || window.location.href;
 
@@ -2373,14 +2412,60 @@ function updateShareMetadata({ title, description, image, url }) {
 }
 
 function buildReferralShareCopy(label, shareUrl) {
-  return `${label} te invita a participar de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances. Sumate ahora: ${shareUrl}`;
+  return cleanMojibakeText(`${label} te invita a participar de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances. Sumate ahora: ${shareUrl}`);
 }
 
 function showToast(msg){
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.textContent = cleanMojibakeText(msg);
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+function cleanMojibakeText(value) {
+  if (value == null) return value;
+  let text = String(value);
+  const replacements = [
+    ['Ã¡', 'á'], ['Ã©', 'é'], ['Ã­', 'í'], ['Ã³', 'ó'], ['Ãº', 'ú'],
+    ['Ã', 'Á'], ['Ã‰', 'É'], ['Ã', 'Í'], ['Ã“', 'Ó'], ['Ãš', 'Ú'],
+    ['Ã±', 'ñ'], ['Ã‘', 'Ñ'], ['Ã¼', 'ü'],
+    ['Â¡', '¡'], ['Â¿', '¿'], ['Â·', '·'], ['Â', ''], ['â€”', '-'], ['â€œ', '"'], ['â€', '"'],
+    ['â€™', "'"], ['â€¢', '•'], ['âœ•', '×'], ['âœ“', '✓'], ['âœ…', '✓'],
+    ['âš¡', '⚡'], ['â­', '★'], ['â“', '?'], ['â–¼', '▼'],
+    ['ðŸ”¥', '🔥'], ['ðŸ’¬', '💬'], ['ðŸ’Ž', '💎'], ['ðŸ‘¥', '👥'], ['ðŸŽ¥', '🎥'],
+    ['ðŸŽ¯', '🎯'], ['ðŸ’³', '💳'], ['ðŸ“‹', '📋'], ['ðŸŽ°', '🎰'], ['ðŸŽ²', '🎲'],
+    ['ðŸŽ‰', '🎉'], ['ðŸ¦', '🏦'], ['ðŸš—', '🚗'], ['ðŸ‡¦ðŸ‡·', '🇦🇷'], ['ðŸ”’', '🔒'], ['ðŸ†', '🏆'], ['ðŸ’µ', '💵'],
+    ['mÃ¡s', 'más'], ['MÃ¡s', 'Más'], ['selecciÃ³n', 'selección'], ['participaciÃ³n', 'participación'],
+    ['participaciones activas', 'participaciones activas'], ['registrÃ³', 'registró'], ['publica', 'publica']
+  ];
+  replacements.forEach(([from, to]) => {
+    text = text.split(from).join(to);
+  });
+  return text;
+}
+
+function repairDocumentText(root = document) {
+  const scope = root instanceof Element ? root : document;
+  const textRoot = root.body || root;
+  if (textRoot) {
+    const walker = document.createTreeWalker(textRoot, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    textNodes.forEach((node) => {
+      node.nodeValue = cleanMojibakeText(node.nodeValue);
+    });
+  }
+  scope.querySelectorAll?.('[placeholder],[title],[aria-label]').forEach((el) => {
+    ['placeholder', 'title', 'aria-label'].forEach((attr) => {
+      if (el.hasAttribute(attr)) {
+        el.setAttribute(attr, cleanMojibakeText(el.getAttribute(attr)));
+      }
+    });
+  });
+  document.querySelectorAll('meta[content]').forEach((meta) => {
+    meta.setAttribute('content', cleanMojibakeText(meta.getAttribute('content')));
+  });
+  document.title = cleanMojibakeText(document.title);
 }
 
 function updatePhotoPreview(file) {
@@ -2957,12 +3042,13 @@ function renderPackages(){
       <span class="pkg-price">$${totalPrice.toLocaleString('es-AR')}</span>
       <span class="pkg-price-unit">$${perChance} por chance</span>
       <span class="pkg-saving">${savingsLabel}</span>
-      <span class="pkg-price-unit">${chances >= 3 ? 'Con 3 o mÃ¡s chances se habilita tu link Ãºnico y cada referido aprobado te suma 2 chances extra' : '&nbsp;'}</span>
+      <span class="pkg-price-unit">${chances >= 3 ? 'Con 3 o mas chances se habilita tu link unico y cada referido aprobado te suma 2 chances extra' : '&nbsp;'}</span>
       <button class="pkg-btn" onclick="openModal('${pkg.id}')">Quiero ${chances >= 1000 ? (chances/1000)+'K' : chances} chance${chances > 1 ? 's' : ''}</button>
     `;
     grid.appendChild(div);
   });
 
+  repairDocumentText(grid);
   observeReveal();
 }
 
@@ -3452,6 +3538,7 @@ function renderParticipants(filter=''){
   });
 
   body.appendChild(fragment);
+  repairDocumentText(body);
   syncParticipantTableFocus(drawShowcaseState.activeParticipantIndex, drawShowcaseState.activeSpotlight);
 
   body.querySelectorAll('.message-trigger:not(.empty)').forEach((button) => {
@@ -3612,6 +3699,7 @@ function observeReveal(){
 
 async function bootLanding(){
   try {
+    repairDocumentText();
     updateShareMetadata({
       title: DEFAULT_SHARE_TITLE,
       description: DEFAULT_SHARE_DESCRIPTION,
@@ -3625,6 +3713,7 @@ async function bootLanding(){
     await loadDemoResults();
     renderPackages();
     renderParticipants();
+    repairDocumentText();
     startDrawShowcase();
     observeReveal();
     scheduleLiveFeed();
