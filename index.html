@@ -510,6 +510,34 @@
     max-width: 64ch;
     line-height: 1.55;
   }
+  .draw-system-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+  .draw-system-metric {
+    padding: 0.85rem 0.95rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    display: grid;
+    gap: 0.2rem;
+  }
+  .draw-system-metric-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .draw-system-metric-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.45rem;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--text);
+  }
   .draw-showcase::before {
     content: '';
     position: absolute;
@@ -786,6 +814,28 @@
     font-size: 0.85rem;
     color: var(--text2);
   }
+  .draw-focus-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .draw-focus-line::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 16px rgba(59,139,255,0.45);
+  }
   .draw-intel-bar {
     position: relative;
     height: 9px;
@@ -857,7 +907,12 @@
     animation: none;
   }
   .draw-rail {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.2rem;
+    position: relative;
+    z-index: 1;
   }
   .draw-rail-card {
     min-width: 0;
@@ -869,15 +924,17 @@
     opacity: 0.66;
   }
   .draw-rail-card.active {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-6px) scale(1.04);
     border-color: rgba(59,139,255,0.4);
     background: rgba(59,139,255,0.1);
     opacity: 1;
+    box-shadow: 0 12px 24px rgba(59,139,255,0.14);
   }
   .draw-rail-card.spotlight {
     border-color: rgba(245,200,66,0.42);
     background: rgba(245,200,66,0.1);
     opacity: 1;
+    box-shadow: 0 14px 28px rgba(245,200,66,0.14);
   }
   .draw-rail-name {
     display: block;
@@ -895,6 +952,14 @@
     gap: 0.5rem;
     font-size: 0.74rem;
     color: var(--text2);
+  }
+  .draw-rail-card.queue-next {
+    opacity: 0.88;
+    transform: translateY(-2px);
+  }
+  .draw-rail-card.queue-far {
+    opacity: 0.52;
+    transform: scale(0.98);
   }
   .draw-rail-empty {
     padding: 1rem 1.1rem;
@@ -1727,6 +1792,7 @@
     .draw-showcase-copy { padding: 0.2rem 0 0; }
     .draw-showcase-stage { min-height: 0; }
     .demo-launcher { align-items: flex-start; }
+    .draw-system-metrics { grid-template-columns: 1fr; }
     .draw-featured-card {
       grid-template-columns: auto 1fr;
       align-items: start;
@@ -1888,15 +1954,15 @@
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
     <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances, para que puedas ver que el ingreso quedó registrado y que el proceso se mantiene visible.</p>
 
-    <div class="demo-launcher reveal hidden">
+    <div class="demo-launcher reveal">
       <div class="demo-launcher-copy">
         <div class="demo-launcher-title">Demostracion en tiempo real</div>
-        <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
+        <div class="demo-launcher-sub">Este bloque muestra en vivo como el sistema recorre chances activas, pondera segun cantidad comprada y desacelera hasta dejar visible un punto de detencion. Es una demostracion del software y no reemplaza el sorteo oficial.</div>
       </div>
-      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Iniciar demostracion</button>
+      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Ir a la demostracion</button>
     </div>
 
-    <div class="draw-showcase reveal collapsed hidden" id="drawShowcase">
+    <div class="draw-showcase reveal" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
@@ -1904,7 +1970,21 @@
             <span class="draw-demo-badge">Demostracion</span>
           </div>
           <h3 class="draw-showcase-title">Probador visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">Inicia la demostracion para observar en tiempo real como el sistema recorre participantes, se detiene automaticamente y deja asentado el punto exacto donde finaliza la prueba. Este modulo existe solo para demostrar el funcionamiento y no define resultados oficiales.</p>
+          <p class="draw-showcase-sub">La demo recorre una urna virtual con todas las chances activas, distribuye el recorrido de forma ponderada para evitar saltos repetitivos y frena con una desaceleracion final mas clara. Sirve para visualizar el mecanismo, no para definir ganadores oficiales.</p>
+          <div class="draw-system-metrics">
+            <div class="draw-system-metric">
+              <span class="draw-system-metric-label">Participantes visibles</span>
+              <strong class="draw-system-metric-value" id="drawParticipantsCount">0</strong>
+            </div>
+            <div class="draw-system-metric">
+              <span class="draw-system-metric-label">Chances activas</span>
+              <strong class="draw-system-metric-value" id="drawActiveEntriesCount">0</strong>
+            </div>
+            <div class="draw-system-metric">
+              <span class="draw-system-metric-label">Modo</span>
+              <strong class="draw-system-metric-value" id="drawModeLabel">En espera</strong>
+            </div>
+          </div>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
@@ -1931,6 +2011,7 @@
             <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
+            <div class="draw-focus-line" id="drawFocusLine">La demo se prepara con todas las chances visibles para construir un recorrido ponderado.</div>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
@@ -2308,6 +2389,15 @@ function colorFor(i){ return COLORS[i % COLORS.length]; }
 function initials(name){ return name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase(); }
 function totalChances(){ return participants.reduce((s, p) => s + (p.chances || 0), 0); }
 function currentMaxChances(){ return activeCampaign?.max_entries || MAX_FALLBACK_CHANCES; }
+function secureRandomInt(max){
+  if (!Number.isFinite(max) || max <= 0) return 0;
+  if (window.crypto?.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
 function getBaseChancePrice(){
   const singlePack = packages.find((pkg) => Number(pkg.entries_qty || 0) + Number(pkg.bonus_entries || 0) === 1);
   return Number(singlePack?.price_ars || 0);
@@ -2462,7 +2552,7 @@ function randomFrom(list) {
 function shuffleList(list) {
   const copy = [...list];
   for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = secureRandomInt(i + 1);
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
@@ -2488,17 +2578,69 @@ function buildDrawEntryPoolBase() {
   return pool;
 }
 
+function buildIntelligentDrawCycle() {
+  if (!drawShowcaseState.basePool.length) return [];
+
+  const buckets = participants
+    .map((participant, participantIndex) => ({
+      participantIndex,
+      entries: shuffleList(
+        drawShowcaseState.basePool.filter((entry) => entry.participantIndex === participantIndex)
+      )
+    }))
+    .filter((bucket) => bucket.entries.length);
+
+  const cycle = [];
+  let lastParticipantIndex = -1;
+
+  while (cycle.length < drawShowcaseState.basePool.length) {
+    const available = buckets.filter((bucket) => bucket.entries.length);
+    if (!available.length) break;
+
+    const preferred = available.filter((bucket) => bucket.participantIndex !== lastParticipantIndex);
+    const candidates = preferred.length ? preferred : available;
+    const maxLoad = Math.max(...candidates.map((bucket) => bucket.entries.length));
+    const balanced = candidates.filter((bucket) => bucket.entries.length >= Math.max(1, maxLoad - 1));
+    const chosen = balanced[secureRandomInt(balanced.length)];
+
+    cycle.push(chosen.entries.shift());
+    lastParticipantIndex = chosen.participantIndex;
+  }
+
+  return cycle;
+}
+
+function chooseSpotlightPosition(length) {
+  if (length <= 1) return 0;
+  const min = Math.max(0, Math.floor(length * 0.58));
+  const max = Math.max(min, Math.floor(length * 0.9));
+  return min + secureRandomInt((max - min) + 1);
+}
+
 function refreshDrawEntryPool() {
   drawShowcaseState.basePool = buildDrawEntryPoolBase();
+  updateDrawTelemetry();
 }
 
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   if (isSpotlight) {
-    return 'La demostracion alcanzo el punto final de la prueba y deja visible la chance exacta seleccionada dentro de la urna.';
+    return 'La demostracion alcanzo el punto final de la prueba y deja visible la chance exacta seleccionada dentro de la urna virtual.';
   }
-  if (cycleProgress < 0.2) return 'La demostracion comenzo a recorrer la urna completa, incluyendo cada chance activa de cada participante.';
-  if (cycleProgress > 0.72) return 'La prueba entra en su tramo final y empieza a acercarse a la chance donde se detendra automaticamente.';
-  return 'El sistema sigue recorriendo chances individuales en tiempo real para mostrar una simulacion mas fiel del mecanismo de seleccion.';
+  if (cycleProgress < 0.18) return 'La demostracion arranca con alta velocidad y reparte el recorrido entre participantes con distinta cantidad de chances.';
+  if (cycleProgress > 0.76) return 'La prueba entra en una fase de desaceleracion controlada y empieza a acercarse al punto de detencion.';
+  return 'El sistema sigue recorriendo chances individuales con ponderacion real, evitando repeticiones excesivas y mostrando un barrido mas legible.';
+}
+
+function updateDrawTelemetry(modeOverride) {
+  const participantsCount = document.getElementById('drawParticipantsCount');
+  const entriesCount = document.getElementById('drawActiveEntriesCount');
+  const modeLabel = document.getElementById('drawModeLabel');
+  if (participantsCount) participantsCount.textContent = participants.length.toLocaleString('es-AR');
+  if (entriesCount) entriesCount.textContent = drawShowcaseState.basePool.length.toLocaleString('es-AR');
+  if (modeLabel) {
+    modeLabel.textContent = modeOverride
+      || (drawShowcaseState.hasStarted && !drawShowcaseState.paused ? 'Simulando' : drawShowcaseState.paused && drawShowcaseState.activeSpotlight ? 'Pausado en foco' : 'En espera');
+  }
 }
 
 function getActiveDemoParticipant() {
@@ -2544,9 +2686,8 @@ function toggleDemoShowcase() {
   const showcase = document.getElementById('drawShowcase');
   const button = document.getElementById('toggleDemoBtn');
   if (!showcase || !button) return;
-  const willOpen = showcase.classList.contains('collapsed');
-  showcase.classList.toggle('collapsed', !willOpen);
-  button.textContent = willOpen ? 'Ocultar demostracion' : 'Iniciar demostracion';
+  showcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  button.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused ? 'Demostracion en curso' : 'Ir a la demostracion';
 }
 
 function updateDrawControls() {
@@ -2555,10 +2696,16 @@ function updateDrawControls() {
   const saveBtn = document.getElementById('saveDemoResultBtn');
   if (!showcase || !startBtn || !saveBtn) return;
   showcase.classList.toggle('paused', drawShowcaseState.paused);
-  startBtn.disabled = !participants.length || drawShowcaseState.hasStarted;
+  startBtn.disabled = !participants.length || (drawShowcaseState.hasStarted && !drawShowcaseState.paused);
   startBtn.style.opacity = startBtn.disabled ? '0.5' : '1';
-  saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.hasStarted;
+  startBtn.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused
+    ? 'Prueba en curso'
+    : drawShowcaseState.round > 0
+      ? 'Reiniciar prueba'
+      : 'Iniciar prueba';
+  saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.activeSpotlight;
   saveBtn.style.opacity = saveBtn.disabled ? '0.5' : '1';
+  updateDrawTelemetry();
 }
 
 function pauseDrawShowcase() {
@@ -2568,6 +2715,8 @@ function pauseDrawShowcase() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba detenida';
   document.getElementById('drawPhaseName').textContent = 'El software freno en el foco actual';
   document.getElementById('drawPhaseHint').textContent = 'Ahora puedes registrar este resultado de demostracion. Este dato sirve solo como evidencia visual del funcionamiento y no como resultado oficial.';
+  document.getElementById('drawFocusLine').textContent = 'El recorrido ya desacelero y dejo fijada la chance exacta donde la demo se detuvo.';
+  updateDrawTelemetry('Pausado en foco');
 }
 
 function startDemoTrial() {
@@ -2575,17 +2724,18 @@ function startDemoTrial() {
     renderDrawShowcaseEmpty();
     return;
   }
+  stopDrawShowcase();
   drawShowcaseState.hasStarted = true;
   drawShowcaseState.paused = false;
+  prepareDrawShowcaseRound();
   updateDrawControls();
-  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
-    prepareDrawShowcaseRound();
-  }
   document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   tickDrawShowcase();
   document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
   document.getElementById('drawPhaseName').textContent = 'El software esta recorriendo participantes en vivo';
   document.getElementById('drawPhaseHint').textContent = 'La prueba se detendra sola en el elegido y luego podras registrar ese resultado.';
+  document.getElementById('drawFocusLine').textContent = 'Se esta generando un barrido ponderado sobre todas las chances visibles para mantener una demo mas clara y estable.';
+  updateDrawTelemetry('Simulando');
 }
 
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
@@ -2628,15 +2778,26 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
 }
 
 function getDrawDelay(participant, isSpotlight) {
-  const chanceWeight = Math.min(getParticipantChances(participant), 12);
+  const chanceWeight = Math.min(getParticipantChances(participant), 18);
   const cycleProgress = drawShowcaseState.cycle.length
     ? drawShowcaseState.cyclePosition / drawShowcaseState.cycle.length
     : 0;
-  const introBoost = cycleProgress < 0.18 ? -32 : cycleProgress > 0.72 ? 42 : 0;
+  const distanceToSpotlight = drawShowcaseState.spotlightPosition >= 0
+    ? Math.max(0, drawShowcaseState.spotlightPosition - drawShowcaseState.cyclePosition)
+    : 0;
   if (isSpotlight) {
-    return 2400 + (chanceWeight * 45) + Math.random() * 1200;
+    return 2200 + (chanceWeight * 38) + Math.random() * 900;
   }
-  return Math.max(95, 150 + introBoost + (chanceWeight * 4) + (Math.random() * 90));
+  if (distanceToSpotlight <= 2) {
+    return 520 + (chanceWeight * 8) + Math.random() * 180;
+  }
+  if (distanceToSpotlight <= 6) {
+    return 240 + (chanceWeight * 4) + Math.random() * 120;
+  }
+  if (cycleProgress < 0.18) {
+    return 70 + Math.random() * 40;
+  }
+  return Math.max(90, 110 + (chanceWeight * 2.5) + (Math.random() * 85));
 }
 
 function renderDrawShowcaseEmpty() {
@@ -2660,7 +2821,9 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba disponible';
   document.getElementById('drawPhaseName').textContent = 'Lista para iniciar la demostracion del funcionamiento';
   document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
+  document.getElementById('drawFocusLine').textContent = 'La demo se prepara con todas las chances visibles para construir un recorrido ponderado.';
   document.getElementById('drawIntelFill').style.width = '18%';
+  updateDrawTelemetry('En espera');
   updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
@@ -2742,6 +2905,7 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
   const cycleProgress = drawShowcaseState.cycle.length
     ? (drawShowcaseState.cyclePosition + 1) / drawShowcaseState.cycle.length
     : 0;
+  const remainingEntries = Math.max(0, drawShowcaseState.spotlightPosition - drawShowcaseState.cyclePosition);
   document.getElementById('drawShowcase')?.classList.toggle('is-focus-locked', Boolean(isSpotlight));
 
   featuredCard.classList.toggle('spotlight', Boolean(isSpotlight));
@@ -2763,10 +2927,14 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
     : 'La lista esta recorriendo participantes en tiempo real';
   phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
+  document.getElementById('drawFocusLine').textContent = isSpotlight
+    ? `La demo se detuvo en la chance ${entry.chanceNumber} de ${participant.displayName || participant.name}.`
+    : `Chance ${entry.chanceNumber} en foco. Restan ${remainingEntries.toLocaleString('es-AR')} pasos aproximados hasta el punto de detencion.`;
   intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
+  updateDrawTelemetry(isSpotlight ? 'Foco final' : 'Simulando');
 
   const visibleCards = [];
-  const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
+  const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 7);
   for (let offset = 0; offset < cardCount; offset += 1) {
     const cyclePosition = (drawShowcaseState.cyclePosition + offset) % drawShowcaseState.cycle.length;
     const cycleEntry = drawShowcaseState.cycle[cyclePosition];
@@ -2777,8 +2945,9 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     if (!item) {
       continue;
     }
+    const queueClass = offset === 0 ? ' active' : offset <= 2 ? ' queue-next' : ' queue-far';
     visibleCards.push(`
-      <div class="draw-rail-card${offset === 0 ? ' active' : ''}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
+      <div class="draw-rail-card${queueClass}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
         <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
         <div class="draw-rail-meta">
           <span>${escapeHtml(participantLocation(item))}</span>
@@ -2798,9 +2967,9 @@ function stopDrawShowcase() {
 }
 
 function prepareDrawShowcaseRound() {
-  drawShowcaseState.cycle = shuffleList(drawShowcaseState.basePool);
+  drawShowcaseState.cycle = buildIntelligentDrawCycle();
   drawShowcaseState.cyclePosition = 0;
-  drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? Math.floor(Math.random() * drawShowcaseState.cycle.length) : -1;
+  drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? chooseSpotlightPosition(drawShowcaseState.cycle.length) : -1;
   drawShowcaseState.round += 1;
 }
 
