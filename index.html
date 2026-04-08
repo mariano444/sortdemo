@@ -271,6 +271,123 @@
     font-size: 0.98rem;
     line-height: 1.5;
   }
+  .auto-showcase {
+    position: relative;
+    padding: 2.5rem 1rem 1rem;
+    background:
+      radial-gradient(circle at top center, rgba(245,200,66,0.08), transparent 42%),
+      linear-gradient(180deg, rgba(10,10,15,0), rgba(10,10,15,0.92) 28%);
+  }
+  .auto-showcase-wrap {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .auto-showcase-copy,
+  .auto-showcase-grid {
+    background: linear-gradient(145deg, rgba(28,28,42,0.94), rgba(16,16,24,0.98));
+    border: 1px solid rgba(245,200,66,0.16);
+    border-radius: 1.5rem;
+    box-shadow: 0 22px 50px rgba(0,0,0,0.28);
+  }
+  .auto-showcase-copy {
+    padding: 1.6rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .auto-showcase-kicker {
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .auto-showcase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.6rem);
+    line-height: 0.9;
+    color: var(--text);
+  }
+  .auto-showcase-title span {
+    color: var(--gold);
+    text-shadow: 0 0 26px rgba(245,200,66,0.16);
+  }
+  .auto-showcase-text {
+    color: var(--text2);
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 48ch;
+  }
+  .auto-showcase-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .auto-pill {
+    padding: 0.58rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .auto-showcase-grid {
+    padding: 0.95rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+  .auto-photo-card {
+    position: relative;
+    min-height: 190px;
+    border-radius: 1.15rem;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .auto-photo-card:hover {
+    transform: translateY(-6px) scale(1.015);
+    border-color: rgba(245,200,66,0.34);
+    box-shadow: 0 18px 34px rgba(0,0,0,0.26);
+  }
+  .auto-photo-card.featured {
+    grid-column: span 2;
+    min-height: 240px;
+  }
+  .auto-photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+    filter: drop-shadow(0 16px 28px rgba(0,0,0,0.32));
+  }
+  .auto-photo-label {
+    position: absolute;
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(10,10,15,0.78);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .auto-photo-label strong {
+    color: var(--gold);
+    font-weight: 800;
+  }
   .live-feed {
     position: fixed;
     right: 18px;
@@ -1787,6 +1904,9 @@
     .prize-gallery { grid-template-columns: 1fr 1fr; }
     .prize-shot { min-height: 150px; }
     .prize-shot img { height: 140px; }
+    .auto-showcase-wrap { grid-template-columns: 1fr; }
+    .auto-showcase-grid { grid-template-columns: 1fr; }
+    .auto-photo-card.featured { grid-column: span 1; min-height: 220px; }
     .live-feed { left: 12px; right: 12px; min-width: 0; max-width: none; }
     .whatsapp-float {
       right: 12px;
@@ -1825,7 +1945,7 @@
       </div>
       <div class="prize-summary">
         <span class="prize-eyebrow">Premio unico</span>
-        <span class="prize-name">FIAT UNO 2014</span>
+        <span class="prize-name">HERMOSO FIAT UNO 2014</span>
         <span class="prize-detail">Impecable. Entrega coordinada con el ganador.</span>
         <span class="prize-specs">Se participa por un solo premio: el auto publicado en esta pagina, con todas sus fotos visibles para que el premio quede claro desde el primer vistazo.</span>
       </div>
@@ -1859,6 +1979,48 @@
   </div>
   <div class="countdown-note reveal" id="countdownNote" style="transition-delay:0.45s">Quedan pocos lugares para hacer el sorteo antes.</div>
 </div>
+
+<section class="auto-showcase">
+  <div class="auto-showcase-wrap reveal">
+    <div class="auto-showcase-copy">
+      <span class="auto-showcase-kicker">Premio protagonista</span>
+      <h2 class="auto-showcase-title">Hermoso <span>Fiat Uno</span><br>2014 impecable</h2>
+      <p class="auto-showcase-text">Una presentacion mas fuerte del premio para que se vea claro, atractivo y deseable desde abajo del hero tambien. Cada foto ayuda a mostrar mejor el estado general, el interior y las distintas vistas del auto.</p>
+      <div class="auto-showcase-pills">
+        <span class="auto-pill">Premio unico</span>
+        <span class="auto-pill">6 fotos visibles</span>
+        <span class="auto-pill">Vista exterior e interior</span>
+        <span class="auto-pill">Entrega coordinada</span>
+      </div>
+    </div>
+    <div class="auto-showcase-grid">
+      <div class="auto-photo-card featured">
+        <img src="./assets/premios/fiat-uno-frente-angulo.png" alt="Hermoso Fiat Uno 2014 vista principal">
+        <div class="auto-photo-label"><span>Vista principal</span><strong>Fiat Uno</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-frente.png" alt="Hermoso Fiat Uno 2014 frente">
+        <div class="auto-photo-label"><span>Frente</span><strong>Exterior</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-interior.png" alt="Hermoso Fiat Uno 2014 interior">
+        <div class="auto-photo-label"><span>Interior</span><strong>Cabina</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-atras-angulo-1.png" alt="Hermoso Fiat Uno 2014 lateral trasera">
+        <div class="auto-photo-label"><span>Lateral trasera</span><strong>Perfil</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-atras.png" alt="Hermoso Fiat Uno 2014 parte trasera">
+        <div class="auto-photo-label"><span>Parte trasera</span><strong>Detalle</strong></div>
+      </div>
+      <div class="auto-photo-card featured">
+        <img src="./assets/premios/fiat-uno-atras-angulo-2.png" alt="Hermoso Fiat Uno 2014 vista final">
+        <div class="auto-photo-label"><span>Vista final</span><strong>Impecable</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
