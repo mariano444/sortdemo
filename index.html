@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gran Sorteo — Moto · TV 60" · $200.000</title>
-<meta name="description" content="Participá desde cualquier punto de Argentina por la moto, el TV o el efectivo. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
+<title>Gran Sorteo â€” Fiat Uno 2014 Â· TV 60" Â· $200.000</title>
+<meta name="description" content="ParticipÃ¡ desde cualquier punto de Argentina por un Fiat Uno 2014 impecable, un Smart TV o efectivo. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Gran Sorteo - Moto, TV y efectivo">
+<meta property="og:title" content="Gran Sorteo - Fiat Uno 2014, TV y efectivo">
 <meta property="og:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
 <meta property="og:image" content="./assets/share/share-sorteo.png">
 <meta property="og:image:alt" content="Imagen promocional del sorteo">
 <meta property="og:locale" content="es_AR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gran Sorteo - Moto, TV y efectivo">
+<meta name="twitter:title" content="Gran Sorteo - Fiat Uno 2014, TV y efectivo">
 <meta name="twitter:description" content="Te invito a participar de este sorteo. Quedan pocos lugares y puede realizarse antes al agotar chances.">
 <meta name="twitter:image" content="./assets/share/share-sorteo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
@@ -510,34 +510,6 @@
     max-width: 64ch;
     line-height: 1.55;
   }
-  .draw-system-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.7rem;
-    margin-top: 1rem;
-  }
-  .draw-system-metric {
-    padding: 0.85rem 0.95rem;
-    border-radius: 0.95rem;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-    display: grid;
-    gap: 0.2rem;
-  }
-  .draw-system-metric-label {
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: var(--text2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .draw-system-metric-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.45rem;
-    line-height: 1;
-    letter-spacing: 0.03em;
-    color: var(--text);
-  }
   .draw-showcase::before {
     content: '';
     position: absolute;
@@ -814,46 +786,6 @@
     font-size: 0.85rem;
     color: var(--text2);
   }
-  .draw-focus-line {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    width: fit-content;
-    max-width: 100%;
-    padding: 0.5rem 0.7rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-    color: var(--text);
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
-  .draw-focus-line::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--blue);
-    box-shadow: 0 0 16px rgba(59,139,255,0.45);
-  }
-  .draw-sweep-status {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .draw-sweep-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.38rem 0.65rem;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text2);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
   .draw-intel-bar {
     position: relative;
     height: 9px;
@@ -880,36 +812,6 @@
   }
   @keyframes drawSweep {
     to { transform: translateX(100%); }
-  }
-  .draw-chance-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 0.15rem;
-  }
-  .draw-chance-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 42px;
-    padding: 0.32rem 0.52rem;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text2);
-    font-size: 0.72rem;
-    font-weight: 700;
-    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-  }
-  .draw-chance-chip.active {
-    background: rgba(245,200,66,0.14);
-    border-color: rgba(245,200,66,0.42);
-    color: var(--gold);
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 10px 18px rgba(245,200,66,0.1);
-  }
-  .draw-chance-chip.dimmed {
-    opacity: 0.55;
   }
   .draw-controls {
     display: flex;
@@ -955,12 +857,7 @@
     animation: none;
   }
   .draw-rail {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-top: 0.2rem;
-    position: relative;
-    z-index: 1;
+    display: none;
   }
   .draw-rail-card {
     min-width: 0;
@@ -972,17 +869,15 @@
     opacity: 0.66;
   }
   .draw-rail-card.active {
-    transform: translateY(-6px) scale(1.04);
+    transform: translateY(-6px) scale(1.02);
     border-color: rgba(59,139,255,0.4);
     background: rgba(59,139,255,0.1);
     opacity: 1;
-    box-shadow: 0 12px 24px rgba(59,139,255,0.14);
   }
   .draw-rail-card.spotlight {
     border-color: rgba(245,200,66,0.42);
     background: rgba(245,200,66,0.1);
     opacity: 1;
-    box-shadow: 0 14px 28px rgba(245,200,66,0.14);
   }
   .draw-rail-name {
     display: block;
@@ -1000,14 +895,6 @@
     gap: 0.5rem;
     font-size: 0.74rem;
     color: var(--text2);
-  }
-  .draw-rail-card.queue-next {
-    opacity: 0.88;
-    transform: translateY(-2px);
-  }
-  .draw-rail-card.queue-far {
-    opacity: 0.52;
-    transform: scale(0.98);
   }
   .draw-rail-empty {
     padding: 1rem 1.1rem;
@@ -1840,7 +1727,6 @@
     .draw-showcase-copy { padding: 0.2rem 0 0; }
     .draw-showcase-stage { min-height: 0; }
     .demo-launcher { align-items: flex-start; }
-    .draw-system-metrics { grid-template-columns: 1fr; }
     .draw-featured-card {
       grid-template-columns: auto 1fr;
       align-items: start;
@@ -1875,46 +1761,46 @@
   <div class="hero-bg"></div>
   <div class="hero-sparks" id="sparks"></div>
 
-  <div class="hero-badge">🔥 SORTEO NACIONAL — QUEDAN POCOS LUGARES</div>
+  <div class="hero-badge">ðŸ”¥ SORTEO NACIONAL â€” QUEDAN POCOS LUGARES</div>
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
-  <p class="hero-subtitle">Un sorteo claro, visible y con más posibilidades para quienes suman más chances</p>
+  <p class="hero-subtitle">Un sorteo claro, visible y con mÃ¡s posibilidades para quienes suman mÃ¡s chances</p>
 
   <div class="prizes-row">
     <div class="prize-card primary reveal">
       <div class="prize-visual">
-        <img class="prize-image" src="./assets/premios/moto-adventure.png" alt="Honda XR 190 premio principal">
+        <img class="prize-image" src="./assets/premios/fiat-uno-frente-angulo.png" alt="Fiat Uno 2014 impecable premio principal">
       </div>
-      <span class="prize-name">HONDA XR 190</span>
-      <span class="prize-detail">Entrega coordinada a todo el país o su equivalente en dinero.</span>
+      <span class="prize-name">FIAT UNO 2014</span>
+      <span class="prize-detail">Impecable Â· Entrega coordinada con el ganador.</span>
     </div>
     <div class="prize-card tv reveal" style="transition-delay:0.1s">
       <div class="prize-visual">
         <img class="prize-image" src="./assets/premios/tv-premio.png" alt="Smart TV premio">
       </div>
       <span class="prize-name">Smart TV</span>
-      <span class="prize-detail">LED 60" · 4K Ultra HD</span>
+      <span class="prize-detail">LED 60" Â· 4K Ultra HD</span>
     </div>
     <div class="prize-card cash reveal" style="transition-delay:0.2s">
       <div class="prize-visual">
         <div>
           <span class="prize-amount">$200K</span>
-          <span class="prize-icon">💵</span>
+          <span class="prize-icon">ðŸ’µ</span>
         </div>
       </div>
       <span class="prize-name">Efectivo</span>
-      <span class="prize-detail">Efectivo · Transferencia</span>
+      <span class="prize-detail">Efectivo Â· Transferencia</span>
     </div>
   </div>
 
   <div class="hero-cta reveal" style="transition-delay:0.3s">
-    <a href="#paquetes" class="btn-primary">¡QUIERO MIS CHANCES!</a>
+    <a href="#paquetes" class="btn-primary">Â¡QUIERO MIS CHANCES!</a>
   </div>
 
   <div class="countdown-bar reveal hidden-until-thirty" id="countdownBar" style="transition-delay:0.4s">
     <div class="countdown-unit">
       <span class="countdown-num" id="cd-d">00</span>
-      <span class="countdown-label">Días</span>
+      <span class="countdown-label">DÃ­as</span>
     </div>
     <div class="countdown-sep">:</div>
     <div class="countdown-unit">
@@ -1937,29 +1823,29 @@
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
-  <span>⚡ SORTEO NACIONAL · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · ⚡ SORTEO NACIONAL · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · MÁS CHANCES = MÁS POSIBILIDADES DE GANAR · </span>
+  <span>âš¡ SORTEO NACIONAL Â· 26 DE JULIO O ANTES AL AGOTAR CHANCES Â· QUEDAN POCOS LUGARES Â· MÃS CHANCES = MÃS POSIBILIDADES DE GANAR Â· âš¡ SORTEO NACIONAL Â· 26 DE JULIO O ANTES AL AGOTAR CHANCES Â· QUEDAN POCOS LUGARES Â· MÃS CHANCES = MÃS POSIBILIDADES DE GANAR Â· </span>
 </div>
 
 <!-- TRUST STRIP -->
 <div class="trust-strip">
   <div class="trust-item">
-    <div class="trust-icon">🔒</div>
+    <div class="trust-icon">ðŸ”’</div>
     <span class="trust-label">Reserva registrada<br>y datos protegidos</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">📋</div>
-    <span class="trust-label">Lista pública<br>con participaciones activas</span>
+    <div class="trust-icon">ðŸ“‹</div>
+    <span class="trust-label">Lista pÃºblica<br>con participaciones activas</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">🎥</div>
+    <div class="trust-icon">ðŸŽ¥</div>
     <span class="trust-label">Participan personas<br>de toda Argentina</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">✅</div>
+    <div class="trust-icon">âœ…</div>
     <span class="trust-label">Entrega coordinada<br>con el ganador</span>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">🏆</div>
+    <div class="trust-icon">ðŸ†</div>
     <span class="trust-label">3 ganadores<br>seleccionados al azar</span>
   </div>
 </div>
@@ -1967,27 +1853,27 @@
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner" id="ticker">
-    <span class="ticker-item">🏍️ Moto 0km lista para entrega</span>
-    <span class="ticker-item">📺 Smart TV LED 60" 4K</span>
-    <span class="ticker-item">💵 $200.000 en efectivo</span>
-    <span class="ticker-item">⭐ Más chances = más posibilidades</span>
-    <span class="ticker-item">🔒 Sorteo 100% transparente</span>
-    <span class="ticker-item">🇦🇷 Participás desde toda Argentina</span>
-    <span class="ticker-item">🏍️ Moto 0km lista para entrega</span>
-    <span class="ticker-item">📺 Smart TV LED 60" 4K</span>
-    <span class="ticker-item">💵 $200.000 en efectivo</span>
-    <span class="ticker-item">⭐ Más chances = más posibilidades</span>
-    <span class="ticker-item">🔒 Sorteo 100% transparente</span>
-    <span class="ticker-item">🇦🇷 Participás desde toda Argentina</span>
+    <span class="ticker-item">ðŸš— Fiat Uno 2014 impecable</span>
+    <span class="ticker-item">ðŸ“º Smart TV LED 60" 4K</span>
+    <span class="ticker-item">ðŸ’µ $200.000 en efectivo</span>
+    <span class="ticker-item">â­ MÃ¡s chances = mÃ¡s posibilidades</span>
+    <span class="ticker-item">ðŸ”’ Sorteo 100% transparente</span>
+    <span class="ticker-item">ðŸ‡¦ðŸ‡· ParticipÃ¡s desde toda Argentina</span>
+    <span class="ticker-item">ðŸš— Fiat Uno 2014 impecable</span>
+    <span class="ticker-item">ðŸ“º Smart TV LED 60" 4K</span>
+    <span class="ticker-item">ðŸ’µ $200.000 en efectivo</span>
+    <span class="ticker-item">â­ MÃ¡s chances = mÃ¡s posibilidades</span>
+    <span class="ticker-item">ðŸ”’ Sorteo 100% transparente</span>
+    <span class="ticker-item">ðŸ‡¦ðŸ‡· ParticipÃ¡s desde toda Argentina</span>
   </div>
 </div>
 
 <!-- PACKAGES -->
 <section id="paquetes" class="packages-section">
   <div class="section-inner">
-    <span class="section-tag">💎 Elige tu pack</span>
-    <h2 class="section-title">Más chances,<br><span style="color:var(--gold)">más posibilidades</span></h2>
-    <p class="section-sub">Cada chance suma una participación real dentro del sistema de selección. Mientras más chances tengas, más posibilidades tenés de quedar entre los 3 ganadores.</p>
+    <span class="section-tag">ðŸ’Ž Elige tu pack</span>
+    <h2 class="section-title">MÃ¡s chances,<br><span style="color:var(--gold)">mÃ¡s posibilidades</span></h2>
+    <p class="section-sub">Cada chance suma una participaciÃ³n real dentro del sistema de selecciÃ³n. Mientras mÃ¡s chances tengas, mÃ¡s posibilidades tenÃ©s de quedar entre los 3 ganadores.</p>
 
     <div class="packages-grid" id="packagesGrid">
       <!-- generado por JS -->
@@ -1998,19 +1884,19 @@
 <!-- PARTICIPANTS -->
 <section id="participantes" class="participants-section">
   <div class="section-inner">
-    <span class="section-tag">👥 Transparencia total</span>
+    <span class="section-tag">ðŸ‘¥ Transparencia total</span>
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
-    <p class="section-sub">Cada participación aprobada aparece aquí con su fecha y cantidad de chances, para que puedas ver que el ingreso quedó registrado y que el proceso se mantiene visible.</p>
+    <p class="section-sub">Cada participaciÃ³n aprobada aparece aquÃ­ con su fecha y cantidad de chances, para que puedas ver que el ingreso quedÃ³ registrado y que el proceso se mantiene visible.</p>
 
-    <div class="demo-launcher reveal">
+    <div class="demo-launcher reveal hidden">
       <div class="demo-launcher-copy">
         <div class="demo-launcher-title">Demostracion en tiempo real</div>
-        <div class="demo-launcher-sub">Este bloque muestra en vivo como el sistema recorre chances activas, pondera segun cantidad comprada y desacelera hasta dejar visible un punto de detencion. Es una demostracion del software y no reemplaza el sorteo oficial.</div>
+        <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
       </div>
-      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Ir a la demostracion</button>
+      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Iniciar demostracion</button>
     </div>
 
-    <div class="draw-showcase reveal" id="drawShowcase">
+    <div class="draw-showcase reveal collapsed hidden" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
@@ -2018,21 +1904,7 @@
             <span class="draw-demo-badge">Demostracion</span>
           </div>
           <h3 class="draw-showcase-title">Probador visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">La demo recorre una urna virtual con todas las chances activas, distribuye el recorrido de forma ponderada para evitar saltos repetitivos y frena con una desaceleracion final mas clara. Sirve para visualizar el mecanismo, no para definir ganadores oficiales.</p>
-          <div class="draw-system-metrics">
-            <div class="draw-system-metric">
-              <span class="draw-system-metric-label">Participantes visibles</span>
-              <strong class="draw-system-metric-value" id="drawParticipantsCount">0</strong>
-            </div>
-            <div class="draw-system-metric">
-              <span class="draw-system-metric-label">Chances activas</span>
-              <strong class="draw-system-metric-value" id="drawActiveEntriesCount">0</strong>
-            </div>
-            <div class="draw-system-metric">
-              <span class="draw-system-metric-label">Modo</span>
-              <strong class="draw-system-metric-value" id="drawModeLabel">En espera</strong>
-            </div>
-          </div>
+          <p class="draw-showcase-sub">Inicia la demostracion para observar en tiempo real como el sistema recorre participantes, se detiene automaticamente y deja asentado el punto exacto donde finaliza la prueba. Este modulo existe solo para demostrar el funcionamiento y no define resultados oficiales.</p>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
@@ -2059,17 +1931,9 @@
             <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
-            <div class="draw-focus-line" id="drawFocusLine">La demo se prepara con todas las chances visibles para construir un recorrido ponderado.</div>
-            <div class="draw-sweep-status">
-              <span class="draw-sweep-pill" id="drawSweepDirection">Barrido descendente</span>
-              <span class="draw-sweep-pill" id="drawSweepSpan">Recorriendo toda la lista</span>
-            </div>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
-            </div>
-            <div class="draw-chance-cloud" id="drawChanceCloud">
-              <span class="draw-chance-chip">La urna mostrara aqui las chances del participante activo.</span>
             </div>
           </div>
         </div>
@@ -2094,7 +1958,7 @@
       <div class="table-header">
         <span class="table-title">Participantes registrados</span>
         <span class="live-badge"><span class="live-dot"></span> EN VIVO</span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o código...">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o cÃ³digo...">
       </div>
       <div style="overflow-x:auto" id="participantsTableScroller">
         <table>
@@ -2123,8 +1987,8 @@
 
     <div class="payment-status-card reveal" id="paymentStatusCard">
       <div class="payment-status-kicker" id="paymentStatusKicker">Pago confirmado</div>
-      <div class="payment-status-title" id="paymentStatusTitle">Ya estás participando</div>
-      <div class="payment-status-copy" id="paymentStatusCopy">Cuando tu pago quede aprobado, tus chances quedan activas, tu participación aparece en la lista y se habilita tu enlace único si corresponde.</div>
+      <div class="payment-status-title" id="paymentStatusTitle">Ya estÃ¡s participando</div>
+      <div class="payment-status-copy" id="paymentStatusCopy">Cuando tu pago quede aprobado, tus chances quedan activas, tu participaciÃ³n aparece en la lista y se habilita tu enlace Ãºnico si corresponde.</div>
       <div class="share-link-row hidden" id="shareLinkRow">
         <input class="share-link-input" id="shareLinkInput" type="text" readonly>
         <button class="share-link-btn secondary" id="copyShareBtn" type="button">Copiar enlace</button>
@@ -2133,7 +1997,7 @@
     </div>
 
     <div style="text-align:center; margin-top:2rem">
-      <a href="#paquetes" class="btn-primary">¡Sumate ahora!</a>
+      <a href="#paquetes" class="btn-primary">Â¡Sumate ahora!</a>
     </div>
   </div>
 </section>
@@ -2141,32 +2005,32 @@
 <!-- HOW IT WORKS -->
 <section class="how-section">
   <div class="section-inner">
-    <span class="section-tag">❓ ¿Cómo funciona?</span>
+    <span class="section-tag">â“ Â¿CÃ³mo funciona?</span>
     <h2 class="section-title">Simple,<br><span style="color:var(--gold)">transparente, real</span></h2>
     <div class="steps-grid">
       <div class="step reveal">
         <span class="step-num">1</span>
-        <span class="step-icon">🎯</span>
-        <div class="step-title">Elegí tu pack</div>
-        <p class="step-desc">Elegís el pack que más te conviene. Cada chance representa una participación real dentro del sistema de selección aleatoria, por eso mientras más chances tengas, más posibilidades acumulás.</p>
+        <span class="step-icon">ðŸŽ¯</span>
+        <div class="step-title">ElegÃ­ tu pack</div>
+        <p class="step-desc">ElegÃ­s el pack que mÃ¡s te conviene. Cada chance representa una participaciÃ³n real dentro del sistema de selecciÃ³n aleatoria, por eso mientras mÃ¡s chances tengas, mÃ¡s posibilidades acumulÃ¡s.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.1s">
         <span class="step-num">2</span>
-        <span class="step-icon">💳</span>
-        <div class="step-title">Completá el pago</div>
-        <p class="step-desc">Completás tus datos y pagás de forma simple. Tu reserva queda registrada y, cuando el pago se acredita, tus chances quedan activas con seguimiento claro del proceso.</p>
+        <span class="step-icon">ðŸ’³</span>
+        <div class="step-title">CompletÃ¡ el pago</div>
+        <p class="step-desc">CompletÃ¡s tus datos y pagÃ¡s de forma simple. Tu reserva queda registrada y, cuando el pago se acredita, tus chances quedan activas con seguimiento claro del proceso.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.2s">
         <span class="step-num">3</span>
-        <span class="step-icon">📋</span>
-        <div class="step-title">Aparecés en la lista</div>
-        <p class="step-desc">Tu participación se refleja en la lista pública o, si preferís privacidad, podés figurar como anónimo con un código único para conservar transparencia sin exponer tu nombre.</p>
+        <span class="step-icon">ðŸ“‹</span>
+        <div class="step-title">AparecÃ©s en la lista</div>
+        <p class="step-desc">Tu participaciÃ³n se refleja en la lista pÃºblica o, si preferÃ­s privacidad, podÃ©s figurar como anÃ³nimo con un cÃ³digo Ãºnico para conservar transparencia sin exponer tu nombre.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.3s">
         <span class="step-num">4</span>
-        <span class="step-icon">🎰</span>
+        <span class="step-icon">ðŸŽ°</span>
         <div class="step-title">Sorteo nacional</div>
-        <p class="step-desc">El sistema realiza una selección aleatoria de 3 participantes entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
+        <p class="step-desc">El sistema realiza una selecciÃ³n aleatoria de 3 participantes entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
       </div>
     </div>
   </div>
@@ -2174,9 +2038,9 @@
 
 <section class="draw-process-section">
   <div class="section-inner">
-    <span class="section-tag">🎲 Selección transparente</span>
-    <h2 class="section-title">Cómo se eligen<br><span style="color:var(--gold)">los 3 ganadores</span></h2>
-    <p class="section-sub">El proceso está pensado para que cada chance cuente como una participación dentro de una selección aleatoria. No importa de dónde participes: si tu chance está activa, entra en el sorteo.</p>
+    <span class="section-tag">ðŸŽ² SelecciÃ³n transparente</span>
+    <h2 class="section-title">CÃ³mo se eligen<br><span style="color:var(--gold)">los 3 ganadores</span></h2>
+    <p class="section-sub">El proceso estÃ¡ pensado para que cada chance cuente como una participaciÃ³n dentro de una selecciÃ³n aleatoria. No importa de dÃ³nde participes: si tu chance estÃ¡ activa, entra en el sorteo.</p>
 
     <div class="draw-process-grid">
       <div class="draw-card reveal">
@@ -2185,29 +2049,29 @@
       </div>
       <div class="draw-card reveal" style="transition-delay:0.1s">
         <div class="draw-card-title">2. Un sistema avanzado selecciona al azar</div>
-        <div class="draw-card-copy">Al cierre del sorteo, un sistema de selección aleatoria toma todas las chances activas y elige 3 participantes ganadores de forma imparcial.</div>
+        <div class="draw-card-copy">Al cierre del sorteo, un sistema de selecciÃ³n aleatoria toma todas las chances activas y elige 3 participantes ganadores de forma imparcial.</div>
       </div>
       <div class="draw-card reveal" style="transition-delay:0.2s">
-        <div class="draw-card-title">3. Más chances, más posibilidades</div>
-        <div class="draw-card-copy">Si una persona tiene más chances, participa más veces dentro del sistema. Eso no garantiza ganar, pero sí aumenta sus posibilidades frente a quien tiene menos chances.</div>
+        <div class="draw-card-title">3. MÃ¡s chances, mÃ¡s posibilidades</div>
+        <div class="draw-card-copy">Si una persona tiene mÃ¡s chances, participa mÃ¡s veces dentro del sistema. Eso no garantiza ganar, pero sÃ­ aumenta sus posibilidades frente a quien tiene menos chances.</div>
       </div>
       <div class="draw-card reveal" style="transition-delay:0.3s">
         <div class="draw-card-title">4. Entrega coordinada con el ganador</div>
-        <div class="draw-card-copy">Una vez confirmados los ganadores, se coordina la entrega dentro de las 48 horas siguientes. Se organiza el retiro, envío o equivalente en dinero según corresponda al premio publicado.</div>
+        <div class="draw-card-copy">Una vez confirmados los ganadores, se coordina la entrega dentro de las 48 horas siguientes. Se organiza el retiro, envÃ­o o equivalente en dinero segÃºn corresponda al premio publicado.</div>
       </div>
     </div>
 
     <div class="draw-highlight reveal" style="transition-delay:0.35s">
-      El objetivo es que el proceso sea simple de entender: comprás chances, tu pago se acredita, tus participaciones quedan activas y luego entrás en una selección aleatoria de 3 ganadores. Mientras más chances acumulás, más posibilidades tenés de ganar.
+      El objetivo es que el proceso sea simple de entender: comprÃ¡s chances, tu pago se acredita, tus participaciones quedan activas y luego entrÃ¡s en una selecciÃ³n aleatoria de 3 ganadores. Mientras mÃ¡s chances acumulÃ¡s, mÃ¡s posibilidades tenÃ©s de ganar.
     </div>
   </div>
 </section>
 
 <section class="proof-section">
   <div class="section-inner">
-    <span class="section-tag">💬 Opiniones y expectativas</span>
+    <span class="section-tag">ðŸ’¬ Opiniones y expectativas</span>
     <h2 class="section-title">Mensajes que suman<br><span style="color:var(--gold)">confianza</span></h2>
-    <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pública y la coordinación de la entrega con cada ganador.</p>
+    <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pÃºblica y la coordinaciÃ³n de la entrega con cada ganador.</p>
 
     <div class="proof-grid" id="proofGrid"></div>
   </div>
@@ -2216,36 +2080,36 @@
 <!-- FAQ -->
 <section style="background:var(--dark)">
   <div class="section-inner">
-    <span class="section-tag">❓ Preguntas frecuentes</span>
-    <h2 class="section-title">Todo lo que<br><span style="color:var(--gold)">necesitás saber</span></h2>
+    <span class="section-tag">â“ Preguntas frecuentes</span>
+    <h2 class="section-title">Todo lo que<br><span style="color:var(--gold)">necesitÃ¡s saber</span></h2>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-q">¿Cómo sé que el sorteo es real? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">La lista de participantes se actualiza con pagos aprobados y muestra la cantidad de chances activas de cada persona. Eso permite ver que cada participación queda registrada y que el proceso sea mucho más claro, visible y confiable.</div>
+        <button class="faq-q">Â¿CÃ³mo sÃ© que el sorteo es real? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">La lista de participantes se actualiza con pagos aprobados y muestra la cantidad de chances activas de cada persona. Eso permite ver que cada participaciÃ³n queda registrada y que el proceso sea mucho mÃ¡s claro, visible y confiable.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Cómo se realizará el sorteo? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Cada chance equivale a una participación dentro del sistema. Al cierre del sorteo, un sistema avanzado de selección aleatoria toma todas las chances activas y elige 3 participantes ganadores. Si comprás más chances, participás más veces y aumentás tus posibilidades.</div>
+        <button class="faq-q">Â¿CÃ³mo se realizarÃ¡ el sorteo? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">Cada chance equivale a una participaciÃ³n dentro del sistema. Al cierre del sorteo, un sistema avanzado de selecciÃ³n aleatoria toma todas las chances activas y elige 3 participantes ganadores. Si comprÃ¡s mÃ¡s chances, participÃ¡s mÃ¡s veces y aumentÃ¡s tus posibilidades.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Cuándo se entrega el premio? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Los premios se coordinan con cada ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro, envío o equivalente en dinero según el premio publicado.</div>
+        <button class="faq-q">Â¿CuÃ¡ndo se entrega el premio? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">Los premios se coordinan con cada ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro, envÃ­o o equivalente en dinero segÃºn el premio publicado.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Puedo comprar más de un pack? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Sí. Podés comprar más de un pack y todas tus chances se acumulan en tu mismo usuario. Eso hace que tengas más oportunidades dentro del sorteo final.</div>
+        <button class="faq-q">Â¿Puedo comprar mÃ¡s de un pack? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">SÃ­. PodÃ©s comprar mÃ¡s de un pack y todas tus chances se acumulan en tu mismo usuario. Eso hace que tengas mÃ¡s oportunidades dentro del sorteo final.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Qué métodos de pago aceptan? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Podés abonar con los medios habilitados en el formulario. Una vez aprobado el pago, tus chances quedan activas y tu participación aparece en la lista pública o como anónimo, según elijas, para que siempre haya registro visible del ingreso.</div>
+        <button class="faq-q">Â¿QuÃ© mÃ©todos de pago aceptan? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">PodÃ©s abonar con los medios habilitados en el formulario. Una vez aprobado el pago, tus chances quedan activas y tu participaciÃ³n aparece en la lista pÃºblica o como anÃ³nimo, segÃºn elijas, para que siempre haya registro visible del ingreso.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Cómo funcionan los referidos? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">Si tu compra aprobada habilita tu enlace único, podés compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automáticamente, aumentando tus posibilidades dentro de la selección.</div>
+        <button class="faq-q">Â¿CÃ³mo funcionan los referidos? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">Si tu compra aprobada habilita tu enlace Ãºnico, podÃ©s compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automÃ¡ticamente, aumentando tus posibilidades dentro de la selecciÃ³n.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">¿Hay fecha límite para participar? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">La fecha prevista es el 26 de julio o antes al agotar chances. Quedan pocos lugares, así que te recomendamos no esperar al último momento.</div>
+        <button class="faq-q">Â¿Hay fecha lÃ­mite para participar? <span class="faq-arrow">â–¼</span></button>
+        <div class="faq-a">La fecha prevista es el 26 de julio o antes al agotar chances. Quedan pocos lugares, asÃ­ que te recomendamos no esperar al Ãºltimo momento.</div>
       </div>
     </div>
   </div>
@@ -2253,10 +2117,10 @@
 
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
-  <h2 class="bottom-cta-title reveal">¿Y si sos<br>el próximo ganador?</h2>
-  <p class="bottom-cta-sub reveal">Participás con un proceso claro, con registro visible y una selección aleatoria de 3 ganadores. Mientras más chances sumás, más posibilidades tenés.</p>
+  <h2 class="bottom-cta-title reveal">Â¿Y si sos<br>el prÃ³ximo ganador?</h2>
+  <p class="bottom-cta-sub reveal">ParticipÃ¡s con un proceso claro, con registro visible y una selecciÃ³n aleatoria de 3 ganadores. Mientras mÃ¡s chances sumÃ¡s, mÃ¡s posibilidades tenÃ©s.</p>
   <div class="reveal" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
-    <a href="#paquetes" class="btn-primary">¡COMPRAR CHANCES AHORA!</a>
+    <a href="#paquetes" class="btn-primary">Â¡COMPRAR CHANCES AHORA!</a>
     <a href="#participantes" class="btn-secondary">Ver participantes</a>
   </div>
 </section>
@@ -2264,27 +2128,27 @@
 <!-- FOOTER -->
 <footer>
   <strong style="color:var(--gold)">Gran Sorteo</strong><br>
-  Lista pública de participantes · Nacional para toda la Argentina · 3 premios garantizados
+  Lista pÃºblica de participantes Â· Nacional para toda la Argentina Â· 3 premios garantizados
 </footer>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <button class="modal-close" id="modalClose">✕</button>
-    <div class="modal-title">¡Casi listo! 🎉</div>
-    <p class="modal-sub">Completá tus datos para reservar tus chances y avanzar a un pago simple y seguro.</p>
+    <button class="modal-close" id="modalClose">âœ•</button>
+    <div class="modal-title">Â¡Casi listo! ðŸŽ‰</div>
+    <p class="modal-sub">CompletÃ¡ tus datos para reservar tus chances y avanzar a un pago simple y seguro.</p>
     <div class="modal-assurance">
       <strong>Tu reserva queda asociada a tus datos, al pack elegido y al estado del pago.</strong>
-      <span>Cuando el pago se acredita, tus chances se activan y tu participación se refleja en la lista pública o como anónimo si así lo elegís. Eso ayuda a que el proceso sea más claro, ordenado y confiable.</span>
+      <span>Cuando el pago se acredita, tus chances se activan y tu participaciÃ³n se refleja en la lista pÃºblica o como anÃ³nimo si asÃ­ lo elegÃ­s. Eso ayuda a que el proceso sea mÃ¡s claro, ordenado y confiable.</span>
     </div>
     <div class="modal-pkg-display">
       <div class="modal-pkg-info">
         <span class="label">Pack seleccionado</span>
-        <span class="value" id="modal-pkg-name">—</span>
+        <span class="value" id="modal-pkg-name">â€”</span>
       </div>
       <div class="modal-pkg-info" style="text-align:right">
         <span class="label">Total a pagar</span>
-        <span class="value" id="modal-pkg-price">—</span>
+        <span class="value" id="modal-pkg-price">â€”</span>
       </div>
     </div>
     <div class="form-group">
@@ -2315,45 +2179,45 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Opinión o expectativa opcional</label>
-      <textarea class="form-input form-textarea" id="f-message" placeholder="Ej: Me encanta participar, ojalá tenga suerte. / Me gusta que la lista sea pública y transparente."></textarea>
-      <div class="form-help">Si querés, podés dejar una reseña breve, qué te parece el sorteo o cuáles son tus expectativas. Es completamente opcional y se muestra abajo dentro del formulario como referencia.</div>
+      <label class="form-label">OpiniÃ³n o expectativa opcional</label>
+      <textarea class="form-input form-textarea" id="f-message" placeholder="Ej: Me encanta participar, ojalÃ¡ tenga suerte. / Me gusta que la lista sea pÃºblica y transparente."></textarea>
+      <div class="form-help">Si querÃ©s, podÃ©s dejar una reseÃ±a breve, quÃ© te parece el sorteo o cuÃ¡les son tus expectativas. Es completamente opcional y se muestra abajo dentro del formulario como referencia.</div>
     </div>
     <div class="message-preview" id="messagePreview">
-      <span class="message-preview-label">Tu opinión o expectativa</span>
+      <span class="message-preview-label">Tu opiniÃ³n o expectativa</span>
       <div class="message-preview-copy" id="messagePreviewCopy"></div>
     </div>
     <div class="form-group">
       <label class="form-check">
         <input type="checkbox" id="f-anonymous">
         <span class="form-check-copy">
-          <span class="form-check-title">Quiero aparecer de forma anónima</span>
-          <span class="form-check-sub">En la lista pública vas a figurar como “Anónimo” junto con un código único de usuario.</span>
+          <span class="form-check-title">Quiero aparecer de forma anÃ³nima</span>
+          <span class="form-check-sub">En la lista pÃºblica vas a figurar como â€œAnÃ³nimoâ€ junto con un cÃ³digo Ãºnico de usuario.</span>
         </span>
       </label>
     </div>
     <div class="form-group">
-      <label class="form-label">Método de pago preferido</label>
+      <label class="form-label">MÃ©todo de pago preferido</label>
       <div class="payment-methods">
-        <!--span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">💳 Mercado Pago</span-->
-        <span class="pm-chip selected" data-provider="galiopay" onclick="selectPM(this)">🏦 Transferencia</span>
-        <!--span class="pm-chip" data-provider="manual" onclick="selectPM(this)">🏦 Transferencia</span>
-        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">💵 Efectivo</span-->
+        <!--span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">ðŸ’³ Mercado Pago</span-->
+        <span class="pm-chip selected" data-provider="galiopay" onclick="selectPM(this)">ðŸ¦ Transferencia</span>
+        <!--span class="pm-chip" data-provider="manual" onclick="selectPM(this)">ðŸ¦ Transferencia</span>
+        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">ðŸ’µ Efectivo</span-->
       </div>
     </div>
-    <button class="modal-confirm" id="modalConfirm">CONFIRMAR Y PAGAR ✓</button>
+    <button class="modal-confirm" id="modalConfirm">CONFIRMAR Y PAGAR âœ“</button>
     <div class="modal-trust">
-      <span>🔒 Datos y reserva asociados a tu compra</span>
-      <span>✅ Chances activadas al acreditarse el pago</span>
-      <span>📋 Participación visible o anónima, según elijas</span>
+      <span>ðŸ”’ Datos y reserva asociados a tu compra</span>
+      <span>âœ… Chances activadas al acreditarse el pago</span>
+      <span>ðŸ“‹ ParticipaciÃ³n visible o anÃ³nima, segÃºn elijas</span>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="opinionModal">
   <div class="modal">
-    <button class="modal-close" id="opinionModalClose">✕</button>
-    <div class="modal-title">💬 Opinión o expectativa</div>
+    <button class="modal-close" id="opinionModalClose">âœ•</button>
+    <div class="modal-title">ðŸ’¬ OpiniÃ³n o expectativa</div>
     <p class="modal-sub">Mensaje compartido por una persona que ya participa del sorteo.</p>
     <div class="modal-assurance">
       <strong id="opinionAuthor">Participante</strong>
@@ -2364,7 +2228,7 @@
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">✅ ¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
+<div class="toast" id="toast">âœ… Â¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
 <div class="live-feed" id="liveFeed">
   <div class="live-feed-card">
     <div class="live-feed-kicker">Actividad en vivo</div>
@@ -2373,7 +2237,7 @@
   </div>
 </div>
 <a class="whatsapp-float" href="https://wa.me/543518757751?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20el%20sorteo." target="_blank" rel="noopener noreferrer">
-  <span style="font-size:1.35rem">💬</span>
+  <span style="font-size:1.35rem">ðŸ’¬</span>
   <span><small>Consultas</small>WhatsApp</span>
 </a>
 
@@ -2386,8 +2250,8 @@ const MAX_FALLBACK_CHANCES = 5000;
 const FUNCTIONS_BASE_URL = `${SUPABASE_URL}/functions/v1`;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const DEFAULT_SHARE_IMAGE = new URL('./assets/share/share-sorteo.png', window.location.href).toString();
-const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Moto, TV y efectivo';
-const DEFAULT_SHARE_DESCRIPTION = 'Participá de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances.';
+const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Fiat Uno 2014, TV y efectivo';
+const DEFAULT_SHARE_DESCRIPTION = 'ParticipÃ¡ de este sorteo. Quedan pocos lugares y puede hacerse antes al agotar chances.';
 const DRAW_TARGET_ISO = '2026-07-26T20:00:00-03:00';
 
 let activeCampaign = null;
@@ -2404,22 +2268,22 @@ const fallbackProofMessages = [
   {
     name: 'Mariana',
     city: 'Cordoba',
-    message: 'Me dio confianza ver que las participaciones aparecen con fecha y cantidad de chances. Eso hace que el sorteo se sienta más claro y serio.'
+    message: 'Me dio confianza ver que las participaciones aparecen con fecha y cantidad de chances. Eso hace que el sorteo se sienta mÃ¡s claro y serio.'
   },
   {
     name: 'Leandro',
     city: 'Rosario',
-    message: 'Me gusta que expliquen que mientras más chances comprás, más veces participás en la selección aleatoria. Se entiende rápido y genera seguridad.'
+    message: 'Me gusta que expliquen que mientras mÃ¡s chances comprÃ¡s, mÃ¡s veces participÃ¡s en la selecciÃ³n aleatoria. Se entiende rÃ¡pido y genera seguridad.'
   },
   {
     name: 'Camila',
     city: 'Buenos Aires',
-    message: 'Saber que la entrega se coordina directamente con el ganador y que existe opción de equivalente en dinero me transmite mucha más tranquilidad.'
+    message: 'Saber que la entrega se coordina directamente con el ganador y que existe opciÃ³n de equivalente en dinero me transmite mucha mÃ¡s tranquilidad.'
   },
   {
     name: 'Franco',
     city: 'Mendoza',
-    message: 'La opción de aparecer anónimo pero seguir participando con registro visible me parece una muy buena forma de combinar privacidad con transparencia.'
+    message: 'La opciÃ³n de aparecer anÃ³nimo pero seguir participando con registro visible me parece una muy buena forma de combinar privacidad con transparencia.'
   }
 ];
 let latestOrderStatus = null;
@@ -2430,8 +2294,6 @@ const drawShowcaseState = {
   cyclePosition: 0,
   spotlightPosition: -1,
   round: 0,
-  direction: 1,
-  sweepOffset: 0,
   activeParticipantIndex: -1,
   activeEntryNumber: 0,
   activeEntryPosition: 0,
@@ -2446,15 +2308,6 @@ function colorFor(i){ return COLORS[i % COLORS.length]; }
 function initials(name){ return name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase(); }
 function totalChances(){ return participants.reduce((s, p) => s + (p.chances || 0), 0); }
 function currentMaxChances(){ return activeCampaign?.max_entries || MAX_FALLBACK_CHANCES; }
-function secureRandomInt(max){
-  if (!Number.isFinite(max) || max <= 0) return 0;
-  if (window.crypto?.getRandomValues) {
-    const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    return array[0] % max;
-  }
-  return Math.floor(Math.random() * max);
-}
 function getBaseChancePrice(){
   const singlePack = packages.find((pkg) => Number(pkg.entries_qty || 0) + Number(pkg.bonus_entries || 0) === 1);
   return Number(singlePack?.price_ars || 0);
@@ -2542,7 +2395,7 @@ function updatePhotoPreview(file) {
   }
   const objectUrl = URL.createObjectURL(file);
   image.src = objectUrl;
-  copy.textContent = `${file.name} listo para acompañar tu participacion.`;
+  copy.textContent = `${file.name} listo para acompaÃ±ar tu participacion.`;
   preview.classList.add('show');
 }
 
@@ -2590,7 +2443,7 @@ async function copyShareLink() {
 async function shareWhatsappLink() {
   const value = document.getElementById('shareLinkInput').value;
   if (!value) return;
-  const text = `Te comparto mi enlace del sorteo. Si compras desde acá me regalás 2 chances extra: ${value}`;
+  const text = `Te comparto mi enlace del sorteo. Si compras desde acÃ¡ me regalÃ¡s 2 chances extra: ${value}`;
   if (navigator.share) {
     try {
       await navigator.share({ text, url: value });
@@ -2609,7 +2462,7 @@ function randomFrom(list) {
 function shuffleList(list) {
   const copy = [...list];
   for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = secureRandomInt(i + 1);
+    const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
@@ -2628,125 +2481,24 @@ function buildDrawEntryPoolBase() {
       pool.push({
         participantIndex,
         chanceNumber,
-        chanceLabel: `${participant.displayName || participant.name} · chance ${chanceNumber}`
+        chanceLabel: `${participant.displayName || participant.name} Â· chance ${chanceNumber}`
       });
     }
   });
   return pool;
 }
 
-function buildIntelligentDrawCycle() {
-  if (!drawShowcaseState.basePool.length) return [];
-
-  const buckets = participants
-    .map((participant, participantIndex) => ({
-      participantIndex,
-      entries: shuffleList(
-        drawShowcaseState.basePool.filter((entry) => entry.participantIndex === participantIndex)
-      )
-    }))
-    .filter((bucket) => bucket.entries.length);
-
-  const participantsOrderBase = buckets.map((bucket) => bucket.participantIndex);
-  const cycle = [];
-  let lap = 0;
-
-  while (cycle.length < drawShowcaseState.basePool.length) {
-    const available = buckets.filter((bucket) => bucket.entries.length);
-    if (!available.length) break;
-    const direction = lap % 2 === 0 ? drawShowcaseState.direction : drawShowcaseState.direction * -1;
-    const sourceOrder = direction >= 0 ? [...participantsOrderBase] : [...participantsOrderBase].reverse();
-    const rotatedOrder = sourceOrder.length
-      ? sourceOrder.map((_, index) => sourceOrder[(index + drawShowcaseState.sweepOffset) % sourceOrder.length])
-      : [];
-
-    rotatedOrder.forEach((participantIndex) => {
-      const bucket = available.find((item) => item.participantIndex === participantIndex && item.entries.length);
-      if (!bucket) return;
-      cycle.push(bucket.entries.shift());
-    });
-
-    lap += 1;
-  }
-
-  return cycle;
-}
-
-function chooseSpotlightPosition(length) {
-  if (length <= 1) return 0;
-  const min = Math.max(0, Math.floor(length * 0.58));
-  const max = Math.max(min, Math.floor(length * 0.9));
-  return min + secureRandomInt((max - min) + 1);
-}
-
 function refreshDrawEntryPool() {
   drawShowcaseState.basePool = buildDrawEntryPoolBase();
-  updateDrawTelemetry();
-}
-
-function updateSweepIndicators() {
-  const directionLabel = document.getElementById('drawSweepDirection');
-  const spanLabel = document.getElementById('drawSweepSpan');
-  if (directionLabel) {
-    directionLabel.textContent = drawShowcaseState.direction >= 0 ? 'Barrido descendente' : 'Barrido ascendente';
-  }
-  if (spanLabel) {
-    spanLabel.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused
-      ? 'Recorriendo toda la lista'
-      : drawShowcaseState.activeSpotlight
-        ? 'Foco fijo en una chance'
-        : 'Listo para recorrer de punta a punta';
-  }
-}
-
-function renderChanceCloud(participant, activeChanceNumber = 0) {
-  const cloud = document.getElementById('drawChanceCloud');
-  if (!cloud) return;
-  if (!participant) {
-    cloud.innerHTML = '<span class="draw-chance-chip">La urna mostrara aqui las chances del participante activo.</span>';
-    return;
-  }
-
-  const total = getParticipantChances(participant);
-  const focusStart = Math.max(1, activeChanceNumber > 0 ? activeChanceNumber - 4 : 1);
-  const focusEnd = Math.min(total, focusStart + 8);
-  const chips = [];
-
-  if (focusStart > 1) {
-    chips.push('<span class="draw-chance-chip dimmed">...</span>');
-  }
-
-  for (let chance = focusStart; chance <= focusEnd; chance += 1) {
-    chips.push(`<span class="draw-chance-chip${chance === activeChanceNumber ? ' active' : ''}">#${chance}</span>`);
-  }
-
-  if (focusEnd < total) {
-    chips.push(`<span class="draw-chance-chip dimmed">+${(total - focusEnd).toLocaleString('es-AR')}</span>`);
-  }
-
-  cloud.innerHTML = chips.join('');
 }
 
 function getDrawNarrative(participant, isSpotlight, cycleProgress) {
   if (isSpotlight) {
-    return 'La demostracion alcanzo el punto final de la prueba y deja visible la chance exacta seleccionada dentro de la urna virtual.';
+    return 'La demostracion alcanzo el punto final de la prueba y deja visible la chance exacta seleccionada dentro de la urna.';
   }
-  if (cycleProgress < 0.18) return 'La demostracion arranca con alta velocidad y reparte el recorrido entre participantes con distinta cantidad de chances.';
-  if (cycleProgress > 0.76) return 'La prueba entra en una fase de desaceleracion controlada y empieza a acercarse al punto de detencion.';
-  return 'El sistema sigue recorriendo chances individuales con ponderacion real, evitando repeticiones excesivas y mostrando un barrido mas legible.';
-}
-
-function updateDrawTelemetry(modeOverride) {
-  const participantsCount = document.getElementById('drawParticipantsCount');
-  const entriesCount = document.getElementById('drawActiveEntriesCount');
-  const modeLabel = document.getElementById('drawModeLabel');
-  if (participantsCount) participantsCount.textContent = participants.length.toLocaleString('es-AR');
-  if (entriesCount) entriesCount.textContent = drawShowcaseState.basePool.length.toLocaleString('es-AR');
-  if (modeLabel) {
-    modeLabel.textContent = modeOverride
-      || (drawShowcaseState.hasStarted && !drawShowcaseState.paused ? 'Simulando' : drawShowcaseState.paused && drawShowcaseState.activeSpotlight ? 'Pausado en foco' : 'En espera');
-  }
-  updateSweepIndicators();
+  if (cycleProgress < 0.2) return 'La demostracion comenzo a recorrer la urna completa, incluyendo cada chance activa de cada participante.';
+  if (cycleProgress > 0.72) return 'La prueba entra en su tramo final y empieza a acercarse a la chance donde se detendra automaticamente.';
+  return 'El sistema sigue recorriendo chances individuales en tiempo real para mostrar una simulacion mas fiel del mecanismo de seleccion.';
 }
 
 function getActiveDemoParticipant() {
@@ -2792,8 +2544,9 @@ function toggleDemoShowcase() {
   const showcase = document.getElementById('drawShowcase');
   const button = document.getElementById('toggleDemoBtn');
   if (!showcase || !button) return;
-  showcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  button.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused ? 'Demostracion en curso' : 'Ir a la demostracion';
+  const willOpen = showcase.classList.contains('collapsed');
+  showcase.classList.toggle('collapsed', !willOpen);
+  button.textContent = willOpen ? 'Ocultar demostracion' : 'Iniciar demostracion';
 }
 
 function updateDrawControls() {
@@ -2802,16 +2555,10 @@ function updateDrawControls() {
   const saveBtn = document.getElementById('saveDemoResultBtn');
   if (!showcase || !startBtn || !saveBtn) return;
   showcase.classList.toggle('paused', drawShowcaseState.paused);
-  startBtn.disabled = !participants.length || (drawShowcaseState.hasStarted && !drawShowcaseState.paused);
+  startBtn.disabled = !participants.length || drawShowcaseState.hasStarted;
   startBtn.style.opacity = startBtn.disabled ? '0.5' : '1';
-  startBtn.textContent = drawShowcaseState.hasStarted && !drawShowcaseState.paused
-    ? 'Prueba en curso'
-    : drawShowcaseState.round > 0
-      ? 'Reiniciar prueba'
-      : 'Iniciar prueba';
-  saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.activeSpotlight;
+  saveBtn.disabled = !getActiveDemoParticipant() || !drawShowcaseState.paused || !drawShowcaseState.hasStarted;
   saveBtn.style.opacity = saveBtn.disabled ? '0.5' : '1';
-  updateDrawTelemetry();
 }
 
 function pauseDrawShowcase() {
@@ -2821,8 +2568,6 @@ function pauseDrawShowcase() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba detenida';
   document.getElementById('drawPhaseName').textContent = 'El software freno en el foco actual';
   document.getElementById('drawPhaseHint').textContent = 'Ahora puedes registrar este resultado de demostracion. Este dato sirve solo como evidencia visual del funcionamiento y no como resultado oficial.';
-  document.getElementById('drawFocusLine').textContent = 'El recorrido ya desacelero y dejo fijada la chance exacta donde la demo se detuvo.';
-  updateDrawTelemetry('Pausado en foco');
 }
 
 function startDemoTrial() {
@@ -2830,18 +2575,17 @@ function startDemoTrial() {
     renderDrawShowcaseEmpty();
     return;
   }
-  stopDrawShowcase();
   drawShowcaseState.hasStarted = true;
   drawShowcaseState.paused = false;
-  prepareDrawShowcaseRound();
   updateDrawControls();
+  if (!drawShowcaseState.cycle.length || drawShowcaseState.cyclePosition >= drawShowcaseState.cycle.length) {
+    prepareDrawShowcaseRound();
+  }
   document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   tickDrawShowcase();
   document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
   document.getElementById('drawPhaseName').textContent = 'El software esta recorriendo participantes en vivo';
   document.getElementById('drawPhaseHint').textContent = 'La prueba se detendra sola en el elegido y luego podras registrar ese resultado.';
-  document.getElementById('drawFocusLine').textContent = 'Se esta generando un barrido ponderado sobre todas las chances visibles para mantener una demo mas clara y estable.';
-  updateDrawTelemetry('Simulando');
 }
 
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
@@ -2872,15 +2616,7 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
   const visibleTop = currentTop + 54;
   const visibleBottom = currentTop + scroller.clientHeight - 54;
   const shouldLockView = isSpotlight || !drawShowcaseState.paused;
-  const totalScrollable = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
-  const cycleProgress = drawShowcaseState.cycle.length
-    ? drawShowcaseState.cyclePosition / drawShowcaseState.cycle.length
-    : 0;
-  const sweepProgress = drawShowcaseState.direction >= 0 ? cycleProgress : 1 - cycleProgress;
-  const sweepTarget = totalScrollable * sweepProgress;
-  if (!isSpotlight && !drawShowcaseState.paused) {
-    scroller.scrollTo({ top: Math.max(0, Math.min(totalScrollable, sweepTarget)), behavior: 'smooth' });
-  } else if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
+  if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
     const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.45));
     scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
   }
@@ -2892,26 +2628,15 @@ function syncParticipantTableFocus(activeIndex, isSpotlight) {
 }
 
 function getDrawDelay(participant, isSpotlight) {
-  const chanceWeight = Math.min(getParticipantChances(participant), 18);
+  const chanceWeight = Math.min(getParticipantChances(participant), 12);
   const cycleProgress = drawShowcaseState.cycle.length
     ? drawShowcaseState.cyclePosition / drawShowcaseState.cycle.length
     : 0;
-  const distanceToSpotlight = drawShowcaseState.spotlightPosition >= 0
-    ? Math.max(0, drawShowcaseState.spotlightPosition - drawShowcaseState.cyclePosition)
-    : 0;
+  const introBoost = cycleProgress < 0.18 ? -32 : cycleProgress > 0.72 ? 42 : 0;
   if (isSpotlight) {
-    return 2200 + (chanceWeight * 38) + Math.random() * 900;
+    return 2400 + (chanceWeight * 45) + Math.random() * 1200;
   }
-  if (distanceToSpotlight <= 2) {
-    return 520 + (chanceWeight * 8) + Math.random() * 180;
-  }
-  if (distanceToSpotlight <= 6) {
-    return 240 + (chanceWeight * 4) + Math.random() * 120;
-  }
-  if (cycleProgress < 0.18) {
-    return 70 + Math.random() * 40;
-  }
-  return Math.max(90, 110 + (chanceWeight * 2.5) + (Math.random() * 85));
+  return Math.max(95, 150 + introBoost + (chanceWeight * 4) + (Math.random() * 90));
 }
 
 function renderDrawShowcaseEmpty() {
@@ -2935,10 +2660,7 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba disponible';
   document.getElementById('drawPhaseName').textContent = 'Lista para iniciar la demostracion del funcionamiento';
   document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
-  document.getElementById('drawFocusLine').textContent = 'La demo se prepara con todas las chances visibles para construir un recorrido ponderado.';
   document.getElementById('drawIntelFill').style.width = '18%';
-  renderChanceCloud(null, 0);
-  updateDrawTelemetry('En espera');
   updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
@@ -3020,7 +2742,6 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
   const cycleProgress = drawShowcaseState.cycle.length
     ? (drawShowcaseState.cyclePosition + 1) / drawShowcaseState.cycle.length
     : 0;
-  const remainingEntries = Math.max(0, drawShowcaseState.spotlightPosition - drawShowcaseState.cyclePosition);
   document.getElementById('drawShowcase')?.classList.toggle('is-focus-locked', Boolean(isSpotlight));
 
   featuredCard.classList.toggle('spotlight', Boolean(isSpotlight));
@@ -3042,15 +2763,10 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
     : 'La lista esta recorriendo participantes en tiempo real';
   phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
-  document.getElementById('drawFocusLine').textContent = isSpotlight
-    ? `La demo se detuvo en la chance ${entry.chanceNumber} de ${participant.displayName || participant.name}.`
-    : `Chance ${entry.chanceNumber} en foco. Restan ${remainingEntries.toLocaleString('es-AR')} pasos aproximados hasta el punto de detencion.`;
   intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
-  renderChanceCloud(participant, entry.chanceNumber);
-  updateDrawTelemetry(isSpotlight ? 'Foco final' : 'Simulando');
 
   const visibleCards = [];
-  const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 7);
+  const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
   for (let offset = 0; offset < cardCount; offset += 1) {
     const cyclePosition = (drawShowcaseState.cyclePosition + offset) % drawShowcaseState.cycle.length;
     const cycleEntry = drawShowcaseState.cycle[cyclePosition];
@@ -3061,9 +2777,8 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     if (!item) {
       continue;
     }
-    const queueClass = offset === 0 ? ' active' : offset <= 2 ? ' queue-next' : ' queue-far';
     visibleCards.push(`
-      <div class="draw-rail-card${queueClass}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
+      <div class="draw-rail-card${offset === 0 ? ' active' : ''}${cyclePosition === drawShowcaseState.spotlightPosition ? ' spotlight' : ''}">
         <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
         <div class="draw-rail-meta">
           <span>${escapeHtml(participantLocation(item))}</span>
@@ -3083,11 +2798,9 @@ function stopDrawShowcase() {
 }
 
 function prepareDrawShowcaseRound() {
-  drawShowcaseState.direction = drawShowcaseState.round % 2 === 0 ? 1 : -1;
-  drawShowcaseState.sweepOffset = participants.length ? secureRandomInt(participants.length) : 0;
-  drawShowcaseState.cycle = buildIntelligentDrawCycle();
+  drawShowcaseState.cycle = shuffleList(drawShowcaseState.basePool);
   drawShowcaseState.cyclePosition = 0;
-  drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? chooseSpotlightPosition(drawShowcaseState.cycle.length) : -1;
+  drawShowcaseState.spotlightPosition = drawShowcaseState.cycle.length ? Math.floor(Math.random() * drawShowcaseState.cycle.length) : -1;
   drawShowcaseState.round += 1;
 }
 
@@ -3244,7 +2957,7 @@ function renderPackages(){
       <span class="pkg-price">$${totalPrice.toLocaleString('es-AR')}</span>
       <span class="pkg-price-unit">$${perChance} por chance</span>
       <span class="pkg-saving">${savingsLabel}</span>
-      <span class="pkg-price-unit">${chances >= 3 ? 'Con 3 o más chances se habilita tu link único y cada referido aprobado te suma 2 chances extra' : '&nbsp;'}</span>
+      <span class="pkg-price-unit">${chances >= 3 ? 'Con 3 o mÃ¡s chances se habilita tu link Ãºnico y cada referido aprobado te suma 2 chances extra' : '&nbsp;'}</span>
       <button class="pkg-btn" onclick="openModal('${pkg.id}')">Quiero ${chances >= 1000 ? (chances/1000)+'K' : chances} chance${chances > 1 ? 's' : ''}</button>
     `;
     grid.appendChild(div);
@@ -3282,7 +2995,7 @@ function renderParticipants(filter=''){
       <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
       <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     body.appendChild(row);
 
@@ -3297,7 +3010,7 @@ function renderParticipants(filter=''){
           <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
           <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
           <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
-          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">💬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         body.appendChild(detailRow);
       });
@@ -3377,7 +3090,7 @@ function setCountdown(targetIso){
     if (diff <= 0) {
       clearInterval(countdownInterval);
       countdownBar.classList.remove('hidden-until-thirty');
-      document.getElementById('countdownNote').textContent = 'Se acerca el cierre final. Aprovechá antes de que se agoten las chances.';
+      document.getElementById('countdownNote').textContent = 'Se acerca el cierre final. AprovechÃ¡ antes de que se agoten las chances.';
       return;
     }
     const d = Math.floor(diff / 864e5);
@@ -3487,7 +3200,7 @@ document.getElementById('opinionModal').onclick = e => { if (e.target === docume
 
 function openOpinionModal({ message, author, city }) {
   document.getElementById('opinionAuthor').textContent = author;
-  document.getElementById('opinionMeta').textContent = `${city} · Mensaje compartido desde el formulario del sorteo.`;
+  document.getElementById('opinionMeta').textContent = `${city} Â· Mensaje compartido desde el formulario del sorteo.`;
   document.getElementById('opinionModalCopy').textContent = message;
   document.getElementById('opinionModal').classList.add('open');
 }
@@ -3532,8 +3245,8 @@ async function submitOrder(){
   const city = document.getElementById('f-city').value.trim() || '';
   const opinionMessage = document.getElementById('f-message').value.trim();
   const wantsAnonymous = document.getElementById('f-anonymous').checked;
-  if (!selectedPkg) return showToast('Elegí un paquete.');
-  if (!name || !phone) return alert('Completá nombre y WhatsApp');
+  if (!selectedPkg) return showToast('ElegÃ­ un paquete.');
+  if (!name || !phone) return alert('CompletÃ¡ nombre y WhatsApp');
 
   const button = document.getElementById('modalConfirm');
   const originalText = button.textContent;
@@ -3658,7 +3371,7 @@ async function loadParticipants(){
       sourceIndex: index,
       name: fullName,
       displayName,
-    detailLabel: row.is_anonymous ? (row.display_name || 'Anónimo') : row.full_name,
+    detailLabel: row.is_anonymous ? (row.display_name || 'AnÃ³nimo') : row.full_name,
       isAnonymous: Boolean(row.is_anonymous),
       publicCode: row.public_code || '',
       photoUrl: row.photo_url || '',
@@ -3717,7 +3430,7 @@ function renderParticipants(filter=''){
       <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
       <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
       <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
-      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">💬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+      <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     fragment.appendChild(row);
 
@@ -3731,7 +3444,7 @@ function renderParticipants(filter=''){
           <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
           <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
           <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
-          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">💬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
+          <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         fragment.appendChild(detailRow);
       });
@@ -3784,7 +3497,7 @@ async function loadParticipants(){
       sourceIndex: index,
       name: fullName,
       displayName,
-      detailLabel: row.is_anonymous ? (displayName || 'AnÃ³nimo') : fullName,
+      detailLabel: row.is_anonymous ? (displayName || 'AnÃƒÂ³nimo') : fullName,
       isAnonymous: Boolean(row.is_anonymous),
       publicCode: row.public_code || '',
       photoUrl: row.photo_url || '',
@@ -3812,8 +3525,8 @@ async function handleReturnedPayment() {
   if (paymentState === 'failure') {
     showPaymentCard({
       kicker: 'Pago pendiente',
-      title: 'El pago no se aprobó',
-      copy: 'Podés intentarlo de nuevo con otro medio o volver a elegir tu pack.'
+      title: 'El pago no se aprobÃ³',
+      copy: 'PodÃ©s intentarlo de nuevo con otro medio o volver a elegir tu pack.'
     });
     showToast('El pago no fue aprobado.');
     clearPaymentQueryState();
@@ -3828,17 +3541,17 @@ async function handleReturnedPayment() {
   }
 
   if (!statusData) {
-    showToast('No pudimos verificar tu pago todavía.');
+    showToast('No pudimos verificar tu pago todavÃ­a.');
     return;
   }
 
   if (statusData.status !== 'paid') {
     showPaymentCard({
-      kicker: 'Pago en revisión',
+      kicker: 'Pago en revisiÃ³n',
       title: 'Estamos confirmando tu compra',
-      copy: 'Cuando el pago se acredite, tu nombre aparecerá en la lista automáticamente.'
+      copy: 'Cuando el pago se acredite, tu nombre aparecerÃ¡ en la lista automÃ¡ticamente.'
     });
-    showToast('Tu pago quedó en revisión.');
+    showToast('Tu pago quedÃ³ en revisiÃ³n.');
     clearPaymentQueryState();
     return;
   }
@@ -3862,11 +3575,11 @@ async function handleReturnedPayment() {
     kicker: 'Pago aprobado',
     title: `${participantLabel} ya participa del sorteo`,
     copy: shareUrl
-      ? `Tus chances ya están activas, tu compra quedó registrada y también se habilitó tu enlace único. Cada compra aprobada desde ese enlace te suma 2 chances extra.`
-      : `Tus chances ya están activas, tu compra quedó registrada y ya aparecés en la lista pública de participantes.`,
+      ? `Tus chances ya estÃ¡n activas, tu compra quedÃ³ registrada y tambiÃ©n se habilitÃ³ tu enlace Ãºnico. Cada compra aprobada desde ese enlace te suma 2 chances extra.`
+      : `Tus chances ya estÃ¡n activas, tu compra quedÃ³ registrada y ya aparecÃ©s en la lista pÃºblica de participantes.`,
     shareUrl
   });
-  showToast(shareUrl ? 'Pago aprobado. Ya podés compartir tu enlace único.' : 'Pago aprobado. Ya aparecés en la lista.');
+  showToast(shareUrl ? 'Pago aprobado. Ya podÃ©s compartir tu enlace Ãºnico.' : 'Pago aprobado. Ya aparecÃ©s en la lista.');
   document.getElementById('participantes').scrollIntoView({ behavior: 'smooth' });
   clearPaymentQueryState();
 }
@@ -3930,3 +3643,4 @@ bootLanding();
 </script>
 </body>
 </html>
+
