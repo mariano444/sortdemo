@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://www.facebook.com https://*.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://asokopamdmuvuupywjzt.supabase.co https://cdn.jsdelivr.net https://connect.facebook.net; frame-src https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <title>Gran Sorteo - Fiat Uno 2014 Impecable</title>
 <meta name="description" content="Participa desde cualquier punto de Argentina por un Fiat Uno 2014 impecable. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
 <meta property="og:type" content="website">
@@ -16,6 +17,8 @@
 <meta name="twitter:description" content="Te invito a participar de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede realizarse antes al agotar chances.">
 <meta name="twitter:image" content="./assets/share/share-sorteo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./index.css">
+<!-- legacy-inline-style-block
 <style>
   :root {
     --gold: #F5C842;
@@ -2142,6 +2145,7 @@
     .vote-results-grid { grid-template-columns: 1fr; }
   }
 </style>
+-->
   <!-- Meta Pixel Code -->
 <script>
   !function(f,b,e,v,n,t,s)
@@ -2704,6 +2708,9 @@
   <span><small>Consultas</small>WhatsApp</span>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./index.js"></script>
+<!-- legacy-inline-app-script
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
@@ -4376,5 +4383,6 @@ async function bootLanding(){
 
 bootLanding();
 </script>
+-->
 </body>
 </html>
