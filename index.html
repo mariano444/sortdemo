@@ -338,22 +338,8 @@
   .auto-showcase-grid {
     padding: 1rem;
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: 1rem;
-    align-items: stretch;
-  }
-  .auto-gallery-stage,
-  .auto-gallery-side {
-    display: grid;
-    gap: 1rem;
-  }
-  .auto-gallery-side {
-    grid-template-rows: auto auto 1fr;
-  }
-  .auto-filmstrip {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.9rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.95rem;
   }
   .auto-photo-card {
     position: relative;
@@ -369,18 +355,16 @@
     border-color: rgba(245,200,66,0.22);
     box-shadow: 0 14px 28px rgba(0,0,0,0.22);
   }
-  .auto-photo-card.featured { min-height: 420px; }
-  .auto-photo-card.medium { min-height: 200px; }
-  .auto-photo-card.compact { min-height: 150px; }
+  .auto-photo-card.featured {
+    grid-column: span 2;
+    min-height: 240px;
+  }
   .auto-photo-card img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     padding: 1rem;
     filter: drop-shadow(0 16px 28px rgba(0,0,0,0.32));
-  }
-  .auto-photo-card.featured img {
-    padding: 1.4rem 1.4rem 1.1rem;
   }
   .auto-photo-label {
     position: absolute;
@@ -403,54 +387,6 @@
   .auto-photo-label strong {
     color: var(--gold);
     font-weight: 800;
-  }
-  .auto-spec-card {
-    border-radius: 1.15rem;
-    border: 1px solid rgba(255,255,255,0.07);
-    background:
-      linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)),
-      radial-gradient(circle at top right, rgba(245,200,66,0.12), transparent 48%);
-    padding: 1rem 1rem 1.1rem;
-    display: grid;
-    gap: 0.65rem;
-  }
-  .auto-spec-kicker {
-    color: var(--gold);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-  .auto-spec-card h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    line-height: 0.92;
-    color: var(--text);
-  }
-  .auto-spec-card p {
-    color: var(--text2);
-    line-height: 1.6;
-    font-size: 0.92rem;
-  }
-  .auto-spec-list {
-    display: grid;
-    gap: 0.5rem;
-  }
-  .auto-spec-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.7rem;
-    padding: 0.7rem 0.8rem;
-    border-radius: 0.9rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    color: var(--text2);
-    font-size: 0.82rem;
-  }
-  .auto-spec-item strong {
-    color: var(--text);
-    font-weight: 700;
   }
   .live-feed {
     position: fixed;
@@ -1931,6 +1867,228 @@
     color: var(--text);
     border: 1px solid rgba(255,255,255,0.12);
   }
+  .next-draw-voting {
+    margin: 1.6rem auto 0;
+    max-width: 1080px;
+    background:
+      radial-gradient(circle at top right, rgba(59,139,255,0.14), transparent 36%),
+      linear-gradient(145deg, rgba(28,28,42,0.98), rgba(15,15,24,0.98));
+    border: 1px solid rgba(245,200,66,0.18);
+    border-radius: 1.5rem;
+    padding: 1.4rem;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.24);
+  }
+  .next-draw-head {
+    display: grid;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+  }
+  .next-draw-kicker {
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    font-weight: 800;
+  }
+  .next-draw-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 0.96;
+  }
+  .next-draw-copy {
+    color: var(--text2);
+    max-width: 62ch;
+    line-height: 1.5;
+  }
+  .vote-unlock-note,
+  .vote-status {
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--text2);
+  }
+  .vote-status {
+    color: var(--text);
+    border-color: rgba(245,200,66,0.22);
+    background: rgba(245,200,66,0.08);
+  }
+  .vote-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+  }
+  .vote-option-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .vote-option-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245,200,66,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+  }
+  .vote-option-card.selected {
+    border-color: rgba(245,200,66,0.75);
+    box-shadow: 0 0 0 1px rgba(245,200,66,0.22), 0 18px 40px rgba(245,200,66,0.12);
+  }
+  .vote-option-media {
+    aspect-ratio: 16 / 10;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.12), rgba(255,255,255,0));
+  }
+  .vote-option-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 26px rgba(0,0,0,0.28));
+  }
+  .vote-option-body {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1rem 1rem 1.1rem;
+  }
+  .vote-option-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    align-items: center;
+  }
+  .vote-option-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    background: rgba(255,255,255,0.08);
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+  .vote-option-count {
+    font-size: 0.9rem;
+    color: var(--gold);
+    font-weight: 800;
+  }
+  .vote-option-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2.15rem);
+    line-height: 0.94;
+  }
+  .vote-option-desc {
+    color: var(--text2);
+    line-height: 1.45;
+    min-height: 2.8em;
+  }
+  .vote-option-action {
+    margin-top: 0.25rem;
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 0.95rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--dark);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+  .vote-option-action[disabled] {
+    opacity: 0.62;
+    cursor: not-allowed;
+  }
+  .vote-results-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+  .vote-summary-card,
+  .vote-feed {
+    border-radius: 1.2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    padding: 1rem;
+  }
+  .vote-summary-title,
+  .vote-feed-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+    font-weight: 800;
+    margin-bottom: 0.8rem;
+  }
+  .vote-summary-list {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .vote-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--text);
+  }
+  .vote-summary-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .vote-summary-label small {
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+  }
+  .vote-summary-value {
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 1.15rem;
+  }
+  .vote-feed-list {
+    display: grid;
+    gap: 0.65rem;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 0.2rem;
+  }
+  .vote-feed-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem 0.8rem;
+    align-items: center;
+    padding: 0.8rem 0.9rem;
+    border-radius: 1rem;
+    background: rgba(10,10,15,0.36);
+  }
+  .vote-feed-name {
+    font-weight: 800;
+    color: var(--text);
+  }
+  .vote-feed-choice {
+    color: var(--gold);
+    font-weight: 800;
+  }
+  .vote-feed-time {
+    grid-column: 1 / -1;
+    color: var(--text2);
+    font-size: 0.8rem;
+  }
+  .vote-empty {
+    color: var(--text2);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
 
   /* ---- ANIMATIONS ---- */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s, transform 0.6s; }
@@ -1970,9 +2128,7 @@
     .prize-shot img { height: 140px; }
     .auto-showcase-wrap { grid-template-columns: 1fr; }
     .auto-showcase-grid { grid-template-columns: 1fr; }
-    .auto-gallery-side { grid-template-rows: auto; }
-    .auto-filmstrip { grid-template-columns: 1fr; }
-    .auto-photo-card.featured { min-height: 260px; }
+    .auto-photo-card.featured { grid-column: span 1; min-height: 220px; }
     .live-feed { left: 12px; right: 12px; min-width: 0; max-width: none; }
     .whatsapp-float {
       right: 12px;
@@ -1982,8 +2138,27 @@
     }
     .share-link-row { grid-template-columns: 1fr; }
     .share-link-btn { width: 100%; }
+    .vote-options-grid,
+    .vote-results-grid { grid-template-columns: 1fr; }
   }
 </style>
+  <!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '675114246370648');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=675114246370648&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -2221,6 +2396,27 @@
       </div>
     </div>
 
+    <div class="next-draw-voting reveal" id="nextDrawVoting">
+      <div class="next-draw-head">
+        <span class="next-draw-kicker">Votacion del proximo sorteo</span>
+        <h3 class="next-draw-title">Despues de abonar podes elegir el premio que te gustaria ver despues</h3>
+        <p class="next-draw-copy">Las personas con pago aprobado pueden votar entre dos opciones. Abajo tambien queda visible quien voto y cual eligio para que todo sea claro.</p>
+      </div>
+      <div class="vote-unlock-note" id="voteUnlockNotice">Cuando tu pago quede aprobado se habilita tu voto automaticamente en esta misma seccion.</div>
+      <div class="vote-status hidden" id="voteStatus"></div>
+      <div class="vote-options-grid" id="voteOptionsGrid"></div>
+      <div class="vote-results-grid">
+        <div class="vote-summary-card">
+          <div class="vote-summary-title">Resumen actual</div>
+          <div class="vote-summary-list" id="voteSummaryList"></div>
+        </div>
+        <div class="vote-feed">
+          <div class="vote-feed-title">Quien voto y a cual</div>
+          <div class="vote-feed-list" id="voteFeedList"></div>
+        </div>
+      </div>
+    </div>
+
     <div style="text-align:center; margin-top:2rem">
       <a href="#paquetes" class="btn-primary">Â¡Sumate ahora!</a>
     </div>
@@ -2232,7 +2428,7 @@
     <div class="auto-showcase-copy">
       <span class="auto-showcase-kicker">Galeria del premio</span>
       <h2 class="auto-showcase-title">Hermoso <span>Fiat Uno</span><br>2014 impecable</h2>
-      <p class="auto-showcase-text">Una presentacion mas prolija del premio, ubicada debajo de la lista de participantes para acompañar el recorrido de la pagina con una seccion visual mas armoniosa, clara y profesional.</p>
+      <!--p class="auto-showcase-text">Una presentacion mas prolija del premio, ubicada debajo de la lista de participantes para acompañar el recorrido de la pagina con una seccion visual mas armoniosa, clara y profesional.</p-->
       <div class="auto-showcase-pills">
         <span class="auto-pill">Premio unico</span>
         <span class="auto-pill">6 fotos reales</span>
@@ -2241,45 +2437,29 @@
       </div>
     </div>
     <div class="auto-showcase-grid">
-      <div class="auto-gallery-stage">
-        <div class="auto-photo-card featured">
-          <img src="./assets/premios/fiat-uno-frente-angulo.png" alt="Hermoso Fiat Uno 2014 vista principal">
-          <div class="auto-photo-label"><span>Vista principal</span><strong>Hermoso Fiat Uno</strong></div>
-        </div>
-        <div class="auto-filmstrip">
-          <div class="auto-photo-card compact">
-            <img src="./assets/premios/fiat-uno-interior.png" alt="Hermoso Fiat Uno 2014 interior">
-            <div class="auto-photo-label"><span>Interior</span><strong>Cabina</strong></div>
-          </div>
-          <div class="auto-photo-card compact">
-            <img src="./assets/premios/fiat-uno-atras.png" alt="Hermoso Fiat Uno 2014 parte trasera">
-            <div class="auto-photo-label"><span>Trasera</span><strong>Detalle</strong></div>
-          </div>
-          <div class="auto-photo-card compact">
-            <img src="./assets/premios/fiat-uno-atras-angulo-1.png" alt="Hermoso Fiat Uno 2014 lateral trasera">
-            <div class="auto-photo-label"><span>Perfil</span><strong>Lateral</strong></div>
-          </div>
-        </div>
+      <div class="auto-photo-card featured">
+        <img src="./assets/premios/fiat-uno-frente-angulo.png" alt="Hermoso Fiat Uno 2014 vista principal">
+        <div class="auto-photo-label"><span>Vista principal</span><strong>Fiat Uno</strong></div>
       </div>
-      <div class="auto-gallery-side">
-        <div class="auto-photo-card medium">
-          <img src="./assets/premios/fiat-uno-frente.png" alt="Hermoso Fiat Uno 2014 frente">
-          <div class="auto-photo-label"><span>Frente</span><strong>Exterior</strong></div>
-        </div>
-        <div class="auto-photo-card medium">
-          <img src="./assets/premios/fiat-uno-atras-angulo-2.png" alt="Hermoso Fiat Uno 2014 vista final">
-          <div class="auto-photo-label"><span>Vista final</span><strong>Impecable</strong></div>
-        </div>
-        <div class="auto-spec-card">
-          <span class="auto-spec-kicker">Presentacion premium</span>
-          <h3>Premio unico</h3>
-          <p>Una composicion mas profesional para mostrar el auto con jerarquia visual, mejores proporciones y un recorrido mas elegante entre las fotos.</p>
-          <div class="auto-spec-list">
-            <div class="auto-spec-item"><span>Modelo destacado</span><strong>Fiat Uno 2014</strong></div>
-            <div class="auto-spec-item"><span>Fotos visibles</span><strong>6 tomas reales</strong></div>
-            <div class="auto-spec-item"><span>Premio publicado</span><strong>Unico ganador</strong></div>
-          </div>
-        </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-frente.png" alt="Hermoso Fiat Uno 2014 frente">
+        <div class="auto-photo-label"><span>Frente</span><strong>Exterior</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-interior.png" alt="Hermoso Fiat Uno 2014 interior">
+        <div class="auto-photo-label"><span>Interior</span><strong>Cabina</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-atras-angulo-1.png" alt="Hermoso Fiat Uno 2014 lateral trasera">
+        <div class="auto-photo-label"><span>Lateral trasera</span><strong>Perfil</strong></div>
+      </div>
+      <div class="auto-photo-card">
+        <img src="./assets/premios/fiat-uno-atras.png" alt="Hermoso Fiat Uno 2014 parte trasera">
+        <div class="auto-photo-label"><span>Parte trasera</span><strong>Detalle</strong></div>
+      </div>
+      <div class="auto-photo-card featured">
+        <img src="./assets/premios/fiat-uno-atras-angulo-2.png" alt="Hermoso Fiat Uno 2014 vista final">
+        <div class="auto-photo-label"><span>Vista final</span><strong>Impecable</strong></div>
       </div>
     </div>
   </div>
@@ -2570,6 +2750,26 @@ const fallbackProofMessages = [
   }
 ];
 let latestOrderStatus = null;
+let publicCampaignVotes = [];
+let myCampaignVote = null;
+let voteSubmissionInFlight = false;
+const APPROVED_ORDER_REF_STORAGE_KEY = `campaign_vote_paid_ref_${CAMPAIGN_SLUG}`;
+const NEXT_DRAW_OPTIONS = [
+  {
+    key: 'moto',
+    badge: 'Opcion A',
+    title: 'Moto 110 full',
+    description: 'Una opcion agil, muy pedida y pensada para un proximo sorteo de alto interes.',
+    image: './assets/premios/moto-azul.png'
+  },
+  {
+    key: 'tv',
+    badge: 'Opcion B',
+    title: 'Smart TV 50"',
+    description: 'Una propuesta fuerte para hogar y tecnologia, ideal para un proximo lanzamiento.',
+    image: './assets/premios/tv-premio.png'
+  }
+];
 const expandedParticipantRows = new Set();
 const drawShowcaseState = {
   basePool: [],
@@ -2744,6 +2944,196 @@ async function uploadParticipantPhoto(file, phone) {
 
 function buildFunctionUrl(name) {
   return `${FUNCTIONS_BASE_URL}/${name}`;
+}
+
+function getStoredApprovedOrderReference() {
+  try {
+    return sessionStorage.getItem(APPROVED_ORDER_REF_STORAGE_KEY) || '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function storeApprovedOrderReference(orderRef) {
+  try {
+    if (orderRef) {
+      sessionStorage.setItem(APPROVED_ORDER_REF_STORAGE_KEY, orderRef);
+    } else {
+      sessionStorage.removeItem(APPROVED_ORDER_REF_STORAGE_KEY);
+    }
+  } catch (_) {
+    // ignore storage errors
+  }
+}
+
+function getVoteOptionMeta(optionKey) {
+  return NEXT_DRAW_OPTIONS.find(option => option.key === optionKey) || NEXT_DRAW_OPTIONS[0];
+}
+
+function formatVoteTime(value) {
+  if (!value) return 'Hace instantes';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Hace instantes';
+  return date.toLocaleString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function renderCampaignVoting() {
+  const optionsGrid = document.getElementById('voteOptionsGrid');
+  const summaryList = document.getElementById('voteSummaryList');
+  const feedList = document.getElementById('voteFeedList');
+  const unlockNotice = document.getElementById('voteUnlockNotice');
+  const voteStatus = document.getElementById('voteStatus');
+  if (!optionsGrid || !summaryList || !feedList || !unlockNotice || !voteStatus) return;
+
+  const isUnlocked = Boolean(getStoredApprovedOrderReference());
+  const counts = publicCampaignVotes.reduce((acc, vote) => {
+    acc[vote.option_key] = (acc[vote.option_key] || 0) + 1;
+    return acc;
+  }, {});
+  const totalVotes = publicCampaignVotes.length;
+
+  unlockNotice.textContent = isUnlocked
+    ? 'Tu pago ya fue aprobado. Elegi una opcion y tu voto quedara publicado al instante.'
+    : 'Cuando tu pago quede aprobado se habilita tu voto automaticamente en esta misma seccion.';
+
+  if (myCampaignVote?.option_key) {
+    const selectedOption = getVoteOptionMeta(myCampaignVote.option_key);
+    voteStatus.textContent = `Tu voto actual: ${selectedOption.title}. Si queres, podes cambiarlo.`;
+    voteStatus.classList.remove('hidden');
+  } else {
+    voteStatus.classList.add('hidden');
+    voteStatus.textContent = '';
+  }
+
+  optionsGrid.innerHTML = NEXT_DRAW_OPTIONS.map((option) => {
+    const votes = counts[option.key] || 0;
+    const isSelected = myCampaignVote?.option_key === option.key;
+    const disabled = !isUnlocked || voteSubmissionInFlight;
+    const buttonLabel = !isUnlocked
+      ? 'Se habilita al aprobarse tu pago'
+      : voteSubmissionInFlight
+        ? 'Guardando voto...'
+        : isSelected
+          ? 'Voto registrado'
+          : 'Votar esta opcion';
+
+    return `
+      <article class="vote-option-card${isSelected ? ' selected' : ''}">
+        <div class="vote-option-media">
+          <img src="${option.image}" alt="${option.title}">
+        </div>
+        <div class="vote-option-body">
+          <div class="vote-option-top">
+            <span class="vote-option-badge">${option.badge}</span>
+            <span class="vote-option-count">${votes} voto${votes === 1 ? '' : 's'}</span>
+          </div>
+          <div class="vote-option-name">${option.title}</div>
+          <div class="vote-option-desc">${option.description}</div>
+          <button class="vote-option-action" type="button" data-vote-option="${option.key}" ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  summaryList.innerHTML = NEXT_DRAW_OPTIONS.map((option) => {
+    const votes = counts[option.key] || 0;
+    const percent = totalVotes ? Math.round((votes / totalVotes) * 100) : 0;
+    return `
+      <div class="vote-summary-row">
+        <div class="vote-summary-label">
+          <strong>${option.title}</strong>
+          <small>${option.badge}</small>
+        </div>
+        <div class="vote-summary-value">${votes} / ${percent}%</div>
+      </div>
+    `;
+  }).join('');
+
+  if (!publicCampaignVotes.length) {
+    feedList.innerHTML = '<div class="vote-empty">Todavia nadie voto. El primer voto puede aparecer apenas se apruebe un pago.</div>';
+  } else {
+    feedList.innerHTML = publicCampaignVotes.slice(0, 30).map((vote) => `
+      <div class="vote-feed-item">
+        <div class="vote-feed-name">${vote.display_name || 'Participante'}</div>
+        <div class="vote-feed-choice">${vote.option_label || getVoteOptionMeta(vote.option_key).title}</div>
+        <div class="vote-feed-time">${formatVoteTime(vote.voted_at)}</div>
+      </div>
+    `).join('');
+  }
+
+  repairDocumentText(document.getElementById('nextDrawVoting'));
+}
+
+async function loadPublicCampaignVotes() {
+  try {
+    const { data, error } = await supabaseClient.rpc('list_public_campaign_votes', {
+      p_campaign_slug: CAMPAIGN_SLUG
+    });
+    if (error) throw error;
+    publicCampaignVotes = Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('No se pudieron cargar los votos publicos.', error);
+    publicCampaignVotes = [];
+  }
+  renderCampaignVoting();
+}
+
+async function loadMyCampaignVote() {
+  const orderRef = getStoredApprovedOrderReference();
+  if (!orderRef) {
+    myCampaignVote = null;
+    renderCampaignVoting();
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.rpc('get_campaign_vote_for_order', {
+      p_external_reference: orderRef
+    });
+    if (error) throw error;
+    myCampaignVote = data || null;
+  } catch (error) {
+    console.error('No se pudo cargar el voto del participante.', error);
+    myCampaignVote = null;
+  }
+  renderCampaignVoting();
+}
+
+async function submitCampaignVote(optionKey) {
+  const orderRef = getStoredApprovedOrderReference();
+  if (!orderRef) {
+    showToast('Tu voto se habilita cuando el pago quede aprobado.');
+    return;
+  }
+  if (voteSubmissionInFlight) return;
+
+  voteSubmissionInFlight = true;
+  renderCampaignVoting();
+
+  try {
+    const { data, error } = await supabaseClient.rpc('submit_campaign_vote', {
+      p_external_reference: orderRef,
+      p_option_key: optionKey
+    });
+    if (error) throw error;
+    myCampaignVote = data || null;
+    await loadPublicCampaignVotes();
+    renderCampaignVoting();
+    const option = getVoteOptionMeta(optionKey);
+    showToast(`Tu voto por ${option.title} ya quedo registrado.`);
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || 'No se pudo registrar tu voto.');
+  } finally {
+    voteSubmissionInFlight = false;
+    renderCampaignVoting();
+  }
 }
 
 function showPaymentCard({ kicker, title, copy, shareUrl = '' }) {
@@ -3891,6 +4281,10 @@ async function handleReturnedPayment() {
   renderParticipants(document.getElementById('searchInput').value);
   startDrawShowcase();
   scheduleLiveFeed();
+  latestOrderStatus = { ...statusData, external_reference: orderRef };
+  storeApprovedOrderReference(orderRef);
+  await loadMyCampaignVote();
+  await loadPublicCampaignVotes();
 
   const shareUrl = statusData.referral_link_code ? buildLandingShareUrl(statusData.referral_link_code) : '';
   const participantLabel = statusData.participant_name || 'Te invito';
@@ -3911,7 +4305,7 @@ async function handleReturnedPayment() {
     shareUrl
   });
   showToast(shareUrl ? 'Pago aprobado. Ya podÃ©s compartir tu enlace Ãºnico.' : 'Pago aprobado. Ya aparecÃ©s en la lista.');
-  document.getElementById('participantes').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('nextDrawVoting').scrollIntoView({ behavior: 'smooth', block: 'start' });
   clearPaymentQueryState();
 }
 
@@ -3923,6 +4317,11 @@ document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
+document.getElementById('voteOptionsGrid').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-vote-option]');
+  if (!button) return;
+  submitCampaignVote(button.dataset.voteOption);
+});
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
@@ -3954,9 +4353,12 @@ async function bootLanding(){
     await loadCampaign();
     await loadPackages();
     await loadParticipants();
+    await loadPublicCampaignVotes();
+    await loadMyCampaignVote();
     await loadDemoResults();
     renderPackages();
     renderParticipants();
+    renderCampaignVoting();
     repairDocumentText();
     startDrawShowcase();
     observeReveal();
@@ -3976,4 +4378,3 @@ bootLanding();
 </script>
 </body>
 </html>
-
