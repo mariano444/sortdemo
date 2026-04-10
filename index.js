@@ -1,4 +1,4 @@
-﻿
+
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
 // Esta key anon es publica por diseno. Los secretos y reglas sensibles deben vivir en Supabase/RPC/Edge Functions.
 const SUPABASE_KEY = 'sb_publishable_zBhxdMJHw_uy_m3uRDj-ng_0yXz42EN';
@@ -160,26 +160,47 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 4500);
 }
 
+function looksMojibake(text) {
+  return /[ÃÂâð]/.test(text);
+}
+
+function decodeLatin1AsUtf8(text) {
+  try {
+    const bytes = Uint8Array.from(Array.from(text, (char) => char.charCodeAt(0) & 255));
+    return new TextDecoder('utf-8').decode(bytes);
+  } catch (_) {
+    return text;
+  }
+}
+
+function normalizeBrokenSymbols(text) {
+  return text
+    .split('\uFFFD').join('')
+    .split('Â·').join('·')
+    .split('â€”').join('-')
+    .split('â€œ').join('"')
+    .split('â€\u009d').join('"')
+    .split('â€™').join("'")
+    .split('â€¢').join('•')
+    .split('âœ•').join('×')
+    .split('âœ“').join('✓')
+    .split('âœ…').join('✓')
+    .split('âš¡').join('⚡')
+    .split('â–¼').join('▼');
+}
+
 function cleanMojibakeText(value) {
   if (value == null) return value;
   let text = String(value);
-  const replacements = [
-    ['ÃƒÂ¡', 'Ã¡'], ['ÃƒÂ©', 'Ã©'], ['ÃƒÂ­', 'Ã­'], ['ÃƒÂ³', 'Ã³'], ['ÃƒÂº', 'Ãº'],
-    ['ÃƒÂ', 'Ã'], ['Ãƒâ€°', 'Ã‰'], ['ÃƒÂ', 'Ã'], ['Ãƒâ€œ', 'Ã“'], ['ÃƒÅ¡', 'Ãš'],
-    ['ÃƒÂ±', 'Ã±'], ['Ãƒâ€˜', 'Ã‘'], ['ÃƒÂ¼', 'Ã¼'],
-    ['Ã‚Â¡', 'Â¡'], ['Ã‚Â¿', 'Â¿'], ['Ã‚Â·', 'Â·'], ['Ã‚', ''], ['Ã¢â‚¬â€', '-'], ['Ã¢â‚¬Å“', '"'], ['Ã¢â‚¬Â', '"'],
-    ['Ã¢â‚¬â„¢', "'"], ['Ã¢â‚¬Â¢', 'â€¢'], ['Ã¢Å“â€¢', 'Ã—'], ['Ã¢Å“â€œ', 'âœ“'], ['Ã¢Å“â€¦', 'âœ“'],
-    ['Ã¢Å¡Â¡', 'âš¡'], ['Ã¢Â­Â', 'â˜…'], ['Ã¢Ââ€œ', '?'], ['Ã¢â€“Â¼', 'â–¼'],
-    ['Ã°Å¸â€Â¥', 'ðŸ”¥'], ['Ã°Å¸â€™Â¬', 'ðŸ’¬'], ['Ã°Å¸â€™Å½', 'ðŸ’Ž'], ['Ã°Å¸â€˜Â¥', 'ðŸ‘¥'], ['Ã°Å¸Å½Â¥', 'ðŸŽ¥'],
-    ['Ã°Å¸Å½Â¯', 'ðŸŽ¯'], ['Ã°Å¸â€™Â³', 'ðŸ’³'], ['Ã°Å¸â€œâ€¹', 'ðŸ“‹'], ['Ã°Å¸Å½Â°', 'ðŸŽ°'], ['Ã°Å¸Å½Â²', 'ðŸŽ²'],
-    ['Ã°Å¸Å½â€°', 'ðŸŽ‰'], ['Ã°Å¸ÂÂ¦', 'ðŸ¦'], ['Ã°Å¸Å¡â€”', 'ðŸš—'], ['Ã°Å¸â€¡Â¦Ã°Å¸â€¡Â·', 'ðŸ‡¦ðŸ‡·'], ['Ã°Å¸â€â€™', 'ðŸ”’'], ['Ã°Å¸Ââ€ ', 'ðŸ†'], ['Ã°Å¸â€™Âµ', 'ðŸ’µ'],
-    ['mÃƒÂ¡s', 'mÃ¡s'], ['MÃƒÂ¡s', 'MÃ¡s'], ['selecciÃƒÂ³n', 'selecciÃ³n'], ['participaciÃƒÂ³n', 'participaciÃ³n'],
-    ['participaciones activas', 'participaciones activas'], ['registrÃƒÂ³', 'registrÃ³'], ['publica', 'publica']
-  ];
-  replacements.forEach(([from, to]) => {
-    text = text.split(from).join(to);
-  });
-  return text;
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    if (!looksMojibake(text)) break;
+    const decoded = decodeLatin1AsUtf8(text);
+    if (!decoded || decoded === text) break;
+    text = decoded;
+  }
+
+  return normalizeBrokenSymbols(text);
 }
 
 function repairDocumentText(root = document) {
