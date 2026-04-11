@@ -1,5 +1,44 @@
 import { createAdminClient, corsHeaders } from "../_shared/supabase.ts";
 
+function parseWebhookDate(value: unknown) {
+  if (value == null || value === "") return null;
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    const ms = value < 1e12 ? value * 1000 : value;
+    const parsed = new Date(ms);
+    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    if (/^\d+$/.test(trimmed)) {
+      return parseWebhookDate(Number(trimmed));
+    }
+
+    const parsed = new Date(trimmed);
+    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+  }
+
+  return null;
+}
+
+function getApprovedAtFromPayload(payload: Record<string, unknown>) {
+  return (
+    parseWebhookDate(payload.paidAt) ||
+    parseWebhookDate(payload.paid_at) ||
+    parseWebhookDate(payload.approvedAt) ||
+    parseWebhookDate(payload.approved_at) ||
+    parseWebhookDate(payload.dateApproved) ||
+    parseWebhookDate(payload.date_approved) ||
+    parseWebhookDate(payload.date) ||
+    parseWebhookDate(payload.updatedAt) ||
+    parseWebhookDate(payload.updated_at) ||
+    new Date().toISOString()
+  );
+}
+
 async function verifyPaymentLinkApproval(paymentLinkId?: string, proofToken?: string) {
   if (!paymentLinkId || !proofToken) {
     return { approved: false, details: { reason: "missing_payment_link_verification_data" } };
@@ -107,7 +146,7 @@ Deno.serve(async (req) => {
           status: "paid",
           provider: "galiopay",
           provider_payment_id: payload.id || null,
-          paid_at: payload.date || new Date().toISOString(),
+          paid_at: getApprovedAtFromPayload(payload),
           metadata: {
             ...(order.metadata || {}),
             webhook: payload,
