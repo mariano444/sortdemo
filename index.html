@@ -443,6 +443,33 @@
     display: grid;
     gap: 1rem;
   }
+  .course-hook-copy > .course-hook-title,
+  .course-hook-copy > p,
+  .course-hook-copy > .course-hook-proof,
+  .course-hook-copy > .course-hook-cta,
+  .course-hook-copy > .course-hook-kicker {
+    display: none;
+  }
+  .course-hook-lead {
+    display: grid;
+    gap: 1rem;
+  }
+  .course-hook-lead-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.4rem);
+    line-height: 0.92;
+    color: var(--text);
+  }
+  .course-hook-lead-title span {
+    color: #9dcbff;
+    text-shadow: 0 0 28px rgba(59,139,255,0.16);
+  }
+  .course-hook-lead-copy {
+    max-width: 52ch;
+    color: var(--text2);
+    line-height: 1.7;
+    font-size: 1rem;
+  }
   .course-hook-kicker {
     display: inline-flex;
     align-items: center;
@@ -474,29 +501,38 @@
     line-height: 1.7;
     font-size: 1rem;
   }
-  .course-hook-proof {
+  .course-hook-highlight {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.85rem;
+    gap: 0.8rem;
+    padding: 1.05rem 1.1rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(245,200,66,0.16);
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(245,200,66,0.04));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  .course-proof-card {
-    padding: 0.95rem 1rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(255,255,255,0.07);
-    background: rgba(255,255,255,0.03);
-  }
-  .course-proof-value {
-    display: block;
+  .course-hook-highlight strong {
     color: var(--text);
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     font-weight: 800;
-    margin-bottom: 0.22rem;
   }
-  .course-proof-label {
-    display: block;
+  .course-hook-highlight span {
     color: var(--text2);
-    font-size: 0.88rem;
-    line-height: 1.45;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+  .course-hook-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .course-hook-pill {
+    padding: 0.55rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 0.84rem;
+    font-weight: 700;
   }
   .course-hook-cta {
     display: flex;
@@ -2126,7 +2162,6 @@
 
   @media (max-width: 600px) {
     .hero-assurance { grid-template-columns: 1fr; }
-    .course-hook-proof { grid-template-columns: 1fr; }
     .course-syllabus-grid { grid-template-columns: 1fr; }
     .prizes-row { grid-template-columns: 1fr; }
     .packages-grid { grid-template-columns: 1fr 1fr; }
@@ -2563,6 +2598,25 @@
   <div class="course-hook-wrap reveal">
     <div class="course-hook-grid">
       <div class="course-hook-copy">
+        <div class="course-hook-lead">
+          <span class="course-hook-kicker">Bonus incluido con 3 o más chances</span>
+          <h2 class="course-hook-lead-title">Con tu compra bonificada, desbloqueás un curso que te hace sentir <span>más seguro al elegir tu próximo auto</span></h2>
+          <p class="course-hook-lead-copy">Si elegís 3 o más chances, no solo participás por el Fiat Uno: también te llevás acceso a un material pensado para mirar publicaciones, detectar alertas y tomar decisiones con mucha más confianza.</p>
+          <div class="course-hook-highlight">
+            <strong>Un bonus que suma valor real a tu compra</strong>
+            <span>Te vas con una herramienta útil incluso antes del sorteo, ideal para quienes quieren aprender a comprar mejor y evitar errores que después cuestan caro.</span>
+          </div>
+          <div class="course-hook-pills">
+            <span class="course-hook-pill">Acceso simple</span>
+            <span class="course-hook-pill">Contenido práctico</span>
+            <span class="course-hook-pill">Más criterio para decidir</span>
+            <span class="course-hook-pill">Incluido sin costo extra</span>
+          </div>
+          <div class="course-hook-cta">
+            <a href="#paquetes" class="btn-primary">Quiero mis chances y el bonus</a>
+            <span class="course-hook-note">Se habilita automáticamente con una compra aprobada de 3 o más chances.</span>
+          </div>
+        </div>
         <span class="course-hook-kicker">Bonus incluido con 3 o más chances</span>
         <h2 class="course-hook-title">Además del sorteo, te llevás una guía real para <span>comprar mejor tu auto usado</span></h2>
         <p>Este bonus no está puesto para decorar la oferta. Está pensado para que sientas que ganás valor desde el momento en que comprás: aprendés a detectar riesgos, evitar errores caros y mirar un usado con más criterio antes de poner plata.</p>
