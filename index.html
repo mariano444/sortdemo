@@ -402,6 +402,131 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.8rem;
   }
+  .course-hook-section {
+    position: relative;
+    padding: 1.6rem 1rem 0;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(59,139,255,0.14), transparent 28%),
+      radial-gradient(circle at 82% 20%, rgba(245,200,66,0.18), transparent 32%),
+      linear-gradient(180deg, rgba(10,10,15,0), rgba(10,10,15,0.7) 30%);
+  }
+  .course-hook-wrap {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    padding: clamp(1.4rem, 2.8vw, 2.2rem);
+    border-radius: 1.7rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background:
+      linear-gradient(145deg, rgba(11,16,28,0.98), rgba(23,19,12,0.96)),
+      linear-gradient(120deg, rgba(59,139,255,0.12), rgba(245,200,66,0.12));
+    box-shadow: 0 26px 50px rgba(0,0,0,0.28);
+    overflow: hidden;
+    position: relative;
+  }
+  .course-hook-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -10% auto auto 55%;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(245,200,66,0.18), transparent 68%);
+    pointer-events: none;
+  }
+  .course-hook-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .course-hook-copy {
+    display: grid;
+    gap: 1rem;
+  }
+  .course-hook-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(245,200,66,0.24);
+    background: rgba(245,200,66,0.08);
+    color: #ffe19a;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .course-hook-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.4rem);
+    line-height: 0.92;
+    color: var(--text);
+  }
+  .course-hook-title span {
+    color: #9dcbff;
+    text-shadow: 0 0 28px rgba(59,139,255,0.16);
+  }
+  .course-hook-copy p {
+    max-width: 52ch;
+    color: var(--text2);
+    line-height: 1.7;
+    font-size: 1rem;
+  }
+  .course-hook-proof {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+  .course-proof-card {
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+  }
+  .course-proof-value {
+    display: block;
+    color: var(--text);
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 0.22rem;
+  }
+  .course-proof-label {
+    display: block;
+    color: var(--text2);
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .course-hook-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+  }
+  .course-hook-note {
+    color: #d7e7ff;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .course-hook-syllabus {
+    display: grid;
+    gap: 0.95rem;
+  }
+  .course-hook-header {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .course-hook-header .course-syllabus-kicker {
+    color: #9dcbff;
+  }
+  .course-hook-header .course-syllabus-title {
+    font-size: 1.45rem;
+  }
+  .course-hook-header .course-syllabus-copy {
+    font-size: 0.97rem;
+    max-width: 58ch;
+  }
   .course-topic {
     padding: 0.95rem 1rem;
     border-radius: 1rem;
@@ -2001,6 +2126,7 @@
 
   @media (max-width: 600px) {
     .hero-assurance { grid-template-columns: 1fr; }
+    .course-hook-proof { grid-template-columns: 1fr; }
     .course-syllabus-grid { grid-template-columns: 1fr; }
     .prizes-row { grid-template-columns: 1fr; }
     .packages-grid { grid-template-columns: 1fr 1fr; }
@@ -2028,6 +2154,7 @@
     .prize-shot { min-height: 150px; }
     .prize-shot img { height: 140px; }
     .auto-showcase-wrap { grid-template-columns: 1fr; }
+    .course-hook-grid { grid-template-columns: 1fr; }
     .auto-showcase-grid { grid-template-columns: 1fr; }
     .auto-photo-card.featured { grid-column: span 1; min-height: 220px; }
     .live-feed { left: 12px; right: 12px; min-width: 0; max-width: none; }
@@ -2402,31 +2529,6 @@
         <span class="auto-pill">Exterior e interior</span>
         <span class="auto-pill">Entrega coordinada</span>
       </div>
-      <div class="course-syllabus">
-        <div class="course-syllabus-head">
-          <span class="course-syllabus-kicker">Temario del curso</span>
-          <div class="course-syllabus-title">Qué aprende la persona en el curso bonus</div>
-          <div class="course-syllabus-copy">Este curso se entrega con la compra bonificada y está pensado para ayudar a evaluar mejor un auto usado, detectar riesgos y comprar con más seguridad.</div>
-        </div>
-        <div class="course-syllabus-grid">
-          <div class="course-topic">
-            <strong>Qué revisar antes de señar</strong>
-            <span>Cómo mirar publicaciones, hacer preguntas clave y detectar señales de alerta antes de avanzar.</span>
-          </div>
-          <div class="course-topic">
-            <strong>Chequeo mecánico básico</strong>
-            <span>Qué observar en motor, carrocería, interior, tren delantero y prueba de manejo sin ser especialista.</span>
-          </div>
-          <div class="course-topic">
-            <strong>Documentación y legalidad</strong>
-            <span>Qué papeles pedir, qué validar y cómo evitar problemas de titularidad, deuda o inhibiciones.</span>
-          </div>
-          <div class="course-topic">
-            <strong>Cómo evitar errores caros</strong>
-            <span>Los fallos más comunes al comprar un usado y cómo tomar decisiones con más criterio y confianza.</span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="auto-showcase-grid">
       <div class="auto-photo-card featured">
@@ -2452,6 +2554,61 @@
       <div class="auto-photo-card featured">
         <img src="./assets/premios/fiat-uno-atras-angulo-2.png" alt="Hermoso Fiat Uno 2014 vista final">
         <div class="auto-photo-label"><span>Vista final</span><strong>Impecable</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="course-hook-section">
+  <div class="course-hook-wrap reveal">
+    <div class="course-hook-grid">
+      <div class="course-hook-copy">
+        <span class="course-hook-kicker">Bonus incluido con 3 o más chances</span>
+        <h2 class="course-hook-title">Además del sorteo, te llevás una guía real para <span>comprar mejor tu auto usado</span></h2>
+        <p>Este bonus no está puesto para decorar la oferta. Está pensado para que sientas que ganás valor desde el momento en que comprás: aprendés a detectar riesgos, evitar errores caros y mirar un usado con más criterio antes de poner plata.</p>
+        <div class="course-hook-proof">
+          <div class="course-proof-card">
+            <span class="course-proof-value">Aplicable de inmediato</span>
+            <span class="course-proof-label">Lo podés usar para analizar publicaciones, visitas y pruebas de manejo reales.</span>
+          </div>
+          <div class="course-proof-card">
+            <span class="course-proof-value">Pensado para no especialistas</span>
+            <span class="course-proof-label">Explica qué mirar y qué preguntar sin necesidad de ser mecánico.</span>
+          </div>
+          <div class="course-proof-card">
+            <span class="course-proof-value">Te ahorra errores caros</span>
+            <span class="course-proof-label">Sirve para filtrar problemas de papeles, estado y decisiones apresuradas.</span>
+          </div>
+        </div>
+        <div class="course-hook-cta">
+          <a href="#paquetes" class="btn-primary">Quiero entrar y desbloquearlo</a>
+          <span class="course-hook-note">Se habilita automáticamente cuando el pago aprobado corresponde a una compra bonificada.</span>
+        </div>
+      </div>
+      <div class="course-hook-syllabus">
+        <div class="course-hook-header">
+          <span class="course-syllabus-kicker">Temario del curso</span>
+          <div class="course-syllabus-title">Qué aprende la persona en el curso bonus</div>
+          <div class="course-syllabus-copy">Este curso se entrega con la compra bonificada y está pensado para ayudar a evaluar mejor un auto usado, detectar riesgos y comprar con más seguridad.</div>
+        </div>
+        <div class="course-syllabus-grid">
+          <div class="course-topic">
+            <strong>Qué revisar antes de señar</strong>
+            <span>Cómo mirar publicaciones, hacer preguntas clave y detectar señales de alerta antes de avanzar.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Chequeo mecánico básico</strong>
+            <span>Qué observar en motor, carrocería, interior, tren delantero y prueba de manejo sin ser especialista.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Documentación y legalidad</strong>
+            <span>Qué papeles pedir, qué validar y cómo evitar problemas de titularidad, deuda o inhibiciones.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Cómo evitar errores caros</strong>
+            <span>Los fallos más comunes al comprar un usado y cómo tomar decisiones con más criterio y confianza.</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
