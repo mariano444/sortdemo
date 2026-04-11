@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://www.facebook.com https://*.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://asokopamdmuvuupywjzt.supabase.co https://cdn.jsdelivr.net https://connect.facebook.net; frame-src https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <title>Gran Sorteo - Fiat Uno 2014 Impecable</title>
 <meta name="description" content="Participa desde cualquier punto de Argentina por un Fiat Uno 2014 impecable. Quedan pocos lugares y el sorteo puede hacerse antes al agotar chances.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gran Sorteo - Fiat Uno 2014 Impecable">
 <meta property="og:description" content="Te invito a participar de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede realizarse antes al agotar chances.">
-<meta property="og:image" content="./assets/share/share-sorteo.png">
-<meta property="og:image:alt" content="Imagen promocional del sorteo">
+<meta property="og:image" content="/assets/share/share-sorteo.png">
+<meta property="og:image:alt" content="Imagen promocional del sorteo del Fiat Uno">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1350">
+<meta property="og:image:type" content="image/png">
 <meta property="og:locale" content="es_AR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Gran Sorteo - Fiat Uno 2014 Impecable">
 <meta name="twitter:description" content="Te invito a participar de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede realizarse antes al agotar chances.">
-<meta name="twitter:image" content="./assets/share/share-sorteo.png">
+<meta name="twitter:image" content="/assets/share/share-sorteo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./index.css">
-<!-- legacy-inline-style-block
 <style>
   :root {
     --gold: #F5C842;
@@ -1838,6 +1838,26 @@
     line-height: 1.5;
     font-size: 0.96rem;
   }
+  .payment-status-reward {
+    display: none;
+    border: 1px solid rgba(59,139,255,0.22);
+    background: linear-gradient(145deg, rgba(59,139,255,0.12), rgba(255,255,255,0.03));
+    border-radius: 1rem;
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+  .payment-status-reward.show {
+    display: grid;
+  }
+  .payment-status-reward-title {
+    font-weight: 800;
+    color: var(--text);
+  }
+  .payment-status-reward-copy {
+    color: var(--text2);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
   .share-link-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto;
@@ -1869,228 +1889,6 @@
     background: rgba(255,255,255,0.08);
     color: var(--text);
     border: 1px solid rgba(255,255,255,0.12);
-  }
-  .next-draw-voting {
-    margin: 1.6rem auto 0;
-    max-width: 1080px;
-    background:
-      radial-gradient(circle at top right, rgba(59,139,255,0.14), transparent 36%),
-      linear-gradient(145deg, rgba(28,28,42,0.98), rgba(15,15,24,0.98));
-    border: 1px solid rgba(245,200,66,0.18);
-    border-radius: 1.5rem;
-    padding: 1.4rem;
-    box-shadow: 0 28px 60px rgba(0,0,0,0.24);
-  }
-  .next-draw-head {
-    display: grid;
-    gap: 0.45rem;
-    margin-bottom: 1rem;
-  }
-  .next-draw-kicker {
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 0.74rem;
-    font-weight: 800;
-  }
-  .next-draw-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 0.96;
-  }
-  .next-draw-copy {
-    color: var(--text2);
-    max-width: 62ch;
-    line-height: 1.5;
-  }
-  .vote-unlock-note,
-  .vote-status {
-    margin-bottom: 1rem;
-    padding: 0.9rem 1rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-    color: var(--text2);
-  }
-  .vote-status {
-    color: var(--text);
-    border-color: rgba(245,200,66,0.22);
-    background: rgba(245,200,66,0.08);
-  }
-  .vote-options-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.1rem;
-  }
-  .vote-option-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.35rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-  }
-  .vote-option-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(245,200,66,0.3);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.18);
-  }
-  .vote-option-card.selected {
-    border-color: rgba(245,200,66,0.75);
-    box-shadow: 0 0 0 1px rgba(245,200,66,0.22), 0 18px 40px rgba(245,200,66,0.12);
-  }
-  .vote-option-media {
-    aspect-ratio: 16 / 10;
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.12), rgba(255,255,255,0));
-  }
-  .vote-option-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 18px 26px rgba(0,0,0,0.28));
-  }
-  .vote-option-body {
-    display: grid;
-    gap: 0.5rem;
-    padding: 1rem 1rem 1.1rem;
-  }
-  .vote-option-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.8rem;
-    align-items: center;
-  }
-  .vote-option-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    border-radius: 999px;
-    padding: 0.35rem 0.7rem;
-    background: rgba(255,255,255,0.08);
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.68rem;
-    font-weight: 800;
-  }
-  .vote-option-count {
-    font-size: 0.9rem;
-    color: var(--gold);
-    font-weight: 800;
-  }
-  .vote-option-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(1.6rem, 3vw, 2.15rem);
-    line-height: 0.94;
-  }
-  .vote-option-desc {
-    color: var(--text2);
-    line-height: 1.45;
-    min-height: 2.8em;
-  }
-  .vote-option-action {
-    margin-top: 0.25rem;
-    width: 100%;
-    border: none;
-    border-radius: 999px;
-    padding: 0.95rem 1rem;
-    background: linear-gradient(135deg, var(--gold), var(--gold2));
-    color: var(--dark);
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-  }
-  .vote-option-action[disabled] {
-    opacity: 0.62;
-    cursor: not-allowed;
-  }
-  .vote-results-grid {
-    display: grid;
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-    gap: 1rem;
-    align-items: start;
-  }
-  .vote-summary-card,
-  .vote-feed {
-    border-radius: 1.2rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-    padding: 1rem;
-  }
-  .vote-summary-title,
-  .vote-feed-title {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--gold);
-    font-weight: 800;
-    margin-bottom: 0.8rem;
-  }
-  .vote-summary-list {
-    display: grid;
-    gap: 0.7rem;
-  }
-  .vote-summary-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    color: var(--text);
-  }
-  .vote-summary-label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-  .vote-summary-label small {
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.65rem;
-  }
-  .vote-summary-value {
-    color: var(--gold);
-    font-weight: 900;
-    font-size: 1.15rem;
-  }
-  .vote-feed-list {
-    display: grid;
-    gap: 0.65rem;
-    max-height: 320px;
-    overflow-y: auto;
-    padding-right: 0.2rem;
-  }
-  .vote-feed-item {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.45rem 0.8rem;
-    align-items: center;
-    padding: 0.8rem 0.9rem;
-    border-radius: 1rem;
-    background: rgba(10,10,15,0.36);
-  }
-  .vote-feed-name {
-    font-weight: 800;
-    color: var(--text);
-  }
-  .vote-feed-choice {
-    color: var(--gold);
-    font-weight: 800;
-  }
-  .vote-feed-time {
-    grid-column: 1 / -1;
-    color: var(--text2);
-    font-size: 0.8rem;
-  }
-  .vote-empty {
-    color: var(--text2);
-    font-size: 0.92rem;
-    line-height: 1.5;
   }
 
   /* ---- ANIMATIONS ---- */
@@ -2141,11 +1939,8 @@
     }
     .share-link-row { grid-template-columns: 1fr; }
     .share-link-btn { width: 100%; }
-    .vote-options-grid,
-    .vote-results-grid { grid-template-columns: 1fr; }
   }
 </style>
--->
   <!-- Meta Pixel Code -->
 <script>
   !function(f,b,e,v,n,t,s)
@@ -2275,7 +2070,7 @@
 <!-- PACKAGES -->
 <section id="paquetes" class="packages-section">
   <div class="section-inner">
-    <span class="section-tag">Packs disponibles</span>
+    <span class="section-tag">ðŸ’Ž Elige tu pack</span>
     <h2 class="section-title">MÃ¡s chances,<br><span style="color:var(--gold)">mÃ¡s posibilidades</span></h2>
     <p class="section-sub">Cada chance suma una participacion real dentro del sistema de seleccion. Mientras mas chances tengas, mas posibilidades tenes de quedarte con el Fiat Uno 2014.</p>
 
@@ -2288,7 +2083,7 @@
 <!-- PARTICIPANTS -->
 <section id="participantes" class="participants-section">
   <div class="section-inner">
-    <span class="section-tag">Transparencia total</span>
+    <span class="section-tag">ðŸ‘¥ Transparencia total</span>
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
     <p class="section-sub">Cada participaciÃ³n aprobada aparece aquÃ­ con su fecha y cantidad de chances, para que puedas ver que el ingreso quedÃ³ registrado y que el proceso se mantiene visible.</p>
 
@@ -2393,6 +2188,15 @@
       <div class="payment-status-kicker" id="paymentStatusKicker">Pago confirmado</div>
       <div class="payment-status-title" id="paymentStatusTitle">Ya estÃ¡s participando</div>
       <div class="payment-status-copy" id="paymentStatusCopy">Cuando tu pago quede aprobado, tus chances quedan activas, tu participaciÃ³n aparece en la lista y se habilita tu enlace Ãºnico si corresponde.</div>
+      <div class="payment-status-reward" id="courseRewardBox">
+        <div class="payment-status-reward-title">Curso gratis desbloqueado</div>
+        <div class="payment-status-reward-copy" id="courseRewardCopy">Con tu compra habilitaste el acceso al curso bonus.</div>
+        <div class="share-link-row">
+          <input class="share-link-input" id="courseAccessCodeInput" type="text" readonly>
+          <button class="share-link-btn secondary" id="copyCourseCodeBtn" type="button">Copiar codigo</button>
+          <button class="share-link-btn primary" id="openCourseBtn" type="button">Abrir curso</button>
+        </div>
+      </div>
       <div class="share-link-row hidden" id="shareLinkRow">
         <input class="share-link-input" id="shareLinkInput" type="text" readonly>
         <button class="share-link-btn secondary" id="copyShareBtn" type="button">Copiar enlace</button>
@@ -2400,29 +2204,8 @@
       </div>
     </div>
 
-    <div class="next-draw-voting reveal" id="nextDrawVoting">
-      <div class="next-draw-head">
-        <span class="next-draw-kicker">Votacion del proximo sorteo</span>
-        <h3 class="next-draw-title">Despues de abonar podes elegir el premio que te gustaria ver despues</h3>
-        <p class="next-draw-copy">Las personas con pago aprobado pueden votar entre dos opciones. Abajo tambien queda visible quien voto y cual eligio para que todo sea claro.</p>
-      </div>
-      <div class="vote-unlock-note" id="voteUnlockNotice">Cuando tu pago quede aprobado se habilita tu voto automaticamente en esta misma seccion.</div>
-      <div class="vote-status hidden" id="voteStatus"></div>
-      <div class="vote-options-grid" id="voteOptionsGrid"></div>
-      <div class="vote-results-grid">
-        <div class="vote-summary-card">
-          <div class="vote-summary-title">Resumen actual</div>
-          <div class="vote-summary-list" id="voteSummaryList"></div>
-        </div>
-        <div class="vote-feed">
-          <div class="vote-feed-title">Quien voto y a cual</div>
-          <div class="vote-feed-list" id="voteFeedList"></div>
-        </div>
-      </div>
-    </div>
-
     <div style="text-align:center; margin-top:2rem">
-      <a href="#paquetes" class="btn-primary">Sumate ahora</a>
+      <a href="#paquetes" class="btn-primary">Â¡Sumate ahora!</a>
     </div>
   </div>
 </section>
@@ -2431,23 +2214,13 @@
   <div class="auto-showcase-wrap reveal">
     <div class="auto-showcase-copy">
       <span class="auto-showcase-kicker">Galeria del premio</span>
-      <h2 class="auto-showcase-title">Fiat Uno <span>2014</span><br>en foco total</h2>
-      <p class="auto-showcase-text">Una presentacion mas cuidada del premio, con fotos amplias, mejor aire visual y una lectura mas clara de cada angulo del auto.</p>
+      <h2 class="auto-showcase-title">Hermoso <span>Fiat Uno</span><br>2014 impecable</h2>
+      <!--p class="auto-showcase-text">Una presentacion mas prolija del premio, ubicada debajo de la lista de participantes para acompañar el recorrido de la pagina con una seccion visual mas armoniosa, clara y profesional.</p-->
       <div class="auto-showcase-pills">
         <span class="auto-pill">Premio unico</span>
         <span class="auto-pill">6 fotos reales</span>
         <span class="auto-pill">Exterior e interior</span>
         <span class="auto-pill">Entrega coordinada</span>
-      </div>
-      <div class="auto-showcase-highlights">
-        <div class="auto-highlight-card">
-          <strong>Vista destacada</strong>
-          <span>La imagen principal abre la galeria con mas presencia y profundidad.</span>
-        </div>
-        <div class="auto-highlight-card">
-          <strong>Detalles reales</strong>
-          <span>Cada toma ayuda a transmitir el estado del premio con mas confianza.</span>
-        </div>
       </div>
     </div>
     <div class="auto-showcase-grid">
@@ -2482,30 +2255,30 @@
 <!-- HOW IT WORKS -->
 <section class="how-section">
   <div class="section-inner">
-    <span class="section-tag">Como funciona</span>
+    <span class="section-tag">â“ Â¿CÃ³mo funciona?</span>
     <h2 class="section-title">Simple,<br><span style="color:var(--gold)">transparente, real</span></h2>
     <div class="steps-grid">
       <div class="step reveal">
         <span class="step-num">1</span>
-        <span class="step-icon">01</span>
+        <span class="step-icon">ðŸŽ¯</span>
         <div class="step-title">ElegÃ­ tu pack</div>
         <p class="step-desc">ElegÃ­s el pack que mÃ¡s te conviene. Cada chance representa una participaciÃ³n real dentro del sistema de selecciÃ³n aleatoria, por eso mientras mÃ¡s chances tengas, mÃ¡s posibilidades acumulÃ¡s.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.1s">
         <span class="step-num">2</span>
-        <span class="step-icon">02</span>
+        <span class="step-icon">ðŸ’³</span>
         <div class="step-title">CompletÃ¡ el pago</div>
         <p class="step-desc">CompletÃ¡s tus datos y pagÃ¡s de forma simple. Tu reserva queda registrada y, cuando el pago se acredita, tus chances quedan activas con seguimiento claro del proceso.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.2s">
         <span class="step-num">3</span>
-        <span class="step-icon">03</span>
+        <span class="step-icon">ðŸ“‹</span>
         <div class="step-title">AparecÃ©s en la lista</div>
         <p class="step-desc">Tu participaciÃ³n se refleja en la lista pÃºblica o, si preferÃ­s privacidad, podÃ©s figurar como anÃ³nimo con un cÃ³digo Ãºnico para conservar transparencia sin exponer tu nombre.</p>
       </div>
       <div class="step reveal" style="transition-delay:0.3s">
         <span class="step-num">4</span>
-        <span class="step-icon">04</span>
+        <span class="step-icon">ðŸŽ°</span>
         <div class="step-title">Sorteo nacional</div>
         <p class="step-desc">El sistema realiza una seleccion aleatoria de 1 participante entre todas las chances activas. El sorteo se hace el 26 de julio o antes si se agotan las chances.</p>
       </div>
@@ -2515,7 +2288,7 @@
 
 <section class="draw-process-section">
   <div class="section-inner">
-    <span class="section-tag">Seleccion transparente</span>
+    <span class="section-tag">ðŸŽ² SelecciÃ³n transparente</span>
     <h2 class="section-title">Como se elige<br><span style="color:var(--gold)">al ganador</span></h2>
     <p class="section-sub">El proceso esta pensado para que cada chance cuente como una participacion dentro de una seleccion aleatoria. No importa de donde participes: si tu chance esta activa, entra en el sorteo.</p>
 
@@ -2546,7 +2319,7 @@
 
 <section class="proof-section">
   <div class="section-inner">
-    <span class="section-tag">Opiniones y expectativas</span>
+    <span class="section-tag">ðŸ’¬ Opiniones y expectativas</span>
     <h2 class="section-title">Mensajes que suman<br><span style="color:var(--gold)">confianza</span></h2>
     <p class="section-sub">Compartimos opiniones y expectativas frecuentes de personas que valoran la claridad del proceso, la lista pÃºblica y la coordinaciÃ³n de la entrega con cada ganador.</p>
 
@@ -2557,35 +2330,35 @@
 <!-- FAQ -->
 <section style="background:var(--dark)">
   <div class="section-inner">
-    <span class="section-tag">Preguntas frecuentes</span>
+    <span class="section-tag">â“ Preguntas frecuentes</span>
     <h2 class="section-title">Todo lo que<br><span style="color:var(--gold)">necesitÃ¡s saber</span></h2>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-q">Como se que el sorteo es real? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿CÃ³mo sÃ© que el sorteo es real? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">La lista de participantes se actualiza con pagos aprobados y muestra la cantidad de chances activas de cada persona. Eso permite ver que cada participaciÃ³n queda registrada y que el proceso sea mucho mÃ¡s claro, visible y confiable.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Como se realizara el sorteo? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿CÃ³mo se realizarÃ¡ el sorteo? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">Cada chance equivale a una participacion dentro del sistema. Al cierre del sorteo, un sistema avanzado de seleccion aleatoria toma todas las chances activas y elige 1 ganador. Si compras mas chances, participas mas veces y aumentas tus posibilidades.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Cuando se entrega el premio? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿CuÃ¡ndo se entrega el premio? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">El premio se coordina con el ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro del Fiat Uno 2014 publicado.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Puedo comprar mas de un pack? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿Puedo comprar mÃ¡s de un pack? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">SÃ­. PodÃ©s comprar mÃ¡s de un pack y todas tus chances se acumulan en tu mismo usuario. Eso hace que tengas mÃ¡s oportunidades dentro del sorteo final.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Que metodos de pago aceptan? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿QuÃ© mÃ©todos de pago aceptan? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">PodÃ©s abonar con los medios habilitados en el formulario. Una vez aprobado el pago, tus chances quedan activas y tu participaciÃ³n aparece en la lista pÃºblica o como anÃ³nimo, segÃºn elijas, para que siempre haya registro visible del ingreso.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Como funcionan los referidos? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿CÃ³mo funcionan los referidos? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">Si tu compra aprobada habilita tu enlace Ãºnico, podÃ©s compartirlo. Cuando otra persona compra desde ese enlace y se acredita el pago, el sistema suma 2 chances extra a tu cuenta automÃ¡ticamente, aumentando tus posibilidades dentro de la selecciÃ³n.</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q">Hay fecha limite para participar? <span class="faq-arrow">v</span></button>
+        <button class="faq-q">Â¿Hay fecha lÃ­mite para participar? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">La fecha prevista es el 26 de julio o antes al agotar chances. Quedan pocos lugares, asÃ­ que te recomendamos no esperar al Ãºltimo momento.</div>
       </div>
     </div>
@@ -2594,10 +2367,10 @@
 
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
-  <h2 class="bottom-cta-title reveal">Y si sos<br>el proximo ganador?</h2>
+  <h2 class="bottom-cta-title reveal">Â¿Y si sos<br>el prÃ³ximo ganador?</h2>
   <p class="bottom-cta-sub reveal">Participas con un proceso claro, con registro visible y una seleccion aleatoria de 1 ganador. Mientras mas chances sumas, mas posibilidades tenes.</p>
   <div class="reveal" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
-    <a href="#paquetes" class="btn-primary">COMPRAR CHANCES AHORA</a>
+    <a href="#paquetes" class="btn-primary">Â¡COMPRAR CHANCES AHORA!</a>
     <a href="#participantes" class="btn-secondary">Ver participantes</a>
   </div>
 </section>
@@ -2611,8 +2384,8 @@
 <!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <button class="modal-close" id="modalClose">X</button>
-    <div class="modal-title">Casi listo</div>
+    <button class="modal-close" id="modalClose">âœ•</button>
+    <div class="modal-title">Â¡Casi listo! ðŸŽ‰</div>
     <p class="modal-sub">CompletÃ¡ tus datos para reservar tus chances y avanzar a un pago simple y seguro.</p>
     <div class="modal-assurance">
       <strong>Tu reserva queda asociada a tus datos, al pack elegido y al estado del pago.</strong>
@@ -2621,11 +2394,11 @@
     <div class="modal-pkg-display">
       <div class="modal-pkg-info">
         <span class="label">Pack seleccionado</span>
-        <span class="value" id="modal-pkg-name">-</span>
+        <span class="value" id="modal-pkg-name">â€”</span>
       </div>
       <div class="modal-pkg-info" style="text-align:right">
         <span class="label">Total a pagar</span>
-        <span class="value" id="modal-pkg-price">-</span>
+        <span class="value" id="modal-pkg-price">â€”</span>
       </div>
     </div>
     <div class="form-group">
@@ -2676,25 +2449,25 @@
     <div class="form-group">
       <label class="form-label">MÃ©todo de pago preferido</label>
       <div class="payment-methods">
-        <!--span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">Mercado Pago</span-->
-        <span class="pm-chip selected" data-provider="galiopay" onclick="selectPM(this)">Transferencia</span>
-        <!--span class="pm-chip" data-provider="manual" onclick="selectPM(this)">Transferencia</span>
-        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">Efectivo</span-->
+        <!--span class="pm-chip selected" data-provider="mercado_pago" onclick="selectPM(this)">ðŸ’³ Mercado Pago</span-->
+        <span class="pm-chip selected" data-provider="galiopay" onclick="selectPM(this)">ðŸ¦ Transferencia</span>
+        <!--span class="pm-chip" data-provider="manual" onclick="selectPM(this)">ðŸ¦ Transferencia</span>
+        <span class="pm-chip" data-provider="manual" onclick="selectPM(this)">ðŸ’µ Efectivo</span-->
       </div>
     </div>
-    <button class="modal-confirm" id="modalConfirm">CONFIRMAR Y PAGAR</button>
+    <button class="modal-confirm" id="modalConfirm">CONFIRMAR Y PAGAR âœ“</button>
     <div class="modal-trust">
-      <span>Datos y reserva asociados a tu compra</span>
-      <span>Chances activadas al acreditarse el pago</span>
-      <span>Participacion visible o anonima, segun elijas</span>
+      <span>ðŸ”’ Datos y reserva asociados a tu compra</span>
+      <span>âœ… Chances activadas al acreditarse el pago</span>
+      <span>ðŸ“‹ ParticipaciÃ³n visible o anÃ³nima, segÃºn elijas</span>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="opinionModal">
   <div class="modal">
-    <button class="modal-close" id="opinionModalClose">X</button>
-    <div class="modal-title">Opinion o expectativa</div>
+    <button class="modal-close" id="opinionModalClose">âœ•</button>
+    <div class="modal-title">ðŸ’¬ OpiniÃ³n o expectativa</div>
     <p class="modal-sub">Mensaje compartido por una persona que ya participa del sorteo.</p>
     <div class="modal-assurance">
       <strong id="opinionAuthor">Participante</strong>
@@ -2705,7 +2478,7 @@
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">OK. Ya sos parte del sorteo. Te contactaremos por WhatsApp.</div>
+<div class="toast" id="toast">âœ… Â¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
 <div class="live-feed" id="liveFeed">
   <div class="live-feed-card">
     <div class="live-feed-kicker">Actividad en vivo</div>
@@ -2714,13 +2487,10 @@
   </div>
 </div>
 <a class="whatsapp-float" href="https://wa.me/543518757751?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20el%20sorteo." target="_blank" rel="noopener noreferrer">
-  <span style="font-size:1.05rem; font-weight:900">WA</span>
+  <span style="font-size:1.35rem">ðŸ’¬</span>
   <span><small>Consultas</small>WhatsApp</span>
 </a>
 
-<script charset="utf-8" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script charset="utf-8" src="./index.js"></script>
-<!-- legacy-inline-app-script
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
@@ -2732,6 +2502,8 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const DEFAULT_SHARE_IMAGE = new URL('./assets/share/share-sorteo.png', window.location.href).toString();
 const DEFAULT_SHARE_TITLE = 'Gran Sorteo - Fiat Uno 2014 Impecable';
 const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014 impecable. Quedan pocos lugares y puede hacerse antes al agotar chances.';
+const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
+const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-07-26T20:00:00-03:00';
 
 let activeCampaign = null;
@@ -2767,26 +2539,6 @@ const fallbackProofMessages = [
   }
 ];
 let latestOrderStatus = null;
-let publicCampaignVotes = [];
-let myCampaignVote = null;
-let voteSubmissionInFlight = false;
-const APPROVED_ORDER_REF_STORAGE_KEY = `campaign_vote_paid_ref_${CAMPAIGN_SLUG}`;
-const NEXT_DRAW_OPTIONS = [
-  {
-    key: 'moto',
-    badge: 'Opcion A',
-    title: 'Moto 110 full',
-    description: 'Una opcion agil, muy pedida y pensada para un proximo sorteo de alto interes.',
-    image: './assets/premios/moto-azul.png'
-  },
-  {
-    key: 'tv',
-    badge: 'Opcion B',
-    title: 'Smart TV 50"',
-    description: 'Una propuesta fuerte para hogar y tecnologia, ideal para un proximo lanzamiento.',
-    image: './assets/premios/tv-premio.png'
-  }
-];
 const expandedParticipantRows = new Set();
 const drawShowcaseState = {
   basePool: [],
@@ -2963,194 +2715,50 @@ function buildFunctionUrl(name) {
   return `${FUNCTIONS_BASE_URL}/${name}`;
 }
 
-function getStoredApprovedOrderReference() {
-  try {
-    return sessionStorage.getItem(APPROVED_ORDER_REF_STORAGE_KEY) || '';
-  } catch (_) {
-    return '';
-  }
+function buildCourseAccessCode(orderRef = '') {
+  const normalized = String(orderRef || '').replace(/[^a-z0-9]/gi, '').toUpperCase();
+  const base = (normalized.slice(-6) || 'BONUS3').padStart(6, '0');
+  const checksum = base
+    .split('')
+    .reduce((acc, char, index) => acc + (char.charCodeAt(0) * (index + 3)), 0)
+    .toString()
+    .slice(-4)
+    .padStart(4, '0');
+  return `CURSO-${base}-${checksum}`;
 }
 
-function storeApprovedOrderReference(orderRef) {
-  try {
-    if (orderRef) {
-      sessionStorage.setItem(APPROVED_ORDER_REF_STORAGE_KEY, orderRef);
-    } else {
-      sessionStorage.removeItem(APPROVED_ORDER_REF_STORAGE_KEY);
-    }
-  } catch (_) {
-    // ignore storage errors
-  }
+function buildCourseUrl(orderRef = '') {
+  const url = new URL(COURSE_PAGE_PATH, window.location.href);
+  url.searchParams.set('codigo', buildCourseAccessCode(orderRef));
+  return url.toString();
 }
 
-function getVoteOptionMeta(optionKey) {
-  return NEXT_DRAW_OPTIONS.find(option => option.key === optionKey) || NEXT_DRAW_OPTIONS[0];
-}
-
-function formatVoteTime(value) {
-  if (!value) return 'Hace instantes';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'Hace instantes';
-  return date.toLocaleString('es-AR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
-
-function renderCampaignVoting() {
-  const optionsGrid = document.getElementById('voteOptionsGrid');
-  const summaryList = document.getElementById('voteSummaryList');
-  const feedList = document.getElementById('voteFeedList');
-  const unlockNotice = document.getElementById('voteUnlockNotice');
-  const voteStatus = document.getElementById('voteStatus');
-  if (!optionsGrid || !summaryList || !feedList || !unlockNotice || !voteStatus) return;
-
-  const isUnlocked = Boolean(getStoredApprovedOrderReference());
-  const counts = publicCampaignVotes.reduce((acc, vote) => {
-    acc[vote.option_key] = (acc[vote.option_key] || 0) + 1;
-    return acc;
-  }, {});
-  const totalVotes = publicCampaignVotes.length;
-
-  unlockNotice.textContent = isUnlocked
-    ? 'Tu pago ya fue aprobado. Elegi una opcion y tu voto quedara publicado al instante.'
-    : 'Cuando tu pago quede aprobado se habilita tu voto automaticamente en esta misma seccion.';
-
-  if (myCampaignVote?.option_key) {
-    const selectedOption = getVoteOptionMeta(myCampaignVote.option_key);
-    voteStatus.textContent = `Tu voto actual: ${selectedOption.title}. Si queres, podes cambiarlo.`;
-    voteStatus.classList.remove('hidden');
-  } else {
-    voteStatus.classList.add('hidden');
-    voteStatus.textContent = '';
-  }
-
-  optionsGrid.innerHTML = NEXT_DRAW_OPTIONS.map((option) => {
-    const votes = counts[option.key] || 0;
-    const isSelected = myCampaignVote?.option_key === option.key;
-    const disabled = !isUnlocked || voteSubmissionInFlight;
-    const buttonLabel = !isUnlocked
-      ? 'Se habilita al aprobarse tu pago'
-      : voteSubmissionInFlight
-        ? 'Guardando voto...'
-        : isSelected
-          ? 'Voto registrado'
-          : 'Votar esta opcion';
-
-    return `
-      <article class="vote-option-card${isSelected ? ' selected' : ''}">
-        <div class="vote-option-media">
-          <img src="${option.image}" alt="${option.title}">
-        </div>
-        <div class="vote-option-body">
-          <div class="vote-option-top">
-            <span class="vote-option-badge">${option.badge}</span>
-            <span class="vote-option-count">${votes} voto${votes === 1 ? '' : 's'}</span>
-          </div>
-          <div class="vote-option-name">${option.title}</div>
-          <div class="vote-option-desc">${option.description}</div>
-          <button class="vote-option-action" type="button" data-vote-option="${option.key}" ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
-        </div>
-      </article>
-    `;
-  }).join('');
-
-  summaryList.innerHTML = NEXT_DRAW_OPTIONS.map((option) => {
-    const votes = counts[option.key] || 0;
-    const percent = totalVotes ? Math.round((votes / totalVotes) * 100) : 0;
-    return `
-      <div class="vote-summary-row">
-        <div class="vote-summary-label">
-          <strong>${option.title}</strong>
-          <small>${option.badge}</small>
-        </div>
-        <div class="vote-summary-value">${votes} / ${percent}%</div>
-      </div>
-    `;
-  }).join('');
-
-  if (!publicCampaignVotes.length) {
-    feedList.innerHTML = '<div class="vote-empty">Todavia nadie voto. El primer voto puede aparecer apenas se apruebe un pago.</div>';
-  } else {
-    feedList.innerHTML = publicCampaignVotes.slice(0, 30).map((vote) => `
-      <div class="vote-feed-item">
-        <div class="vote-feed-name">${vote.display_name || 'Participante'}</div>
-        <div class="vote-feed-choice">${vote.option_label || getVoteOptionMeta(vote.option_key).title}</div>
-        <div class="vote-feed-time">${formatVoteTime(vote.voted_at)}</div>
-      </div>
-    `).join('');
-  }
-
-  repairDocumentText(document.getElementById('nextDrawVoting'));
-}
-
-async function loadPublicCampaignVotes() {
-  try {
-    const { data, error } = await supabaseClient.rpc('list_public_campaign_votes', {
-      p_campaign_slug: CAMPAIGN_SLUG
-    });
-    if (error) throw error;
-    publicCampaignVotes = Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error('No se pudieron cargar los votos publicos.', error);
-    publicCampaignVotes = [];
-  }
-  renderCampaignVoting();
-}
-
-async function loadMyCampaignVote() {
-  const orderRef = getStoredApprovedOrderReference();
-  if (!orderRef) {
-    myCampaignVote = null;
-    renderCampaignVoting();
+function showCourseReward({ orderRef = '', purchasedEntries = 0 }) {
+  const box = document.getElementById('courseRewardBox');
+  if (!box) return;
+  const qualifies = Number(purchasedEntries || 0) >= COURSE_MIN_ENTRIES;
+  const codeInput = document.getElementById('courseAccessCodeInput');
+  const openBtn = document.getElementById('openCourseBtn');
+  if (!qualifies) {
+    box.classList.remove('show');
+    if (codeInput) codeInput.value = '';
+    if (openBtn) openBtn.dataset.courseUrl = '';
     return;
   }
 
+  const accessCode = buildCourseAccessCode(orderRef);
+  const courseUrl = buildCourseUrl(orderRef);
+  document.getElementById('courseRewardCopy').textContent =
+    `Compraste ${Number(purchasedEntries).toLocaleString('es-AR')} chances y desbloqueaste gratis el curso Guia para comprar tu auto usado en Argentina.`;
+  codeInput.value = accessCode;
+  openBtn.dataset.courseUrl = courseUrl;
   try {
-    const { data, error } = await supabaseClient.rpc('get_campaign_vote_for_order', {
-      p_external_reference: orderRef
-    });
-    if (error) throw error;
-    myCampaignVote = data || null;
-  } catch (error) {
-    console.error('No se pudo cargar el voto del participante.', error);
-    myCampaignVote = null;
+    localStorage.setItem('bonus_course_access_code', accessCode);
+    localStorage.setItem('bonus_course_url', courseUrl);
+  } catch (_) {
+    // ignore storage failures
   }
-  renderCampaignVoting();
-}
-
-async function submitCampaignVote(optionKey) {
-  const orderRef = getStoredApprovedOrderReference();
-  if (!orderRef) {
-    showToast('Tu voto se habilita cuando el pago quede aprobado.');
-    return;
-  }
-  if (voteSubmissionInFlight) return;
-
-  voteSubmissionInFlight = true;
-  renderCampaignVoting();
-
-  try {
-    const { data, error } = await supabaseClient.rpc('submit_campaign_vote', {
-      p_external_reference: orderRef,
-      p_option_key: optionKey
-    });
-    if (error) throw error;
-    myCampaignVote = data || null;
-    await loadPublicCampaignVotes();
-    renderCampaignVoting();
-    const option = getVoteOptionMeta(optionKey);
-    showToast(`Tu voto por ${option.title} ya quedo registrado.`);
-  } catch (error) {
-    console.error(error);
-    showToast(error.message || 'No se pudo registrar tu voto.');
-  } finally {
-    voteSubmissionInFlight = false;
-    renderCampaignVoting();
-  }
+  box.classList.add('show');
 }
 
 function showPaymentCard({ kicker, title, copy, shareUrl = '' }) {
@@ -3162,6 +2770,23 @@ function showPaymentCard({ kicker, title, copy, shareUrl = '' }) {
   document.getElementById('shareLinkInput').value = shareUrl || '';
   row.classList.toggle('hidden', !shareUrl);
   card.classList.add('show', 'visible');
+}
+
+async function copyCourseCode() {
+  const value = document.getElementById('courseAccessCodeInput').value;
+  if (!value) return;
+  try {
+    await navigator.clipboard.writeText(value);
+    showToast('Codigo del curso copiado.');
+  } catch (_) {
+    showToast('No se pudo copiar el codigo del curso.');
+  }
+}
+
+function openBonusCourse() {
+  const url = document.getElementById('openCourseBtn')?.dataset.courseUrl || '';
+  if (!url) return;
+  window.open(url, '_blank');
 }
 
 async function copyShareLink() {
@@ -4261,6 +3886,7 @@ async function handleReturnedPayment() {
   if (!paymentState || !orderRef) return;
 
   if (paymentState === 'failure') {
+    showCourseReward({ orderRef: '', purchasedEntries: 0 });
     showPaymentCard({
       kicker: 'Pago pendiente',
       title: 'El pago no se aprobÃ³',
@@ -4284,6 +3910,7 @@ async function handleReturnedPayment() {
   }
 
   if (statusData.status !== 'paid') {
+    showCourseReward({ orderRef: '', purchasedEntries: 0 });
     showPaymentCard({
       kicker: 'Pago en revisiÃ³n',
       title: 'Estamos confirmando tu compra',
@@ -4298,13 +3925,10 @@ async function handleReturnedPayment() {
   renderParticipants(document.getElementById('searchInput').value);
   startDrawShowcase();
   scheduleLiveFeed();
-  latestOrderStatus = { ...statusData, external_reference: orderRef };
-  storeApprovedOrderReference(orderRef);
-  await loadMyCampaignVote();
-  await loadPublicCampaignVotes();
 
   const shareUrl = statusData.referral_link_code ? buildLandingShareUrl(statusData.referral_link_code) : '';
   const participantLabel = statusData.participant_name || 'Te invito';
+  const purchasedEntries = Number(statusData.purchased_entries || statusData.total_entries || 0);
   if (shareUrl) {
     updateShareMetadata({
       title: `${participantLabel} te invita al Gran Sorteo`,
@@ -4313,6 +3937,7 @@ async function handleReturnedPayment() {
       url: shareUrl
     });
   }
+  showCourseReward({ orderRef, purchasedEntries });
   showPaymentCard({
     kicker: 'Pago aprobado',
     title: `${participantLabel} ya participa del sorteo`,
@@ -4321,24 +3946,25 @@ async function handleReturnedPayment() {
       : `Tus chances ya estÃ¡n activas, tu compra quedÃ³ registrada y ya aparecÃ©s en la lista pÃºblica de participantes.`,
     shareUrl
   });
-  showToast(shareUrl ? 'Pago aprobado. Ya podÃ©s compartir tu enlace Ãºnico.' : 'Pago aprobado. Ya aparecÃ©s en la lista.');
-  document.getElementById('nextDrawVoting').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToast(
+    purchasedEntries >= COURSE_MIN_ENTRIES
+      ? 'Pago aprobado. Tambien desbloqueaste el curso gratis.'
+      : (shareUrl ? 'Pago aprobado. Ya podÃ©s compartir tu enlace Ãºnico.' : 'Pago aprobado. Ya aparecÃ©s en la lista.')
+  );
+  document.getElementById('participantes').scrollIntoView({ behavior: 'smooth' });
   clearPaymentQueryState();
 }
 
 document.getElementById('searchInput').addEventListener('input', e => renderParticipants(e.target.value));
 document.getElementById('modalConfirm').onclick = submitOrder;
+document.getElementById('copyCourseCodeBtn').onclick = copyCourseCode;
+document.getElementById('openCourseBtn').onclick = openBonusCourse;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
 document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
-document.getElementById('voteOptionsGrid').addEventListener('click', (event) => {
-  const button = event.target.closest('[data-vote-option]');
-  if (!button) return;
-  submitCampaignVote(button.dataset.voteOption);
-});
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
@@ -4370,12 +3996,9 @@ async function bootLanding(){
     await loadCampaign();
     await loadPackages();
     await loadParticipants();
-    await loadPublicCampaignVotes();
-    await loadMyCampaignVote();
     await loadDemoResults();
     renderPackages();
     renderParticipants();
-    renderCampaignVoting();
     repairDocumentText();
     startDrawShowcase();
     observeReveal();
@@ -4393,6 +4016,5 @@ async function bootLanding(){
 
 bootLanding();
 </script>
--->
 </body>
 </html>
