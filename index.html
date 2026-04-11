@@ -115,7 +115,49 @@
     color: var(--text2);
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    margin-bottom: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-lead {
+    position: relative; z-index: 2;
+    max-width: 760px;
+    margin: 0 auto 1.5rem;
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    text-align: center;
+  }
+  .hero-lead strong {
+    color: var(--gold);
+  }
+  .hero-assurance {
+    position: relative; z-index: 2;
+    width: min(980px, 100%);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 0 auto 2rem;
+  }
+  .hero-assurance-card {
+    background: linear-gradient(145deg, rgba(24,24,34,0.94), rgba(16,16,24,0.96));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.1rem;
+    padding: 1rem;
+    text-align: left;
+    box-shadow: 0 18px 34px rgba(0,0,0,0.18);
+  }
+  .hero-assurance-label {
+    display: block;
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .hero-assurance-copy {
+    color: var(--text2);
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
   .prizes-row {
     position: relative; z-index: 2;
@@ -541,6 +583,93 @@
     line-height: 1; margin-bottom: 1rem;
   }
   .section-sub { font-size: 1rem; color: var(--text2); max-width: 560px; line-height: 1.6; }
+  .bonus-section {
+    background:
+      radial-gradient(circle at top, rgba(59,139,255,0.12), transparent 38%),
+      linear-gradient(180deg, rgba(19,19,28,1), rgba(10,10,15,1));
+  }
+  .bonus-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 1.2rem;
+    align-items: stretch;
+  }
+  .bonus-card,
+  .bonus-proof {
+    background: linear-gradient(145deg, rgba(24,24,34,0.96), rgba(16,16,24,0.98));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.4rem;
+    padding: 1.45rem;
+    box-shadow: 0 18px 42px rgba(0,0,0,0.22);
+  }
+  .bonus-kicker {
+    color: #9dcbff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    display: block;
+    margin-bottom: 0.65rem;
+  }
+  .bonus-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 4.6vw, 3.4rem);
+    line-height: 0.95;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+  .bonus-title span {
+    color: var(--gold);
+  }
+  .bonus-copy {
+    color: var(--text2);
+    line-height: 1.7;
+    max-width: 58ch;
+  }
+  .bonus-points {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+  .bonus-point {
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text2);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .bonus-point strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+  .bonus-proof-list {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+  .bonus-proof-item {
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .bonus-proof-item strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .bonus-proof-item span {
+    color: var(--text2);
+    line-height: 1.55;
+    font-size: 0.92rem;
+  }
+  .bonus-section .faq-item {
+    display: none;
+  }
 
   /* ---- PACKAGES ---- */
   .packages-section { background: var(--dark2); }
@@ -625,6 +754,15 @@
     font-size: 1rem; flex-shrink: 0;
   }
   .trust-label { font-size: 0.8rem; font-weight: 600; color: var(--text2); }
+  .trust-note {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--text2);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
 
   /* ---- PARTICIPANTS ---- */
   .participants-section { background: var(--dark); }
@@ -1902,6 +2040,9 @@
   @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   @media (max-width: 600px) {
+    .hero-assurance { grid-template-columns: 1fr; }
+    .bonus-grid { grid-template-columns: 1fr; }
+    .bonus-points { grid-template-columns: 1fr; }
     .prizes-row { grid-template-columns: 1fr; }
     .packages-grid { grid-template-columns: 1fr 1fr; }
     .draw-showcase { padding: 1rem; }
@@ -1970,6 +2111,26 @@
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
   <p class="hero-subtitle">Un solo premio. Un Fiat Uno 2014 impecable.</p>
+  <p class="hero-lead">Comprás tus chances, tu pago queda registrado y cuando se acredita aparecés en la lista pública del sorteo. Además, <strong>si comprás 3 o más chances te regalamos acceso a un curso práctico</strong> para comprar tu auto usado en Argentina con más seguridad.</p>
+
+  <div class="hero-assurance reveal">
+    <div class="hero-assurance-card">
+      <span class="hero-assurance-label">Transparencia</span>
+      <div class="hero-assurance-copy">Cada compra aprobada se refleja en la lista con fecha y cantidad de chances activas.</div>
+    </div>
+    <div class="hero-assurance-card">
+      <span class="hero-assurance-label">Seguridad</span>
+      <div class="hero-assurance-copy">Tu reserva queda asociada a tus datos y al estado real del pago para dar seguimiento claro.</div>
+    </div>
+    <div class="hero-assurance-card">
+      <span class="hero-assurance-label">Beneficio extra</span>
+      <div class="hero-assurance-copy">Con 3 o más chances desbloqueás gratis el curso guía para evitar errores al comprar un usado.</div>
+    </div>
+    <div class="hero-assurance-card">
+      <span class="hero-assurance-label">Entrega</span>
+      <div class="hero-assurance-copy">El premio se coordina con el ganador luego de la selección final y validación del resultado.</div>
+    </div>
+  </div>
 
   <div class="prizes-row">
     <div class="prize-card primary reveal">
@@ -2047,6 +2208,7 @@
     <div class="trust-icon">1</div>
     <span class="trust-label">1 ganador<br>seleccionado al azar</span>
   </div>
+  <div class="trust-note">La propuesta está pensada para que entiendas qué comprás, cómo se acredita tu participación y qué recibís además del sorteo. El premio es visible, las participaciones aprobadas quedan registradas y el bonus del curso se entrega automáticamente cuando corresponde.</div>
 </div>
 
 <!-- TICKER -->
@@ -2058,21 +2220,79 @@
     <span class="ticker-item">Mas chances = mas posibilidades</span>
     <span class="ticker-item">Sorteo 100% transparente</span>
     <span class="ticker-item">Participas desde toda Argentina</span>
+    <span class="ticker-item">Con 3 o mas chances te llevas un curso gratis</span>
     <span class="ticker-item">Fiat Uno 2014 impecable</span>
     <span class="ticker-item">Premio unico publicado con 6 fotos reales</span>
     <span class="ticker-item">1 ganador seleccionado al azar</span>
     <span class="ticker-item">Mas chances = mas posibilidades</span>
     <span class="ticker-item">Sorteo 100% transparente</span>
     <span class="ticker-item">Participas desde toda Argentina</span>
+    <span class="ticker-item">Con 3 o mas chances te llevas un curso gratis</span>
   </div>
 </div>
+
+<section class="bonus-section">
+  <div class="section-inner">
+    <div class="bonus-grid reveal">
+      <div class="bonus-card">
+        <span class="bonus-kicker">Bonus incluido</span>
+        <h2 class="bonus-title">Comprando <span>3 o más chances</span> también te llevás un curso gratis</h2>
+        <p class="bonus-copy">Además de participar por el Fiat Uno, desbloqueás una guía práctica para comprar tu auto usado en Argentina con más criterio, más control y menos riesgo. El acceso se entrega después del pago aprobado con un código simple y un botón directo al curso.</p>
+        <div class="bonus-points">
+          <div class="bonus-point">
+            <strong>Acceso fácil</strong>
+            Recibís un código simple y un acceso directo apenas se confirma tu compra bonificada.
+          </div>
+          <div class="bonus-point">
+            <strong>Valor real</strong>
+            El curso acompaña la propuesta con contenido útil, no con un regalo simbólico.
+          </div>
+          <div class="bonus-point">
+            <strong>Más seguridad al comprar</strong>
+            Incluye alertas, chequeos y criterios para analizar un usado con más confianza.
+          </div>
+          <div class="bonus-point">
+            <strong>Beneficio concreto</strong>
+            Aunque no dependas del resultado final del sorteo, te llevás un recurso práctico para usar.
+          </div>
+        </div>
+      </div>
+      <div class="bonus-proof">
+        <span class="bonus-kicker">Más credibilidad</span>
+        <h3 class="bonus-title" style="font-size:clamp(1.8rem,4vw,2.7rem)">Una propuesta más seria,<br><span>clara y confiable</span></h3>
+        <div class="bonus-proof-list">
+          <div class="bonus-proof-item">
+            <strong>Premio visible y explicado</strong>
+            El auto está publicado con fotos reales para que sepas exactamente por qué participás.
+          </div>
+          <div class="bonus-proof-item">
+            <strong>Condición simple y objetiva</strong>
+            Con 3 o más chances el acceso al curso se habilita automáticamente, sin sorteos extra ni pasos raros.
+          </div>
+          <div class="bonus-proof-item">
+            <strong>Registro claro de participación</strong>
+            Las compras aprobadas quedan reflejadas en la lista pública para reforzar transparencia.
+          </div>
+          <div class="bonus-proof-item">
+            <strong>Más valor para quien compra</strong>
+            No solo comprás chances: también te llevás información útil para una futura compra importante.
+          </div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cómo funciona el curso gratis? <span class="faq-arrow">▼</span></button>
+        <div class="faq-a">Si tu compra aprobada es de 3 o más chances, se habilita un código de acceso simple y un botón directo para entrar al curso. No depende de salir ganador: es un bonus concreto por la compra bonificada.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- PACKAGES -->
 <section id="paquetes" class="packages-section">
   <div class="section-inner">
     <span class="section-tag">ðŸ’Ž Elige tu pack</span>
     <h2 class="section-title">MÃ¡s chances,<br><span style="color:var(--gold)">mÃ¡s posibilidades</span></h2>
-    <p class="section-sub">Cada chance suma una participacion real dentro del sistema de seleccion. Mientras mas chances tengas, mas posibilidades tenes de quedarte con el Fiat Uno 2014.</p>
+    <p class="section-sub">Cada chance suma una participación real dentro del sistema de selección. Mientras más chances tengas, más posibilidades acumulás de quedarte con el Fiat Uno 2014. Y con 3 o más chances, además desbloqueás gratis el curso guía para comprar autos usados.</p>
 
     <div class="packages-grid" id="packagesGrid">
       <!-- generado por JS -->
@@ -2087,6 +2307,7 @@
     <h2 class="section-title">Lista de<br><span style="color:var(--gold)">participantes</span></h2>
     <p class="section-sub">Cada participaciÃ³n aprobada aparece aquÃ­ con su fecha y cantidad de chances, para que puedas ver que el ingreso quedÃ³ registrado y que el proceso se mantiene visible.</p>
 
+    <p class="section-sub" style="margin-top:0.9rem; max-width:760px">Cuando una compra se acredita, queda asociada al participante y pasa a formar parte del registro visible del sorteo. Eso ayuda a dar seguimiento real y a reforzar la confianza de quien participa.</p>
     <div class="demo-launcher reveal hidden">
       <div class="demo-launcher-copy">
         <div class="demo-launcher-title">Demostracion en tiempo real</div>
@@ -2361,6 +2582,10 @@
         <button class="faq-q">Â¿Hay fecha lÃ­mite para participar? <span class="faq-arrow">â–¼</span></button>
         <div class="faq-a">La fecha prevista es el 26 de julio o antes al agotar chances. Quedan pocos lugares, asÃ­ que te recomendamos no esperar al Ãºltimo momento.</div>
       </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cómo funciona el curso gratis? <span class="faq-arrow">▼</span></button>
+        <div class="faq-a">Si tu compra aprobada es de 3 o más chances, se habilita un código de acceso simple y un botón directo para entrar al curso. No depende de salir ganador: es un bonus concreto por la compra bonificada.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -2368,7 +2593,7 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta">
   <h2 class="bottom-cta-title reveal">Â¿Y si sos<br>el prÃ³ximo ganador?</h2>
-  <p class="bottom-cta-sub reveal">Participas con un proceso claro, con registro visible y una seleccion aleatoria de 1 ganador. Mientras mas chances sumas, mas posibilidades tenes.</p>
+  <p class="bottom-cta-sub reveal">Participás con un proceso claro, con registro visible y una selección aleatoria de 1 ganador. Y si elegís 3 o más chances, además te llevás el curso bonus como beneficio extra.</p>
   <div class="reveal" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
     <a href="#paquetes" class="btn-primary">Â¡COMPRAR CHANCES AHORA!</a>
     <a href="#participantes" class="btn-secondary">Ver participantes</a>
