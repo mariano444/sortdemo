@@ -433,10 +433,29 @@ as $$
 declare
   v_link public.referral_links%rowtype;
   v_bonus integer;
+  v_snapshot jsonb;
+  v_snapshot_name text;
+  v_snapshot_phone text;
+  v_snapshot_city text;
+  v_snapshot_public_name boolean;
 begin
   if new.status = 'paid' and new.entries_applied_at is null then
+    v_snapshot := coalesce(new.metadata -> 'customer_snapshot', '{}'::jsonb);
+    v_snapshot_name := nullif(trim(coalesce(v_snapshot ->> 'full_name', '')), '');
+    v_snapshot_phone := nullif(trim(coalesce(v_snapshot ->> 'phone', '')), '');
+    v_snapshot_city := nullif(trim(coalesce(v_snapshot ->> 'city', '')), '');
+    v_snapshot_public_name := (v_snapshot ->> 'is_public_name')::boolean;
+
     update public.participants
-    set total_entries = total_entries + new.total_entries,
+    set full_name = coalesce(v_snapshot_name, full_name),
+        phone = coalesce(v_snapshot_phone, phone),
+        city = coalesce(v_snapshot_city, city),
+        is_public_name = coalesce(v_snapshot_public_name, is_public_name),
+        public_display_code = case
+          when coalesce(v_snapshot_public_name, is_public_name, true) then public_display_code
+          else coalesce(public_display_code, public.generate_public_participant_code())
+        end,
+        total_entries = total_entries + new.total_entries,
         updated_at = now()
     where id = new.participant_id;
 
@@ -561,30 +580,52 @@ language sql
 security definer
 set search_path = public
 as $$
-  select
-    case
-      when coalesce(p.is_public_name, true) then p.full_name
-      else 'Anonimo ' || coalesce(p.public_display_code, public.generate_public_participant_code())
-    end as display_name,
-    p.full_name,
-    not coalesce(p.is_public_name, true) as is_anonymous,
-    p.public_display_code as public_code,
-    coalesce(p.city, 'Argentina') as city,
-    coalesce((
-      select sum(o.total_entries)::int
+  with participant_paid_orders as (
+    select
+      p.id as participant_id,
+      p.full_name as participant_full_name,
+      p.is_public_name as participant_is_public_name,
+      p.public_display_code,
+      p.city as participant_city,
+      p.total_entries,
+      latest_order.metadata as latest_order_metadata,
+      coalesce(latest_order.paid_at, latest_order.created_at, p.created_at) as joined_at,
+      coalesce((
+        select sum(o.total_entries)::int
+        from public.orders o
+        where o.participant_id = p.id
+          and o.status = 'paid'
+      ), 0) as purchased_entries
+    from public.participants p
+    join public.campaigns c on c.id = p.campaign_id
+    join lateral (
+      select o.paid_at, o.created_at, o.metadata
       from public.orders o
       where o.participant_id = p.id
         and o.status = 'paid'
-    ), 0) as purchased_entries,
-    p.total_entries,
-    p.created_at as joined_at
-  from public.participants p
-  join public.campaigns c on c.id = p.campaign_id
-  where c.slug = p_campaign_slug
-    and c.status = 'active'
-    and p.status = 'active'
-    and p.total_entries > 0
-  order by p.created_at desc
+      order by coalesce(o.paid_at, o.created_at) desc, o.created_at desc
+      limit 1
+    ) latest_order on true
+    where c.slug = p_campaign_slug
+      and c.status = 'active'
+      and p.status = 'active'
+      and p.total_entries > 0
+  )
+  select
+    case
+      when coalesce((latest_order_metadata -> 'customer_snapshot' ->> 'is_public_name')::boolean, participant_is_public_name, true)
+        then coalesce(nullif(latest_order_metadata -> 'customer_snapshot' ->> 'full_name', ''), participant_full_name)
+      else 'Anonimo ' || coalesce(public_display_code, public.generate_public_participant_code())
+    end as display_name,
+    coalesce(nullif(latest_order_metadata -> 'customer_snapshot' ->> 'full_name', ''), participant_full_name) as full_name,
+    not coalesce((latest_order_metadata -> 'customer_snapshot' ->> 'is_public_name')::boolean, participant_is_public_name, true) as is_anonymous,
+    public_display_code as public_code,
+    coalesce(nullif(latest_order_metadata -> 'customer_snapshot' ->> 'city', ''), participant_city, 'Argentina') as city,
+    purchased_entries,
+    total_entries,
+    joined_at
+  from participant_paid_orders
+  order by joined_at desc
   limit 200;
 $$;
 
@@ -611,6 +652,10 @@ declare
   v_participant public.participants%rowtype;
   v_referral_link_id uuid;
   v_order public.orders%rowtype;
+  v_snapshot_city text;
+  v_snapshot_full_name text;
+  v_snapshot_phone text;
+  v_snapshot_public_name boolean;
 begin
   select *
     into v_campaign
@@ -639,6 +684,11 @@ begin
     raise exception 'Nombre y WhatsApp son obligatorios';
   end if;
 
+  v_snapshot_full_name := trim(p_full_name);
+  v_snapshot_phone := trim(p_phone);
+  v_snapshot_city := nullif(trim(coalesce(p_city, '')), '');
+  v_snapshot_public_name := coalesce(p_show_public_name, true);
+
   select *
     into v_participant
   from public.participants
@@ -659,29 +709,17 @@ begin
     )
     values (
       v_campaign.id,
-      trim(p_full_name),
-      trim(p_phone),
-      nullif(trim(coalesce(p_city, '')), ''),
-      coalesce(p_show_public_name, true),
+      v_snapshot_full_name,
+      v_snapshot_phone,
+      v_snapshot_city,
+      v_snapshot_public_name,
       case
-        when coalesce(p_show_public_name, true) then null
+        when v_snapshot_public_name then null
         else public.generate_public_participant_code()
       end,
       case when p_referral_code is not null then 'referral_link' else 'landing' end,
       'active'
     )
-    returning * into v_participant;
-  else
-    update public.participants
-    set full_name = trim(p_full_name),
-        city = coalesce(nullif(trim(coalesce(p_city, '')), ''), city),
-        is_public_name = coalesce(p_show_public_name, true),
-        public_display_code = case
-          when coalesce(p_show_public_name, true) then public_display_code
-          else coalesce(public_display_code, public.generate_public_participant_code())
-        end,
-        updated_at = now()
-    where id = v_participant.id
     returning * into v_participant;
   end if;
 
@@ -707,7 +745,8 @@ begin
     quantity,
     base_entries,
     amount_ars,
-    total_entries
+    total_entries,
+    metadata
   )
   values (
     v_campaign.id,
@@ -719,7 +758,15 @@ begin
     1,
     0,
     0,
-    0
+    0,
+    jsonb_build_object(
+      'customer_snapshot', jsonb_build_object(
+        'full_name', v_snapshot_full_name,
+        'phone', v_snapshot_phone,
+        'city', v_snapshot_city,
+        'is_public_name', v_snapshot_public_name
+      )
+    )
   )
   returning * into v_order;
 
@@ -749,8 +796,8 @@ as $$
     'paid_at', o.paid_at,
     'created_at', o.created_at,
     'participant_id', p.id,
-    'participant_name', p.full_name,
-    'city', coalesce(p.city, 'Argentina'),
+    'participant_name', coalesce(nullif(o.metadata -> 'customer_snapshot' ->> 'full_name', ''), p.full_name),
+    'city', coalesce(nullif(o.metadata -> 'customer_snapshot' ->> 'city', ''), p.city, 'Argentina'),
     'purchased_entries', coalesce((
       select sum(po.total_entries)::int
       from public.orders po
@@ -1269,131 +1316,3 @@ comment on function public.apply_paid_order_effects() is
 -- on conflict (user_id) do update
 -- set role = excluded.role,
 --     is_active = true;
-
-create table if not exists public.demo_draw_results (
-  id uuid primary key default gen_random_uuid(),
-  campaign_id uuid not null references public.campaigns(id) on delete cascade,
-  participant_id uuid not null references public.participants(id) on delete cascade,
-  snapshot_display_name text not null,
-  snapshot_full_name text not null,
-  snapshot_public_code text,
-  snapshot_city text,
-  snapshot_total_entries integer not null default 0,
-  source text not null default 'landing_demo',
-  recorded_at timestamptz not null default now()
-);
-
-create index if not exists demo_draw_results_campaign_recorded_idx
-on public.demo_draw_results (campaign_id, recorded_at desc);
-
-create or replace function public.record_demo_draw_result(
-  p_campaign_slug text,
-  p_participant_public_code text default null,
-  p_display_name text default null,
-  p_full_name text default null
-)
-returns jsonb
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_campaign public.campaigns%rowtype;
-  v_participant public.participants%rowtype;
-  v_display_name text;
-begin
-  select *
-  into v_campaign
-  from public.campaigns
-  where slug = p_campaign_slug
-  limit 1;
-
-  if v_campaign.id is null then
-    raise exception 'Campana no encontrada.';
-  end if;
-
-  select p.*
-  into v_participant
-  from public.participants p
-  where p.campaign_id = v_campaign.id
-    and p.status = 'active'
-    and p.total_entries > 0
-    and (
-      (coalesce(p_participant_public_code, '') <> '' and p.public_display_code = p_participant_public_code)
-      or (coalesce(p_full_name, '') <> '' and p.full_name = p_full_name)
-    )
-  order by p.created_at desc
-  limit 1;
-
-  if v_participant.id is null then
-    raise exception 'Participante no encontrado para guardar la demostracion.';
-  end if;
-
-  v_display_name := coalesce(
-    nullif(p_display_name, ''),
-    case
-      when coalesce(v_participant.is_public_name, true) then v_participant.full_name
-      else 'Anonimo ' || coalesce(v_participant.public_display_code, public.generate_public_participant_code())
-    end
-  );
-
-  insert into public.demo_draw_results (
-    campaign_id,
-    participant_id,
-    snapshot_display_name,
-    snapshot_full_name,
-    snapshot_public_code,
-    snapshot_city,
-    snapshot_total_entries,
-    source
-  )
-  values (
-    v_campaign.id,
-    v_participant.id,
-    v_display_name,
-    v_participant.full_name,
-    v_participant.public_display_code,
-    coalesce(v_participant.city, 'Argentina'),
-    coalesce(v_participant.total_entries, 0),
-    'landing_demo'
-  );
-
-  return jsonb_build_object(
-    'ok', true,
-    'participant_id', v_participant.id,
-    'display_name', v_display_name
-  );
-end;
-$$;
-
-create or replace function public.list_demo_draw_results(p_campaign_slug text)
-returns table (
-  id uuid,
-  display_name text,
-  full_name text,
-  public_code text,
-  city text,
-  chances integer,
-  recorded_at timestamptz
-)
-language sql
-security definer
-set search_path = public
-as $$
-  select
-    d.id,
-    d.snapshot_display_name as display_name,
-    d.snapshot_full_name as full_name,
-    d.snapshot_public_code as public_code,
-    d.snapshot_city as city,
-    d.snapshot_total_entries as chances,
-    d.recorded_at
-  from public.demo_draw_results d
-  join public.campaigns c on c.id = d.campaign_id
-  where c.slug = p_campaign_slug
-  order by d.recorded_at desc
-  limit 60;
-$$;
-
-grant execute on function public.record_demo_draw_result(text, text, text, text) to anon, authenticated;
-grant execute on function public.list_demo_draw_results(text) to anon, authenticated;
