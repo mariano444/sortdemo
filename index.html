@@ -371,6 +371,53 @@
     flex-wrap: wrap;
     gap: 0.65rem;
   }
+  .course-syllabus {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .course-syllabus-head {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .course-syllabus-kicker {
+    color: #9dcbff;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .course-syllabus-title {
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+  .course-syllabus-copy {
+    color: var(--text2);
+    line-height: 1.65;
+    font-size: 0.94rem;
+  }
+  .course-syllabus-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+  .course-topic {
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .course-topic strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .course-topic span {
+    color: var(--text2);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
   .auto-pill {
     padding: 0.55rem 0.85rem;
     border-radius: 999px;
@@ -583,94 +630,7 @@
     line-height: 1; margin-bottom: 1rem;
   }
   .section-sub { font-size: 1rem; color: var(--text2); max-width: 560px; line-height: 1.6; }
-  .bonus-section {
-    background:
-      radial-gradient(circle at top, rgba(59,139,255,0.12), transparent 38%),
-      linear-gradient(180deg, rgba(19,19,28,1), rgba(10,10,15,1));
-  }
-  .bonus-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-    gap: 1.2rem;
-    align-items: stretch;
-  }
-  .bonus-card,
-  .bonus-proof {
-    background: linear-gradient(145deg, rgba(24,24,34,0.96), rgba(16,16,24,0.98));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 1.4rem;
-    padding: 1.45rem;
-    box-shadow: 0 18px 42px rgba(0,0,0,0.22);
-  }
-  .bonus-kicker {
-    color: #9dcbff;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    display: block;
-    margin-bottom: 0.65rem;
-  }
-  .bonus-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 4.6vw, 3.4rem);
-    line-height: 0.95;
-    color: var(--text);
-    margin-bottom: 0.8rem;
-  }
-  .bonus-title span {
-    color: var(--gold);
-  }
-  .bonus-copy {
-    color: var(--text2);
-    line-height: 1.7;
-    max-width: 58ch;
-  }
-  .bonus-points {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem;
-    margin-top: 1.2rem;
-  }
-  .bonus-point {
-    padding: 0.9rem 1rem;
-    border-radius: 1rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    color: var(--text2);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-  .bonus-point strong {
-    display: block;
-    color: var(--text);
-    margin-bottom: 0.2rem;
-  }
-  .bonus-proof-list {
-    display: grid;
-    gap: 0.85rem;
-    margin-top: 1rem;
-  }
-  .bonus-proof-item {
-    padding: 0.95rem 1rem;
-    border-radius: 1rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .bonus-proof-item strong {
-    display: block;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-  .bonus-proof-item span {
-    color: var(--text2);
-    line-height: 1.55;
-    font-size: 0.92rem;
-  }
-  .bonus-section .faq-item {
-    display: none;
-  }
-
+  .bonus-section { display: none !important; }
   /* ---- PACKAGES ---- */
   .packages-section { background: var(--dark2); }
   .packages-grid {
@@ -2041,8 +2001,7 @@
 
   @media (max-width: 600px) {
     .hero-assurance { grid-template-columns: 1fr; }
-    .bonus-grid { grid-template-columns: 1fr; }
-    .bonus-points { grid-template-columns: 1fr; }
+    .course-syllabus-grid { grid-template-columns: 1fr; }
     .prizes-row { grid-template-columns: 1fr; }
     .packages-grid { grid-template-columns: 1fr 1fr; }
     .draw-showcase { padding: 1rem; }
@@ -2292,7 +2251,7 @@
   <div class="section-inner">
     <span class="section-tag">ðŸ’Ž Elige tu pack</span>
     <h2 class="section-title">MÃ¡s chances,<br><span style="color:var(--gold)">mÃ¡s posibilidades</span></h2>
-    <p class="section-sub">Cada chance suma una participación real dentro del sistema de selección. Mientras más chances tengas, más posibilidades acumulás de quedarte con el Fiat Uno 2014. Y con 3 o más chances, además desbloqueás gratis el curso guía para comprar autos usados.</p>
+    <p class="section-sub">Cada chance suma una participación real dentro del sistema de selección. Mientras más chances tengas, más posibilidades acumulás de quedarte con el Fiat Uno 2014.</p>
 
     <div class="packages-grid" id="packagesGrid">
       <!-- generado por JS -->
@@ -2442,6 +2401,31 @@
         <span class="auto-pill">6 fotos reales</span>
         <span class="auto-pill">Exterior e interior</span>
         <span class="auto-pill">Entrega coordinada</span>
+      </div>
+      <div class="course-syllabus">
+        <div class="course-syllabus-head">
+          <span class="course-syllabus-kicker">Temario del curso</span>
+          <div class="course-syllabus-title">Qué aprende la persona en el curso bonus</div>
+          <div class="course-syllabus-copy">Este curso se entrega con la compra bonificada y está pensado para ayudar a evaluar mejor un auto usado, detectar riesgos y comprar con más seguridad.</div>
+        </div>
+        <div class="course-syllabus-grid">
+          <div class="course-topic">
+            <strong>Qué revisar antes de señar</strong>
+            <span>Cómo mirar publicaciones, hacer preguntas clave y detectar señales de alerta antes de avanzar.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Chequeo mecánico básico</strong>
+            <span>Qué observar en motor, carrocería, interior, tren delantero y prueba de manejo sin ser especialista.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Documentación y legalidad</strong>
+            <span>Qué papeles pedir, qué validar y cómo evitar problemas de titularidad, deuda o inhibiciones.</span>
+          </div>
+          <div class="course-topic">
+            <strong>Cómo evitar errores caros</strong>
+            <span>Los fallos más comunes al comprar un usado y cómo tomar decisiones con más criterio y confianza.</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="auto-showcase-grid">
