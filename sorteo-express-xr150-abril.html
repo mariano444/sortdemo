@@ -371,6 +371,11 @@
     border-radius: 1.2rem;
     overflow: hidden;
   }
+  #participantsTableScroller {
+    max-height: min(62vh, 640px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
   .table-header {
     display: flex; align-items: center; justify-content: space-between;
     padding: 1rem 1.5rem;
@@ -405,7 +410,7 @@
   .search-input:focus { border-color: var(--gold); }
   .search-input::placeholder { color: var(--text2); }
 
-  table { width: 100%; border-collapse: collapse; }
+  table { width: 100%; min-width: 760px; border-collapse: collapse; }
   th {
     background: var(--dark3);
     font-size: 0.7rem; font-weight: 700;
@@ -447,6 +452,76 @@
     transition: opacity 0.3s;
   }
   .chance-dot.active { opacity: 1; }
+
+  .media-showcase {
+    background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%);
+  }
+  .media-showcase-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  .media-card {
+    background: linear-gradient(145deg, rgba(19,19,28,0.96), rgba(28,28,42,0.88));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1.4rem;
+    padding: 1.25rem;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.24);
+  }
+  .media-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+  }
+  .media-card p {
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .media-video {
+    width: 100%;
+    display: block;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #050507;
+    min-height: 320px;
+    object-fit: cover;
+  }
+  .media-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+  .media-shot {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 180px;
+    background: rgba(255,255,255,0.03);
+  }
+  .media-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .media-shot span {
+    position: absolute;
+    left: 0.8rem;
+    bottom: 0.8rem;
+    background: rgba(10,10,15,0.72);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.28rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 
   /* ---- HOW IT WORKS ---- */
   .how-section { background: var(--dark2); }
@@ -653,6 +728,11 @@
     .modal { padding: 1.5rem; }
     .hero-title { font-size: 4.5rem; }
     .prize-visual, .prize-moto-stack { height: 116px; }
+    .media-gallery { grid-template-columns: 1fr; }
+    .media-video { min-height: 220px; }
+  }
+  @media (max-width: 900px) {
+    .media-showcase-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -671,9 +751,9 @@
   <div class="prizes-row">
     <div class="prize-card reveal">
       <div class="prize-visual prize-moto-stack">
-        <img class="prize-image cutout" src="assets/premios/honda-xr150-express-1.png" alt="Honda XR150 premio 1">
-        <img class="prize-image cutout" src="assets/premios/honda-xr150-express-2.webp" alt="Honda XR150 premio 2">
-        <img class="prize-image cutout" src="assets/premios/honda-xr150-express-3.png" alt="Honda XR150 premio 3">
+        <img class="prize-image cutout" src="./assets/premios/honda-xr150-express-1.png" alt="Honda XR150 premio 1">
+        <img class="prize-image cutout" src="./assets/premios/honda-xr150-express-2.webp" alt="Honda XR150 premio 2">
+        <img class="prize-image cutout" src="./assets/premios/honda-xr150-express-3.png" alt="Honda XR150 premio 3">
       </div>
       <span class="prize-name">HONDA XR150</span>
       <span class="prize-detail">0km · Blanca · Entrega coordinada</span>
@@ -751,13 +831,13 @@
   <div class="ticker-inner" id="ticker">
     <span class="ticker-item">🏍️ Honda XR150 0km lista para entrega</span>
     <span class="ticker-item">💵 $200.000 en efectivo</span>
-    <span class="ticker-item">📅 Sorteo en vivo el 30 de abril</span>
+    <span class="ticker-item">📅 Sorteo en vivo el 1 de mayo</span>
     <span class="ticker-item">⭐ Más chances = más posibilidades</span>
     <span class="ticker-item">🔒 Sorteo 100% transparente</span>
     <span class="ticker-item">📲 Resultado en vivo por redes</span>
     <span class="ticker-item">🏍️ Honda XR150 0km lista para entrega</span>
     <span class="ticker-item">💵 $200.000 en efectivo</span>
-    <span class="ticker-item">📅 Sorteo en vivo el 30 de abril</span>
+    <span class="ticker-item">📅 Sorteo en vivo el 1 de mayo</span>
     <span class="ticker-item">⭐ Más chances = más posibilidades</span>
     <span class="ticker-item">🔒 Sorteo 100% transparente</span>
     <span class="ticker-item">📲 Resultado en vivo por redes</span>
@@ -807,17 +887,15 @@
       <div class="table-header">
         <span class="table-title">Participantes registrados</span>
         <span class="live-badge"><span class="live-dot"></span> EN VIVO</span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre...">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o ciudad...">
       </div>
-      <div style="overflow-x:auto">
+      <div style="overflow-x:auto" id="participantsTableScroller">
         <table>
           <thead>
             <tr>
-              <th>#</th>
               <th>Participante</th>
               <th>Ciudad</th>
               <th>Chances</th>
-              <th>Probabilidad</th>
               <th>Fecha</th>
             </tr>
           </thead>
@@ -828,6 +906,35 @@
 
     <div style="text-align:center; margin-top:2rem">
       <a href="#paquetes" class="btn-primary">¡Sumate ahora!</a>
+    </div>
+  </div>
+</section>
+
+<section class="media-showcase">
+  <div class="section-inner">
+    <span class="section-tag">Multimedia del sorteo</span>
+    <h2 class="section-title">Video e imagenes del<br><span style="color:var(--gold)">XR1504</span></h2>
+    <p class="section-sub">Esta seccion muestra el material visual del sorteo para que la landing quede alineada con el estilo de `index.html` y el premio se vea claro desde la pagina.</p>
+
+    <div class="media-showcase-grid">
+      <div class="media-card reveal">
+        <h3>Video del sorteo</h3>
+        <p>El video se reproduce directamente desde los archivos del proyecto, asi que queda disponible dentro de esta landing.</p>
+        <video class="media-video" controls playsinline preload="metadata" poster="./assets/premios/honda-xr150-express-1.png">
+          <source src="./assets/videos/xr1504-presentacion.mp4" type="video/mp4">
+          Tu navegador no pudo reproducir este video.
+        </video>
+      </div>
+      <div class="media-card reveal" style="transition-delay:0.08s">
+        <h3>Galeria del premio</h3>
+        <p>Las imagenes ahora usan rutas estables dentro del proyecto para evitar que desaparezcan al abrir esta landing.</p>
+        <div class="media-gallery">
+          <div class="media-shot"><img src="./assets/premios/honda-xr150-express-1.png" alt="Honda XR150 frente"><span>Frente</span></div>
+          <div class="media-shot"><img src="./assets/premios/honda-xr150-express-2.webp" alt="Honda XR150 lateral"><span>Lateral</span></div>
+          <div class="media-shot"><img src="./assets/premios/honda-xr150-express-3.png" alt="Honda XR150 detalle"><span>Detalle</span></div>
+          <div class="media-shot"><img src="./assets/premios/honda-xr150-express-1.png" alt="Honda XR150 vista principal"><span>Principal</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -860,7 +967,7 @@
         <span class="step-num">4</span>
         <span class="step-icon">🎰</span>
         <div class="step-title">Sorteo en vivo</div>
-        <p class="step-desc">El sorteo se transmite en vivo el 30 de abril. Se extraen 2 ganadores frente a testigos.</p>
+        <p class="step-desc">El sorteo se transmite en vivo el 1 de mayo. Se extraen 2 ganadores frente a testigos.</p>
       </div>
     </div>
   </div>
@@ -894,7 +1001,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-q">¿Hay fecha límite para participar? <span class="faq-arrow">▼</span></button>
-        <div class="faq-a">La fecha prevista es el 30 de abril. Si se agotan los cupos antes, la organización puede confirmar el cierre anticipado y comunicarlo por los canales oficiales.</div>
+        <div class="faq-a">La fecha prevista es el 1 de mayo. Si se agotan los cupos antes, la organización puede confirmar el cierre anticipado y comunicarlo por los canales oficiales.</div>
       </div>
     </div>
   </div>
@@ -970,15 +1077,15 @@
 <script>
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_zBhxdMJHw_uy_m3uRDj-ng_0yXz42EN';
-const CAMPAIGN_SLUG = 'sorteo-express-xr150-abril';
+const CAMPAIGN_SLUG = 'xr1504';
 const MAX_FALLBACK_CHANCES = 5000;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const LOCAL_FALLBACK_CAMPAIGN = {
   id: 'local-xr150-express',
   slug: CAMPAIGN_SLUG,
-  title: 'Sorteo Express XR150',
+  title: 'Sorteo XR1504',
   status: 'active',
-  draw_at: '2026-04-30T21:00:00-03:00',
+  draw_at: '2026-05-01T21:00:00-03:00',
   max_entries: 5000
 };
 const LOCAL_FALLBACK_PACKAGES = [
@@ -1024,6 +1131,15 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 4500);
 }
 
+function escapeHtml(value){
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 function updateStats(){
   const tc = totalChances();
   document.getElementById('totalPart').textContent = participants.length;
@@ -1066,32 +1182,29 @@ function renderPackages(){
 
 function renderParticipants(filter=''){
   const body = document.getElementById('participantsBody');
-  const tc = Math.max(totalChances(), 1);
   body.innerHTML = '';
-  const filtered = filter
-    ? participants.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.city.toLowerCase().includes(filter.toLowerCase()))
+  const normalizedFilter = (filter || '').trim().toLowerCase();
+  const filtered = normalizedFilter
+    ? participants.filter(p =>
+        (p.name || '').toLowerCase().includes(normalizedFilter) ||
+        (p.city || '').toLowerCase().includes(normalizedFilter)
+      )
     : participants;
 
-  filtered.forEach((p, i) => {
+  filtered.forEach((p) => {
     const globalIdx = participants.indexOf(p);
-    const prob = ((p.chances / tc) * 100).toFixed(2);
-    const dots = Math.min(p.chances, 10);
-    let dotsHtml = '';
-    for(let d = 0; d < 10; d++) dotsHtml += `<div class="chance-dot${d < dots ? ' active' : ''}"></div>`;
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td style="color:var(--text2);font-size:0.8rem">#${globalIdx + 1}</td>
-      <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(globalIdx)}22;color:${colorFor(globalIdx)}">${initials(p.name)}</div><div><div class="td-name">${p.name}</div></div></div></td>
-      <td><span style="font-size:0.8rem;color:var(--text2)">${p.city}</span></td>
+      <td><div class="td-name-cell"><div class="td-avatar" style="background:${colorFor(globalIdx)}22;color:${colorFor(globalIdx)}">${escapeHtml(initials(p.name || 'XR'))}</div><div><div class="td-name">${escapeHtml(p.name || 'Participante')}</div></div></div></td>
+      <td><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(p.city || 'Argentina')}</span></td>
       <td><span class="chances-badge">x${Number(p.chances).toLocaleString('es-AR')}</span></td>
-      <td><div class="chances-bar">${dotsHtml}</div><div style="font-size:0.68rem;color:var(--text2);margin-top:2px">${prob}%</div></td>
-      <td style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
+      <td style="font-size:0.8rem;color:var(--text2)">${escapeHtml(p.date)}</td>
     `;
     body.appendChild(row);
   });
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
   }
 
   updateStats();
@@ -1239,10 +1352,10 @@ async function loadParticipants(){
 
   if (error) throw error;
   participants = (data || []).map(row => ({
-    name: row.full_name,
+    name: row.display_name || row.full_name,
     city: row.city || 'Argentina',
     chances: Number(row.total_entries || 0),
-    date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+    date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }));
 }
 
