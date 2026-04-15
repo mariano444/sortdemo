@@ -2304,7 +2304,7 @@
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
-  <span>SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · </span>
+  <span>SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO · 1 DE MAYO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · </span>
 </div>
 
 <!-- TRUST STRIP -->
@@ -2444,10 +2444,10 @@
             <span class="draw-showcase-kicker">Demostracion de transparencia</span>
             <span class="draw-demo-badge">Demostracion</span>
           </div>
-          <h3 class="draw-showcase-title">Probador visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">Inicia la demostracion para observar en tiempo real como el sistema recorre participantes, se detiene automaticamente y deja asentado el punto exacto donde finaliza la prueba. Este modulo existe solo para demostrar el funcionamiento y no define resultados oficiales.</p>
+          <h3 class="draw-showcase-title">Recorrido visual del <span>software de seleccion</span></h3>
+          <p class="draw-showcase-sub">Inicia la demostracion para ver una pasada completa por todas las chances activas. El sistema muestra el avance en vivo, hace el cierre de forma clara y en esta prueba termina sobre el participante configurado <strong>demo_seed</strong>. Este modulo existe solo para explicar el funcionamiento y no define resultados oficiales.</p>
           <div class="draw-controls">
-            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
+            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
             <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
           </div>
@@ -2471,7 +2471,7 @@
           <div class="draw-showcase-status">
             <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
-            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
+            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, la demo mostrara una pasada completa por cada chance antes del cierre.</span>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
@@ -2912,6 +2912,7 @@
 </a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./assets/js/draw-showcase.js"></script>
 <script>
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_zBhxdMJHw_uy_m3uRDj-ng_0yXz42EN';
@@ -2925,6 +2926,7 @@ const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014
 const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
+const DEMO_TARGET_PARTICIPANT = 'demo_seed';
 
 let activeCampaign = null;
 let packages = [];
@@ -2935,7 +2937,7 @@ let selectedPhotoFile = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
-let drawAnimationTimeout = null;
+let drawShowcaseController = null;
 const fallbackProofMessages = [
   {
     name: 'Mariana',
@@ -3655,6 +3657,138 @@ function startDrawShowcase() {
   const participant = participants[entry.participantIndex];
   const delay = getDrawDelay(participant, false);
   renderDrawShowcase(entry, false, delay);
+}
+
+function ensureDrawShowcaseController() {
+  if (drawShowcaseController) return drawShowcaseController;
+  if (typeof window.createDemoDrawController !== 'function') return null;
+  drawShowcaseController = window.createDemoDrawController({
+    state: drawShowcaseState,
+    targetToken: DEMO_TARGET_PARTICIPANT,
+    getParticipants: () => participants,
+    getParticipantChances,
+    colorFor,
+    initials,
+    participantLocation,
+    escapeHtml,
+    showToast
+  });
+  return drawShowcaseController;
+}
+
+function refreshDrawEntryPool() {
+  ensureDrawShowcaseController()?.syncParticipants();
+}
+
+function getActiveDemoParticipant() {
+  return ensureDrawShowcaseController()?.getActiveParticipant() || null;
+}
+
+function renderDemoHistory() {
+  ensureDrawShowcaseController()?.renderHistory(demoResults);
+}
+
+function toggleDemoHistory() {
+  ensureDrawShowcaseController()?.toggleHistory();
+}
+
+function toggleDemoShowcase() {
+  ensureDrawShowcaseController()?.toggleShowcase();
+}
+
+function updateDrawControls() {
+  ensureDrawShowcaseController()?.updateControls();
+}
+
+function pauseDrawShowcase() {
+  ensureDrawShowcaseController()?.pause();
+}
+
+function startDemoTrial() {
+  ensureDrawShowcaseController()?.startTrial();
+}
+
+function syncParticipantTableFocus(activeIndex, isSpotlight) {
+  ensureDrawShowcaseController()?.syncParticipantTableFocus(activeIndex, isSpotlight);
+}
+
+function renderDrawShowcaseEmpty() {
+  ensureDrawShowcaseController()?.renderEmpty();
+}
+
+async function loadDemoResults() {
+  try {
+    const { data, error } = await supabaseClient.rpc('list_demo_draw_results', {
+      p_campaign_slug: CAMPAIGN_SLUG
+    });
+    if (error) throw error;
+    demoResults = (data || []).map((row) => ({
+      ...row,
+      recorded_at_label: row.recorded_at
+        ? new Date(row.recorded_at).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : ''
+    }));
+  } catch (error) {
+    console.warn('No se pudo cargar el historial demo.', error);
+    demoResults = [];
+  }
+  renderDemoHistory();
+}
+
+async function saveCurrentDemoResult() {
+  const participant = getActiveDemoParticipant();
+  if (!participant) {
+    showToast('Todavia no hay un participante seleccionado donde freno la prueba.');
+    return;
+  }
+  try {
+    const { error } = await supabaseClient.rpc('record_demo_draw_result', {
+      p_campaign_slug: CAMPAIGN_SLUG,
+      p_participant_public_code: participant.publicCode || '',
+      p_display_name: participant.displayName || participant.name,
+      p_full_name: participant.name || participant.displayName || ''
+    });
+    if (error) throw error;
+    await loadDemoResults();
+    if (!drawShowcaseState.historyOpen) {
+      toggleDemoHistory();
+    }
+    showToast(`Resultado registrado donde freno: ${participant.displayName || participant.name}.`);
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo registrar donde freno la prueba. Revisa la migracion SQL.');
+  }
+}
+
+function renderDrawShowcase(entry, isSpotlight) {
+  const controller = ensureDrawShowcaseController();
+  if (!controller) return;
+  if (!entry) {
+    controller.renderEmpty();
+    return;
+  }
+  controller.prepareRound();
+  drawShowcaseState.cyclePosition = Math.max(0, drawShowcaseState.cycle.findIndex((item) => (
+    item.participantIndex === entry.participantIndex && item.chanceNumber === entry.chanceNumber
+  )));
+  drawShowcaseState.spotlightPosition = isSpotlight ? drawShowcaseState.cyclePosition : drawShowcaseState.spotlightPosition;
+  controller.tick();
+}
+
+function stopDrawShowcase() {
+  ensureDrawShowcaseController()?.stop();
+}
+
+function prepareDrawShowcaseRound() {
+  ensureDrawShowcaseController()?.prepareRound();
+}
+
+function tickDrawShowcase() {
+  ensureDrawShowcaseController()?.tick();
+}
+
+function startDrawShowcase() {
+  ensureDrawShowcaseController()?.reset();
 }
 
 async function shareWhatsappLink() {
