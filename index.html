@@ -914,6 +914,12 @@
     gap: 1rem;
     flex-wrap: wrap;
   }
+  .demo-launcher-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
   .demo-launcher-copy {
     display: grid;
     gap: 0.28rem;
@@ -2429,15 +2435,18 @@
     <p class="section-sub">Cada participaciÃ³n aprobada aparece aquÃ­ con su fecha y cantidad de chances, para que puedas ver que el ingreso quedÃ³ registrado y que el proceso se mantiene visible.</p>
 
     <p class="section-sub" style="margin-top:0.9rem; max-width:760px">Cuando una compra se acredita, queda asociada al participante y pasa a formar parte del registro visible del sorteo. Eso ayuda a dar seguimiento real y a reforzar la confianza de quien participa.</p>
-    <div class="demo-launcher reveal hidden">
+    <div class="demo-launcher reveal">
       <div class="demo-launcher-copy">
         <div class="demo-launcher-title">Demostracion en tiempo real</div>
         <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
       </div>
-      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Iniciar demostracion</button>
+      <div class="demo-launcher-actions">
+        <button class="draw-control-btn primary" type="button" id="trySelectionSystemBtn">Probar sistema de seleccion</button>
+        <button class="draw-control-btn" type="button" id="toggleDemoBtn">Ver demostracion</button>
+      </div>
     </div>
 
-    <div class="draw-showcase reveal collapsed hidden" id="drawShowcase">
+    <div class="draw-showcase reveal collapsed" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
@@ -3696,6 +3705,21 @@ function toggleDemoShowcase() {
   ensureDrawShowcaseController()?.toggleShowcase();
 }
 
+function launchSelectionDemo() {
+  const showcase = document.getElementById('drawShowcase');
+  const toggleBtn = document.getElementById('toggleDemoBtn');
+  if (showcase?.classList.contains('collapsed')) {
+    ensureDrawShowcaseController()?.toggleShowcase();
+  }
+  if (toggleBtn) {
+    toggleBtn.textContent = 'Ocultar demostracion';
+  }
+  showcase?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.setTimeout(() => {
+    startDemoTrial();
+  }, 180);
+}
+
 function updateDrawControls() {
   ensureDrawShowcaseController()?.updateControls();
 }
@@ -4515,6 +4539,7 @@ document.getElementById('copyCourseCodeBtn').onclick = copyCourseCode;
 document.getElementById('openCourseBtn').onclick = openBonusCourse;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
+document.getElementById('trySelectionSystemBtn').onclick = launchSelectionDemo;
 document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
