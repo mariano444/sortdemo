@@ -10,8 +10,8 @@
     const showToast = config.showToast;
     const targetToken = String(config.targetToken || '').trim().toLowerCase();
 
-    const MAX_DEMO_DURATION_MS = 175000;
-    const MIN_DEMO_DURATION_MS = 18000;
+    const MAX_DEMO_DURATION_MS = 170000;
+    const MIN_DEMO_DURATION_MS = 12000;
 
     let animationTimeout = null;
     let lastFocusedIndex = -1;
@@ -67,6 +67,17 @@
       return pool;
     }
 
+    function getBurstSize(queueLength, sameParticipant, nearFinish) {
+      if (sameParticipant) return 1;
+      if (nearFinish) return Math.min(queueLength, queueLength > 20 ? 4 : 2);
+      if (queueLength > 1000) return Math.min(queueLength, 26);
+      if (queueLength > 250) return Math.min(queueLength, 18);
+      if (queueLength > 100) return Math.min(queueLength, 12);
+      if (queueLength > 40) return Math.min(queueLength, 7);
+      if (queueLength > 20) return Math.min(queueLength, 5);
+      return Math.min(queueLength, Math.random() > 0.7 ? 3 : Math.random() > 0.4 ? 2 : 1);
+    }
+
     function weightedPick(candidates) {
       const totalWeight = candidates.reduce((sum, candidate) => sum + candidate.weight, 0);
       if (!totalWeight) return candidates[0] || null;
@@ -80,15 +91,15 @@
 
     function getTargetDurationMs(totalEntries) {
       if (totalEntries <= 20) {
-        return Math.min(MAX_DEMO_DURATION_MS, Math.max(MIN_DEMO_DURATION_MS, 12000 + (totalEntries * 420)));
+        return Math.max(MIN_DEMO_DURATION_MS, 9000 + (totalEntries * 320));
       }
       if (totalEntries <= 100) {
-        return 24000 + (totalEntries * 190);
+        return 14000 + (totalEntries * 95);
       }
       if (totalEntries <= 1000) {
-        return 42000 + (totalEntries * 82);
+        return 26000 + (totalEntries * 34);
       }
-      return Math.min(MAX_DEMO_DURATION_MS, 124000 + Math.min((totalEntries - 1000) * 18, 45000));
+      return Math.min(MAX_DEMO_DURATION_MS, 72000 + Math.min((totalEntries - 1000) * 8, 42000));
     }
 
     function setRecordingState(message) {
@@ -274,11 +285,11 @@
 
         const selectedQueue = entryQueues[selected.participantIndex];
         const nearFinish = remainingEntries <= 14;
-        const burstSize = selected.participantIndex === lastParticipantIndex
-          ? 1
-          : nearFinish
-            ? Math.min(selectedQueue.length, 2)
-            : Math.min(selectedQueue.length, Math.random() > 0.78 ? 3 : Math.random() > 0.42 ? 2 : 1);
+        const burstSize = getBurstSize(
+          selectedQueue.length,
+          selected.participantIndex === lastParticipantIndex,
+          nearFinish
+        );
 
         for (let step = 0; step < burstSize; step += 1) {
           const nextEntry = selectedQueue.shift();
@@ -409,30 +420,32 @@
     function getDelay(participant, isSpotlight) {
       const remainingSteps = Math.max(1, state.cycle.length - state.cyclePosition);
       const elapsed = demoStartedAt ? Date.now() - demoStartedAt : 0;
-      const remainingDuration = Math.max(1800, (state.durationTargetMs || MAX_DEMO_DURATION_MS) - elapsed);
+      const remainingDuration = Math.max(1200, (state.durationTargetMs || MAX_DEMO_DURATION_MS) - elapsed);
       const baseline = remainingDuration / remainingSteps;
       const chanceWeight = Math.min(getParticipantChances(participant), 25);
       const motionBoost = Math.min(lastHopDistance, 12) * 6;
       const streakPenalty = participantStreak > 1 ? 14 + (participantStreak * 6) : 0;
       const progress = state.cycle.length ? state.cyclePosition / state.cycle.length : 0;
       const densityBoost = Math.min(state.cycle.length, 3000) / 125;
+      const bigChanceBoost = chanceWeight > 20 ? Math.min(32, (chanceWeight - 20) * 1.8) : 0;
 
       if (isSpotlight) {
-        return Math.min(2400, Math.max(1100, remainingDuration));
+        return Math.min(1800, Math.max(850, remainingDuration));
       }
 
       return Math.max(
-        14,
+        8,
         Math.min(
-          240,
+          120,
           baseline
             - motionBoost
             + streakPenalty
             + (chanceWeight * 0.6)
             - densityBoost
+            - bigChanceBoost
             + (progress < 0.12 ? -24 : 0)
-            + (progress > 0.85 ? -12 : 0)
-            + Math.random() * 16
+            + (progress > 0.85 ? -18 : 0)
+            + Math.random() * 10
         )
       );
     }
