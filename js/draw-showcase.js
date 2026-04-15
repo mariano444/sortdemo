@@ -9,7 +9,13 @@
     const escapeHtml = config.escapeHtml;
     const showToast = config.showToast;
     const targetToken = String(config.targetToken || '').trim().toLowerCase();
+
     let animationTimeout = null;
+    let lastFocusedIndex = -1;
+    let focusPulse = 0;
+    let lastRenderedIndex = -1;
+    let lastHopDistance = 0;
+    let participantStreak = 0;
 
     function stop() {
       if (animationTimeout) {
@@ -22,6 +28,7 @@
       if (!targetToken) return -1;
       return participants.findIndex((participant) => {
         const haystack = [
+          participant?.source,
           participant?.publicCode,
           participant?.displayName,
           participant?.name,
@@ -50,10 +57,22 @@
       return pool;
     }
 
+    function weightedPick(candidates) {
+      const totalWeight = candidates.reduce((sum, candidate) => sum + candidate.weight, 0);
+      if (!totalWeight) return candidates[0] || null;
+      let cursor = Math.random() * totalWeight;
+      for (const candidate of candidates) {
+        cursor -= candidate.weight;
+        if (cursor <= 0) return candidate;
+      }
+      return candidates[candidates.length - 1] || null;
+    }
+
     function buildControlledCycle() {
       const participants = getParticipants();
       const pool = buildBasePool(participants);
       state.basePool = pool;
+
       if (!pool.length) {
         state.cycle = [];
         state.cyclePosition = 0;
@@ -63,37 +82,93 @@
       }
 
       const targetIndex = getTargetIndex(participants);
-      const targetEntries = targetIndex >= 0
-        ? pool.filter((entry) => entry.participantIndex === targetIndex)
-        : [];
+      const entryQueues = participants.map(() => []);
+      pool.forEach((entry) => {
+        if (entryQueues[entry.participantIndex]) {
+          entryQueues[entry.participantIndex].push(entry);
+        }
+      });
 
-      if (!targetEntries.length) {
-        state.cycle = [...pool];
-        state.cyclePosition = 0;
-        state.spotlightPosition = state.cycle.length - 1;
-        state.finalEntry = state.cycle[state.spotlightPosition] || null;
-        return;
+      let finalEntry = null;
+      if (targetIndex >= 0 && entryQueues[targetIndex]?.length) {
+        finalEntry = entryQueues[targetIndex].pop() || null;
       }
 
-      const finalEntry = targetEntries[targetEntries.length - 1];
       const cycle = [];
-      let finalEntryUsed = false;
-      pool.forEach((entry) => {
-        const isFinalEntry =
-          !finalEntryUsed &&
-          entry.participantIndex === finalEntry.participantIndex &&
-          entry.chanceNumber === finalEntry.chanceNumber;
-        if (isFinalEntry) {
-          finalEntryUsed = true;
-          return;
+      const visitedParticipants = new Set();
+      let lastParticipantIndex = -1;
+      let sameParticipantStreak = 0;
+      let remainingEntries = entryQueues.reduce((sum, queue) => sum + queue.length, 0);
+
+      while (remainingEntries > 0) {
+        const available = entryQueues
+          .map((queue, participantIndex) => ({ participantIndex, queue }))
+          .filter(({ queue }) => queue.length);
+
+        if (!available.length) break;
+
+        const candidates = available.map(({ participantIndex, queue }) => {
+          const distance = lastParticipantIndex < 0
+            ? 2
+            : Math.abs(participantIndex - lastParticipantIndex);
+          let weight = 1
+            + Math.min(queue.length, 6) * 0.22
+            + Math.min(distance, 8) * 0.14
+            + Math.random() * 0.8;
+
+          if (participantIndex !== lastParticipantIndex) {
+            weight += 1.2;
+          }
+          if (!visitedParticipants.has(participantIndex)) {
+            weight += 1.1;
+          }
+          if (participantIndex === lastParticipantIndex && available.length > 1) {
+            weight *= sameParticipantStreak >= 1 ? 0.16 : 0.4;
+          }
+          if (participantIndex === targetIndex && remainingEntries > 12) {
+            weight *= 0.14;
+          }
+          if (participantIndex === targetIndex && remainingEntries <= 12) {
+            weight += 0.75;
+          }
+
+          return { participantIndex, weight };
+        });
+
+        const selected = weightedPick(candidates);
+        if (!selected) break;
+
+        const selectedQueue = entryQueues[selected.participantIndex];
+        const nearFinish = remainingEntries <= 10;
+        const burstSize = selected.participantIndex === lastParticipantIndex
+          ? 1
+          : nearFinish
+            ? Math.min(selectedQueue.length, 2)
+            : Math.min(selectedQueue.length, Math.random() > 0.72 ? 2 : 1);
+
+        for (let step = 0; step < burstSize; step += 1) {
+          const nextEntry = selectedQueue.shift();
+          if (!nextEntry) break;
+          cycle.push(nextEntry);
+          remainingEntries -= 1;
         }
-        cycle.push(entry);
-      });
-      cycle.push(finalEntry);
+
+        if (selected.participantIndex === lastParticipantIndex) {
+          sameParticipantStreak += 1;
+        } else {
+          sameParticipantStreak = 0;
+        }
+        lastParticipantIndex = selected.participantIndex;
+        visitedParticipants.add(selected.participantIndex);
+      }
+
+      if (finalEntry) {
+        cycle.push(finalEntry);
+      }
 
       state.cycle = cycle;
       state.cyclePosition = 0;
-      state.spotlightPosition = cycle.length - 1;
+      state.spotlightPosition = cycle.length ? cycle.length - 1 : -1;
       state.finalEntry = finalEntry;
     }
 
@@ -124,6 +199,8 @@
           row.classList.remove('is-draw-active', 'is-draw-spotlight');
         });
         document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
+        lastFocusedIndex = -1;
+        focusPulse = 0;
         return;
       }
 
@@ -144,44 +221,63 @@
       const visibleTop = currentTop + 54;
       const visibleBottom = currentTop + scroller.clientHeight - 54;
       const shouldLockView = isSpotlight || !state.paused;
+      const focusChanged = activeIndex !== lastFocusedIndex;
 
-      if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom) {
-        const targetTop = Math.max(0, rowTop - (scroller.clientHeight * 0.45));
+      if (focusChanged) {
+        focusPulse += 1;
+      }
+
+      if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom || focusChanged) {
+        const anchorPattern = isSpotlight ? 0.5 : [0.24, 0.58, 0.38, 0.68][focusPulse % 4];
+        const targetTop = Math.max(
+          0,
+          rowTop - (scroller.clientHeight * anchorPattern) + (activeRow.offsetHeight * 0.5)
+        );
         scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
       }
 
       if (shouldLockView) {
         document.getElementById('drawShowcase')?.classList.add('is-focus-locked');
       }
+      lastFocusedIndex = activeIndex;
     }
 
     function getNarrative(participant, isSpotlight, cycleProgress) {
       if (isSpotlight) {
-        return 'La demostración terminó de recorrer todas las chances y se cerró sobre el participante objetivo configurado para la prueba.';
+        return 'La demo completó el recorrido dinámico y fijó el cierre sobre el participante objetivo configurado para la prueba.';
       }
-      if (cycleProgress < 0.18) {
-        return 'El sistema empezó a barrer la urna completa para que se vea, chance por chance, cómo se construye la selección.';
+      if (cycleProgress < 0.16) {
+        return 'La urna arrancó con saltos amplios entre participantes para que el seguimiento visual se sienta más vivo y menos lineal.';
       }
       if (cycleProgress < 0.72) {
-        return 'La animación sigue avanzando por cada chance activa para que el recorrido resulte claro, visual y fácil de auditar.';
+        return `El recorrido sigue mezclando focos, cambios de ritmo y bloques cortos de chances para ${participant.displayName || participant.name}.`;
       }
-      return 'El cierre ya está cerca: ahora el recorrido entra en su tramo final y prepara la selección definitiva de la demo.';
+      return 'El sistema entró en el tramo final: ahora baja un poco la velocidad y prepara el cierre definitivo de la demo.';
     }
 
     function getDelay(participant, isSpotlight) {
       const total = Math.max(state.cycle.length, 1);
       const progress = state.cyclePosition / total;
       const chanceWeight = Math.min(getParticipantChances(participant), 15);
+      const motionBoost = Math.min(lastHopDistance, 10) * 9;
+      const streakPenalty = participantStreak > 1 ? 34 + (participantStreak * 12) : 0;
+      const burstBoost = state.activeEntryPosition % 6 < 3 ? -22 : 12;
+
       if (isSpotlight) {
-        return 2600;
+        return 3200;
       }
-      if (progress < 0.12) {
-        return 85 + (chanceWeight * 2);
-      }
-      if (progress < 0.78) {
-        return 110 + (chanceWeight * 3);
-      }
-      return 170 + (chanceWeight * 4);
+
+      return Math.max(
+        55,
+        132
+          + (chanceWeight * 2)
+          + streakPenalty
+          - motionBoost
+          + burstBoost
+          + (progress < 0.12 ? -38 : 0)
+          + (progress > 0.82 ? 42 : 0)
+          + Math.random() * 55
+      );
     }
 
     function renderEmpty() {
@@ -192,6 +288,9 @@
       state.activeSpotlight = false;
       state.hasStarted = false;
       state.paused = true;
+      lastRenderedIndex = -1;
+      lastHopDistance = 0;
+      participantStreak = 0;
       document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
       document.getElementById('drawFeaturedCard')?.classList.remove('spotlight');
       syncParticipantTableFocus(-1, false);
@@ -204,7 +303,7 @@
       document.getElementById('drawFeaturedScore').textContent = '0';
       document.getElementById('drawPhaseLabel').textContent = 'Demo lista';
       document.getElementById('drawPhaseName').textContent = 'Esperando participantes para mostrar el recorrido';
-      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostración podrá recorrer todas las chances antes de cerrar el resultado.';
+      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostración podrá recorrer la urna con focos dinámicos antes de cerrar el resultado.';
       document.getElementById('drawIntelFill').style.width = '14%';
       const rail = document.getElementById('drawRail');
       if (rail) {
@@ -230,10 +329,20 @@
         ? (state.cyclePosition + 1) / state.cycle.length
         : 0;
       const activeColor = colorFor(entry.participantIndex);
+
+      if (lastRenderedIndex === entry.participantIndex) {
+        participantStreak += 1;
+      } else {
+        participantStreak = 1;
+      }
+      lastHopDistance = lastRenderedIndex < 0 ? 0 : Math.abs(entry.participantIndex - lastRenderedIndex);
+      lastRenderedIndex = entry.participantIndex;
+
       state.activeParticipantIndex = entry.participantIndex;
       state.activeEntryNumber = entry.chanceNumber;
       state.activeEntryPosition = state.cyclePosition + 1;
       state.activeSpotlight = Boolean(isSpotlight);
+
       syncParticipantTableFocus(entry.participantIndex, isSpotlight);
       document.getElementById('drawShowcase')?.classList.toggle('is-focus-locked', Boolean(isSpotlight));
 
@@ -254,20 +363,21 @@
       document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado de la demo' : 'Recorrido en vivo';
       document.getElementById('drawPhaseName').textContent = isSpotlight
         ? `${participant.displayName || participant.name} quedó seleccionado en la demostración`
-        : `Recorriendo ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} chances`;
+        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de la urna`;
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
       document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
 
       const visibleCards = [];
       const rail = document.getElementById('drawRail');
-      const cardCount = Math.min(Math.max(state.cycle.length, 1), 5);
+      const cardCount = Math.min(Math.max(state.cycle.length, 1), 7);
+      const previewStart = Math.max(0, state.cyclePosition - 2);
       for (let offset = 0; offset < cardCount; offset += 1) {
-        const cyclePosition = Math.min(state.cyclePosition + offset, state.cycle.length - 1);
+        const cyclePosition = Math.min(previewStart + offset, state.cycle.length - 1);
         const cycleEntry = state.cycle[cyclePosition];
         const item = participants[cycleEntry?.participantIndex];
         if (!cycleEntry || !item) continue;
         visibleCards.push(`
-          <div class="draw-rail-card${offset === 0 ? ' active' : ''}${cyclePosition === state.spotlightPosition ? ' spotlight' : ''}">
+          <div class="draw-rail-card${cyclePosition === state.cyclePosition ? ' active' : ''}${cyclePosition === state.spotlightPosition ? ' spotlight' : ''}">
             <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
             <div class="draw-rail-meta">
               <span>${escapeHtml(participantLocation(item))}</span>
@@ -287,7 +397,9 @@
       updateControls();
       document.getElementById('drawPhaseLabel').textContent = 'Prueba finalizada';
       document.getElementById('drawPhaseName').textContent = 'La demo completó el recorrido y fijó el participante seleccionado';
-      document.getElementById('drawPhaseHint').textContent = 'Ahora puedes registrar este resultado visual. Esta demostración sirve para explicar el mecanismo y no define un ganador oficial.';
+      document.getElementById('drawPhaseHint').textContent = targetToken
+        ? `El cierre quedó anclado al participante objetivo ${targetToken}. Este resultado es solo demostrativo y no reemplaza un sorteo oficial.`
+        : 'Ahora puedes registrar este resultado visual. Esta demostración sirve para explicar el mecanismo y no define un ganador oficial.';
     }
 
     function prepareRound() {
@@ -349,14 +461,17 @@
       }
       state.hasStarted = true;
       state.paused = false;
+      lastRenderedIndex = -1;
+      lastHopDistance = 0;
+      participantStreak = 0;
       prepareRound();
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
-      document.getElementById('drawPhaseName').textContent = 'El sistema está recorriendo todas las chances visibles';
+      document.getElementById('drawPhaseName').textContent = 'El sistema está haciendo un recorrido dinámico de la urna';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `Esta demo mostrará el recorrido completo y cerrará sobre el participante objetivo configurado: ${targetToken}.`
-        : 'La demostración recorrerá todas las chances visibles y se detendrá automáticamente al finalizar.';
+        ? `Esta demo mezclará focos, cambios de ritmo y cierres parciales antes de terminar sobre el participante objetivo: ${targetToken}.`
+        : 'La demostración recorrerá focos dinámicos de la urna y se detendrá automáticamente al finalizar.';
       tick();
     }
 
@@ -364,6 +479,9 @@
       stop();
       state.paused = true;
       state.hasStarted = false;
+      lastRenderedIndex = -1;
+      lastHopDistance = 0;
+      participantStreak = 0;
       prepareRound();
       updateControls();
       if (!state.cycle.length) {
