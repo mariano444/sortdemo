@@ -10,12 +10,23 @@
     const showToast = config.showToast;
     const targetToken = String(config.targetToken || '').trim().toLowerCase();
 
+    const MAX_DEMO_DURATION_MS = 118000;
+    const MIN_DEMO_DURATION_MS = 12000;
+    const MAX_DEMO_STEPS = 180;
+
     let animationTimeout = null;
     let lastFocusedIndex = -1;
     let focusPulse = 0;
     let lastRenderedIndex = -1;
     let lastHopDistance = 0;
     let participantStreak = 0;
+    let demoStartedAt = 0;
+
+    let mediaRecorder = null;
+    let mediaStream = null;
+    let recordingChunks = [];
+    let recordingUrl = '';
+    let previewOpen = false;
 
     function stop() {
       if (animationTimeout) {
@@ -57,6 +68,60 @@
       return pool;
     }
 
+    function limitCycleSize(cycle, finalEntry) {
+      if (cycle.length <= MAX_DEMO_STEPS) {
+        return cycle;
+      }
+
+      const sampleSize = Math.max(24, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
+      const result = [];
+      const lastIndex = Math.max(cycle.length - (finalEntry ? 2 : 1), 0);
+
+      for (let step = 0; step < sampleSize; step += 1) {
+        const progress = sampleSize <= 1 ? 0 : step / (sampleSize - 1);
+        const index = Math.min(lastIndex, Math.floor(progress * lastIndex));
+        const entry = cycle[index];
+        if (!entry) continue;
+        const prev = result[result.length - 1];
+        if (!prev || prev.participantIndex !== entry.participantIndex || prev.chanceNumber !== entry.chanceNumber) {
+          result.push(entry);
+        }
+      }
+
+      let cursor = 0;
+      while (result.length < sampleSize && cursor < cycle.length) {
+        const entry = cycle[cursor];
+        const exists = result.some((item) => (
+          item.participantIndex === entry.participantIndex && item.chanceNumber === entry.chanceNumber
+        ));
+        if (!exists && (!finalEntry || entry !== finalEntry)) {
+          result.push(entry);
+        }
+        cursor += 1;
+      }
+
+      if (finalEntry) {
+        const filtered = result.filter((item) => !(
+          item.participantIndex === finalEntry.participantIndex && item.chanceNumber === finalEntry.chanceNumber
+        ));
+        filtered.push(finalEntry);
+        return filtered;
+      }
+
+      return result;
+    }
+
+    function getBurstSize(queueLength, sameParticipant, nearFinish) {
+      if (sameParticipant) return 1;
+      if (nearFinish) return Math.min(queueLength, queueLength > 20 ? 4 : 2);
+      if (queueLength > 1000) return Math.min(queueLength, 26);
+      if (queueLength > 250) return Math.min(queueLength, 18);
+      if (queueLength > 100) return Math.min(queueLength, 12);
+      if (queueLength > 40) return Math.min(queueLength, 7);
+      if (queueLength > 20) return Math.min(queueLength, 5);
+      return Math.min(queueLength, Math.random() > 0.7 ? 3 : Math.random() > 0.4 ? 2 : 1);
+    }
+
     function weightedPick(candidates) {
       const totalWeight = candidates.reduce((sum, candidate) => sum + candidate.weight, 0);
       if (!totalWeight) return candidates[0] || null;
@@ -68,10 +133,145 @@
       return candidates[candidates.length - 1] || null;
     }
 
+    function getTargetDurationMs(totalEntries) {
+      if (totalEntries <= 20) {
+        return Math.max(MIN_DEMO_DURATION_MS, 9000 + (totalEntries * 320));
+      }
+      if (totalEntries <= 100) {
+        return 13000 + (totalEntries * 55);
+      }
+      if (totalEntries <= 1000) {
+        return 22000 + (totalEntries * 12);
+      }
+      return Math.min(MAX_DEMO_DURATION_MS, 58000 + Math.min((totalEntries - 1000) * 3, 24000));
+    }
+
+    function setRecordingState(message) {
+      const label = document.getElementById('drawRecordingState');
+      if (label) {
+        label.textContent = message;
+      }
+    }
+
+    function setLiveBadge(isRecording) {
+      const badge = document.getElementById('drawLiveBadge');
+      if (!badge) return;
+      badge.textContent = isRecording ? '120 en vivo · grabando' : '120 en vivo';
+    }
+
+    function updateVideoPanel() {
+      const panel = document.getElementById('demoVideoPanel');
+      const preview = document.getElementById('demoVideoPreview');
+      const download = document.getElementById('demoVideoDownloadBtn');
+      const viewBtn = document.getElementById('viewDemoVideoBtn');
+
+      if (preview) {
+        preview.src = recordingUrl || '';
+      }
+      if (download) {
+        download.href = recordingUrl || '#';
+        download.style.pointerEvents = recordingUrl ? 'auto' : 'none';
+        download.style.opacity = recordingUrl ? '1' : '0.45';
+      }
+      if (viewBtn) {
+        viewBtn.disabled = !recordingUrl;
+        viewBtn.style.opacity = recordingUrl ? '1' : '0.45';
+      }
+      panel?.classList.toggle('open', Boolean(recordingUrl) && previewOpen);
+    }
+
+    function closeMediaStream() {
+      if (!mediaStream) return;
+      mediaStream.getTracks().forEach((track) => track.stop());
+      mediaStream = null;
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        return;
+      }
+      closeMediaStream();
+      setLiveBadge(false);
+    }
+
+    async function startRecording() {
+      if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === 'undefined') {
+        showToast('Tu navegador no permite grabar la pestaña desde esta demo.');
+        return false;
+      }
+
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        showToast('La grabacion ya esta en curso.');
+        return true;
+      }
+
+      try {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            frameRate: 30
+          },
+          audio: false,
+          preferCurrentTab: true
+        });
+
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+          ? 'video/webm;codecs=vp9'
+          : MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
+            ? 'video/webm;codecs=vp8'
+            : 'video/webm';
+
+        recordingChunks = [];
+        mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            recordingChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          if (recordingUrl) {
+            URL.revokeObjectURL(recordingUrl);
+          }
+          if (recordingChunks.length) {
+            const blob = new Blob(recordingChunks, { type: mediaRecorder.mimeType || 'video/webm' });
+            recordingUrl = URL.createObjectURL(blob);
+            previewOpen = true;
+            updateVideoPanel();
+            setRecordingState('Grabacion lista para reproducir o descargar');
+            showToast('La grabacion de la demo quedo lista.');
+          } else {
+            setRecordingState('No se genero video en la grabacion');
+          }
+          closeMediaStream();
+          setLiveBadge(false);
+        };
+
+        mediaStream.getVideoTracks().forEach((track) => {
+          track.addEventListener('ended', () => {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+              mediaRecorder.stop();
+            }
+          });
+        });
+
+        mediaRecorder.start(1000);
+        setRecordingState('Grabando esta pestaña en tiempo real');
+        setLiveBadge(true);
+        return true;
+      } catch (_) {
+        setRecordingState('No se pudo iniciar la grabacion');
+        showToast('No se pudo iniciar la grabacion. Debes permitir compartir la pestaña actual.');
+        return false;
+      }
+    }
+
     function buildControlledCycle() {
       const participants = getParticipants();
       const pool = buildBasePool(participants);
       state.basePool = pool;
+      state.durationTargetMs = getTargetDurationMs(pool.length);
 
       if (!pool.length) {
         state.cycle = [];
@@ -108,30 +308,19 @@
         if (!available.length) break;
 
         const candidates = available.map(({ participantIndex, queue }) => {
-          const distance = lastParticipantIndex < 0
-            ? 2
-            : Math.abs(participantIndex - lastParticipantIndex);
+          const distance = lastParticipantIndex < 0 ? 2 : Math.abs(participantIndex - lastParticipantIndex);
           let weight = 1
-            + Math.min(queue.length, 6) * 0.22
-            + Math.min(distance, 8) * 0.14
+            + Math.min(queue.length, 7) * 0.22
+            + Math.min(distance, 10) * 0.14
             + Math.random() * 0.8;
 
-          if (participantIndex !== lastParticipantIndex) {
-            weight += 1.2;
-          }
-          if (!visitedParticipants.has(participantIndex)) {
-            weight += 1.1;
-          }
+          if (participantIndex !== lastParticipantIndex) weight += 1.4;
+          if (!visitedParticipants.has(participantIndex)) weight += 1.2;
           if (participantIndex === lastParticipantIndex && available.length > 1) {
-            weight *= sameParticipantStreak >= 1 ? 0.16 : 0.4;
+            weight *= sameParticipantStreak >= 1 ? 0.1 : 0.35;
           }
-          if (participantIndex === targetIndex && remainingEntries > 12) {
-            weight *= 0.14;
-          }
-          if (participantIndex === targetIndex && remainingEntries <= 12) {
-            weight += 0.75;
-          }
-
+          if (participantIndex === targetIndex && remainingEntries > 18) weight *= 0.08;
+          if (participantIndex === targetIndex && remainingEntries <= 18) weight += 0.85;
           return { participantIndex, weight };
         });
 
@@ -139,12 +328,12 @@
         if (!selected) break;
 
         const selectedQueue = entryQueues[selected.participantIndex];
-        const nearFinish = remainingEntries <= 10;
-        const burstSize = selected.participantIndex === lastParticipantIndex
-          ? 1
-          : nearFinish
-            ? Math.min(selectedQueue.length, 2)
-            : Math.min(selectedQueue.length, Math.random() > 0.72 ? 2 : 1);
+        const nearFinish = remainingEntries <= 14;
+        const burstSize = getBurstSize(
+          selectedQueue.length,
+          selected.participantIndex === lastParticipantIndex,
+          nearFinish
+        );
 
         for (let step = 0; step < burstSize; step += 1) {
           const nextEntry = selectedQueue.shift();
@@ -166,9 +355,9 @@
         cycle.push(finalEntry);
       }
 
-      state.cycle = cycle;
+      state.cycle = limitCycleSize(cycle, finalEntry);
       state.cyclePosition = 0;
-      state.spotlightPosition = cycle.length ? cycle.length - 1 : -1;
+      state.spotlightPosition = state.cycle.length ? state.cycle.length - 1 : -1;
       state.finalEntry = finalEntry;
     }
 
@@ -184,12 +373,29 @@
       const showcase = document.getElementById('drawShowcase');
       const startBtn = document.getElementById('drawStartBtn');
       const saveBtn = document.getElementById('saveDemoResultBtn');
+      const recordBtn = document.getElementById('recordDemoBtn');
+      const viewBtn = document.getElementById('viewDemoVideoBtn');
+
       if (!showcase || !startBtn || !saveBtn) return;
       showcase.classList.toggle('paused', state.paused);
+
       startBtn.disabled = !getParticipants().length || state.hasStarted;
       startBtn.style.opacity = startBtn.disabled ? '0.5' : '1';
+
       saveBtn.disabled = !getActiveParticipant() || !state.paused || !state.hasStarted;
       saveBtn.style.opacity = saveBtn.disabled ? '0.5' : '1';
+
+      if (recordBtn) {
+        const isRecording = mediaRecorder && mediaRecorder.state === 'recording';
+        recordBtn.disabled = !getParticipants().length || isRecording;
+        recordBtn.style.opacity = recordBtn.disabled ? '0.5' : '1';
+        recordBtn.textContent = isRecording ? 'Grabando demo...' : 'Grabar demo';
+      }
+
+      if (viewBtn) {
+        viewBtn.disabled = !recordingUrl;
+        viewBtn.style.opacity = recordingUrl ? '1' : '0.45';
+      }
     }
 
     function syncParticipantTableFocus(activeIndex, isSpotlight) {
@@ -228,7 +434,7 @@
       }
 
       if (shouldLockView || rowTop < visibleTop || rowBottom > visibleBottom || focusChanged) {
-        const anchorPattern = isSpotlight ? 0.5 : [0.24, 0.58, 0.38, 0.68][focusPulse % 4];
+        const anchorPattern = isSpotlight ? 0.5 : [0.22, 0.57, 0.36, 0.66][focusPulse % 4];
         const targetTop = Math.max(
           0,
           rowTop - (scroller.clientHeight * anchorPattern) + (activeRow.offsetHeight * 0.5)
@@ -247,36 +453,44 @@
         return 'La demo completó el recorrido dinámico y fijó el cierre sobre el participante objetivo configurado para la prueba.';
       }
       if (cycleProgress < 0.16) {
-        return 'La urna arrancó con saltos amplios entre participantes para que el seguimiento visual se sienta más vivo y menos lineal.';
+        return 'La demo arranco con una muestra agil de la urna para que el seguimiento se sienta dinamico y no eterno.';
       }
       if (cycleProgress < 0.72) {
-        return `El recorrido sigue mezclando focos, cambios de ritmo y bloques cortos de chances para ${participant.displayName || participant.name}.`;
+        return `La muestra sigue mezclando focos y bloques cortos de chances para ${participant.displayName || participant.name}.`;
       }
-      return 'El sistema entró en el tramo final: ahora baja un poco la velocidad y prepara el cierre definitivo de la demo.';
+      return 'La muestra entra en el tramo final, acelera el cierre y deja el foco listo para el ganador configurado.';
     }
 
     function getDelay(participant, isSpotlight) {
-      const total = Math.max(state.cycle.length, 1);
-      const progress = state.cyclePosition / total;
-      const chanceWeight = Math.min(getParticipantChances(participant), 15);
-      const motionBoost = Math.min(lastHopDistance, 10) * 9;
-      const streakPenalty = participantStreak > 1 ? 34 + (participantStreak * 12) : 0;
-      const burstBoost = state.activeEntryPosition % 6 < 3 ? -22 : 12;
+      const remainingSteps = Math.max(1, state.cycle.length - state.cyclePosition);
+      const elapsed = demoStartedAt ? Date.now() - demoStartedAt : 0;
+      const remainingDuration = Math.max(1200, (state.durationTargetMs || MAX_DEMO_DURATION_MS) - elapsed);
+      const baseline = remainingDuration / remainingSteps;
+      const chanceWeight = Math.min(getParticipantChances(participant), 25);
+      const motionBoost = Math.min(lastHopDistance, 12) * 6;
+      const streakPenalty = participantStreak > 1 ? 14 + (participantStreak * 6) : 0;
+      const progress = state.cycle.length ? state.cyclePosition / state.cycle.length : 0;
+      const densityBoost = Math.min(state.cycle.length, 3000) / 125;
+      const bigChanceBoost = chanceWeight > 20 ? Math.min(32, (chanceWeight - 20) * 1.8) : 0;
 
       if (isSpotlight) {
-        return 3200;
+        return Math.min(1800, Math.max(850, remainingDuration));
       }
 
       return Math.max(
-        55,
-        132
-          + (chanceWeight * 2)
-          + streakPenalty
-          - motionBoost
-          + burstBoost
-          + (progress < 0.12 ? -38 : 0)
-          + (progress > 0.82 ? 42 : 0)
-          + Math.random() * 55
+        8,
+        Math.min(
+          120,
+          baseline
+            - motionBoost
+            + streakPenalty
+            + (chanceWeight * 0.6)
+            - densityBoost
+            - bigChanceBoost
+            + (progress < 0.12 ? -24 : 0)
+            + (progress > 0.85 ? -18 : 0)
+            + Math.random() * 10
+        )
       );
     }
 
@@ -288,9 +502,11 @@
       state.activeSpotlight = false;
       state.hasStarted = false;
       state.paused = true;
+      state.durationTargetMs = 0;
       lastRenderedIndex = -1;
       lastHopDistance = 0;
       participantStreak = 0;
+      demoStartedAt = 0;
       document.getElementById('drawShowcase')?.classList.remove('is-focus-locked');
       document.getElementById('drawFeaturedCard')?.classList.remove('spotlight');
       syncParticipantTableFocus(-1, false);
@@ -298,18 +514,21 @@
       document.getElementById('drawFeaturedAvatar').textContent = '--';
       document.getElementById('drawFeaturedAvatar').style.background = 'rgba(255,255,255,0.06)';
       document.getElementById('drawFeaturedAvatar').style.color = 'var(--text)';
-      document.getElementById('drawFeaturedName').textContent = 'La animación se activará sola';
+      document.getElementById('drawFeaturedName').textContent = 'La animacion se activara sola';
       document.getElementById('drawFeaturedMeta').innerHTML = '<span class="draw-featured-pill">Sin datos todavia</span>';
       document.getElementById('drawFeaturedScore').textContent = '0';
       document.getElementById('drawPhaseLabel').textContent = 'Demo lista';
       document.getElementById('drawPhaseName').textContent = 'Esperando participantes para mostrar el recorrido';
-      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostración podrá recorrer la urna con focos dinámicos antes de cerrar el resultado.';
+      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostracion hara una muestra agil de la urna antes de cerrar el resultado.';
       document.getElementById('drawIntelFill').style.width = '14%';
+      setRecordingState(recordingUrl ? 'Grabacion lista para reproducir o descargar' : 'Listo para grabar en esta pestaña');
+      setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
       const rail = document.getElementById('drawRail');
       if (rail) {
         rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
       }
       updateControls();
+      updateVideoPanel();
     }
 
     function render(entry, isSpotlight) {
@@ -325,9 +544,7 @@
         return;
       }
 
-      const cycleProgress = state.cycle.length
-        ? (state.cyclePosition + 1) / state.cycle.length
-        : 0;
+      const cycleProgress = state.cycle.length ? (state.cyclePosition + 1) / state.cycle.length : 0;
       const activeColor = colorFor(entry.participantIndex);
 
       if (lastRenderedIndex === entry.participantIndex) {
@@ -362,8 +579,8 @@
       document.getElementById('drawRoundCounter').textContent = String(state.round);
       document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado de la demo' : 'Recorrido en vivo';
       document.getElementById('drawPhaseName').textContent = isSpotlight
-        ? `${participant.displayName || participant.name} quedó seleccionado en la demostración`
-        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de la urna`;
+        ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
+        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de muestra`;
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
       document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
 
@@ -396,10 +613,16 @@
       stop();
       updateControls();
       document.getElementById('drawPhaseLabel').textContent = 'Prueba finalizada';
-      document.getElementById('drawPhaseName').textContent = 'La demo completó el recorrido y fijó el participante seleccionado';
+      document.getElementById('drawPhaseName').textContent = 'La demo completo el recorrido y fijo el participante seleccionado';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `El cierre quedó anclado al participante objetivo ${targetToken}. Este resultado es solo demostrativo y no reemplaza un sorteo oficial.`
-        : 'Ahora puedes registrar este resultado visual. Esta demostración sirve para explicar el mecanismo y no define un ganador oficial.';
+        ? `El cierre quedo anclado al participante objetivo ${targetToken}. Este resultado es solo demostrativo y no reemplaza un sorteo oficial.`
+        : 'Ahora puedes registrar este resultado visual. Esta demostracion sirve para explicar el mecanismo y no define un ganador oficial.';
+
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        window.setTimeout(() => {
+          stopRecording();
+        }, 650);
+      }
     }
 
     function prepareRound() {
@@ -443,7 +666,7 @@
         animationTimeout = setTimeout(() => {
           pause();
           if (targetToken) {
-            showToast(`Demostración completada sobre el participante objetivo: ${participant.displayName || participant.name}.`);
+            showToast(`Demostracion completada sobre el participante objetivo: ${participant.displayName || participant.name}.`);
           }
         }, delay);
         return;
@@ -465,23 +688,36 @@
       lastHopDistance = 0;
       participantStreak = 0;
       prepareRound();
+      demoStartedAt = Date.now();
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
-      document.getElementById('drawPhaseName').textContent = 'El sistema está haciendo un recorrido dinámico de la urna';
+      document.getElementById('drawPhaseName').textContent = 'El sistema esta haciendo una muestra dinamica de la urna';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `Esta demo mezclará focos, cambios de ritmo y cierres parciales antes de terminar sobre el participante objetivo: ${targetToken}.`
-        : 'La demostración recorrerá focos dinámicos de la urna y se detendrá automáticamente al finalizar.';
+        ? `Esta demo hara una muestra agil de la urna y terminara sobre el participante objetivo: ${targetToken}.`
+        : 'La demostracion recorrera una muestra dinamica de la urna y se detendra automaticamente al finalizar.';
       tick();
+    }
+
+    async function recordTrial() {
+      if (!getParticipants().length) {
+        renderEmpty();
+        return;
+      }
+      const started = await startRecording();
+      if (!started) return;
+      startTrial();
     }
 
     function reset() {
       stop();
       state.paused = true;
       state.hasStarted = false;
+      state.durationTargetMs = 0;
       lastRenderedIndex = -1;
       lastHopDistance = 0;
       participantStreak = 0;
+      demoStartedAt = 0;
       prepareRound();
       updateControls();
       if (!state.cycle.length) {
@@ -508,6 +744,15 @@
       if (button) {
         button.textContent = state.historyOpen ? 'Ocultar participantes demo' : 'Participantes demostracion';
       }
+    }
+
+    function toggleVideoPanel() {
+      if (!recordingUrl) {
+        showToast('Todavia no hay un video grabado para mostrar.');
+        return;
+      }
+      previewOpen = !previewOpen;
+      updateVideoPanel();
     }
 
     function renderHistory(results) {
@@ -542,12 +787,14 @@
       renderEmpty,
       pause,
       startTrial,
+      recordTrial,
       stop,
       prepareRound,
       tick,
       reset,
       toggleShowcase,
       toggleHistory,
+      toggleVideoPanel,
       renderHistory
     };
   }
