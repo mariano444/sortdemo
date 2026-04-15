@@ -2454,7 +2454,7 @@
             <span class="draw-demo-badge">Demostracion</span>
           </div>
           <h3 class="draw-showcase-title">Recorrido visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">Inicia la demostracion para ver una pasada completa por todas las chances activas. El sistema muestra el avance en vivo, hace el cierre de forma clara y en esta prueba termina sobre el participante configurado <strong>demo_seed</strong>. Este modulo existe solo para explicar el funcionamiento y no define resultados oficiales.</p>
+          <p class="draw-showcase-sub">Inicia la demostracion para ver un recorrido mas dinamico por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, y en esta prueba cierra siempre sobre el participante configurado <strong>demo_seed_g</strong>. Este modulo existe solo para explicar el funcionamiento y no define resultados oficiales.</p>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
@@ -2935,7 +2935,7 @@ const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014
 const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
-const DEMO_TARGET_PARTICIPANT = 'demo_seed';
+const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
 
 let activeCampaign = null;
 let packages = [];
@@ -4307,8 +4307,10 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
+    const source = row.source || row.seed || '';
     return {
       sourceIndex: index,
+      source,
       name: fullName,
       displayName,
     detailLabel: row.is_anonymous ? (row.display_name || 'AnÃ³nimo') : row.full_name,
@@ -4448,7 +4450,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
-      searchIndex: [displayName, fullName, province, city, row.public_code || ''].join(' ').toLowerCase(),
+      searchIndex: [displayName, fullName, province, city, row.public_code || '', source].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
