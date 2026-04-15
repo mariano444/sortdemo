@@ -4436,8 +4436,10 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
+    const source = row.source || row.seed || '';
     return {
       sourceIndex: index,
+      source,
       name: fullName,
       displayName,
       detailLabel: row.is_anonymous ? (displayName || 'AnÃƒÂ³nimo') : fullName,
