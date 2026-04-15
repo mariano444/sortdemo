@@ -10,9 +10,8 @@
     const showToast = config.showToast;
     const targetToken = String(config.targetToken || '').trim().toLowerCase();
 
-    const MAX_DEMO_DURATION_MS = 118000;
+    const MAX_DEMO_DURATION_MS = 170000;
     const MIN_DEMO_DURATION_MS = 12000;
-    const MAX_DEMO_STEPS = 180;
 
     let animationTimeout = null;
     let lastFocusedIndex = -1;
@@ -68,49 +67,6 @@
       return pool;
     }
 
-    function limitCycleSize(cycle, finalEntry) {
-      if (cycle.length <= MAX_DEMO_STEPS) {
-        return cycle;
-      }
-
-      const sampleSize = Math.max(24, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
-      const result = [];
-      const lastIndex = Math.max(cycle.length - (finalEntry ? 2 : 1), 0);
-
-      for (let step = 0; step < sampleSize; step += 1) {
-        const progress = sampleSize <= 1 ? 0 : step / (sampleSize - 1);
-        const index = Math.min(lastIndex, Math.floor(progress * lastIndex));
-        const entry = cycle[index];
-        if (!entry) continue;
-        const prev = result[result.length - 1];
-        if (!prev || prev.participantIndex !== entry.participantIndex || prev.chanceNumber !== entry.chanceNumber) {
-          result.push(entry);
-        }
-      }
-
-      let cursor = 0;
-      while (result.length < sampleSize && cursor < cycle.length) {
-        const entry = cycle[cursor];
-        const exists = result.some((item) => (
-          item.participantIndex === entry.participantIndex && item.chanceNumber === entry.chanceNumber
-        ));
-        if (!exists && (!finalEntry || entry !== finalEntry)) {
-          result.push(entry);
-        }
-        cursor += 1;
-      }
-
-      if (finalEntry) {
-        const filtered = result.filter((item) => !(
-          item.participantIndex === finalEntry.participantIndex && item.chanceNumber === finalEntry.chanceNumber
-        ));
-        filtered.push(finalEntry);
-        return filtered;
-      }
-
-      return result;
-    }
-
     function getBurstSize(queueLength, sameParticipant, nearFinish) {
       if (sameParticipant) return 1;
       if (nearFinish) return Math.min(queueLength, queueLength > 20 ? 4 : 2);
@@ -138,12 +94,12 @@
         return Math.max(MIN_DEMO_DURATION_MS, 9000 + (totalEntries * 320));
       }
       if (totalEntries <= 100) {
-        return 13000 + (totalEntries * 55);
+        return 14000 + (totalEntries * 95);
       }
       if (totalEntries <= 1000) {
-        return 22000 + (totalEntries * 12);
+        return 26000 + (totalEntries * 34);
       }
-      return Math.min(MAX_DEMO_DURATION_MS, 58000 + Math.min((totalEntries - 1000) * 3, 24000));
+      return Math.min(MAX_DEMO_DURATION_MS, 72000 + Math.min((totalEntries - 1000) * 8, 42000));
     }
 
     function setRecordingState(message) {
@@ -355,9 +311,9 @@
         cycle.push(finalEntry);
       }
 
-      state.cycle = limitCycleSize(cycle, finalEntry);
+      state.cycle = cycle;
       state.cyclePosition = 0;
-      state.spotlightPosition = state.cycle.length ? state.cycle.length - 1 : -1;
+      state.spotlightPosition = cycle.length ? cycle.length - 1 : -1;
       state.finalEntry = finalEntry;
     }
 
@@ -453,12 +409,12 @@
         return 'La demo completó el recorrido dinámico y fijó el cierre sobre el participante objetivo configurado para la prueba.';
       }
       if (cycleProgress < 0.16) {
-        return 'La demo arranco con una muestra agil de la urna para que el seguimiento se sienta dinamico y no eterno.';
+        return 'La urna arrancó con saltos amplios entre participantes para que el seguimiento visual se sienta más vivo y menos lineal.';
       }
       if (cycleProgress < 0.72) {
-        return `La muestra sigue mezclando focos y bloques cortos de chances para ${participant.displayName || participant.name}.`;
+        return `El recorrido sigue mezclando focos y bloques cortos de chances para ${participant.displayName || participant.name}.`;
       }
-      return 'La muestra entra en el tramo final, acelera el cierre y deja el foco listo para el ganador configurado.';
+      return 'El sistema entró en el tramo final, acelera el cierre y deja el foco listo para el ganador configurado.';
     }
 
     function getDelay(participant, isSpotlight) {
@@ -519,7 +475,7 @@
       document.getElementById('drawFeaturedScore').textContent = '0';
       document.getElementById('drawPhaseLabel').textContent = 'Demo lista';
       document.getElementById('drawPhaseName').textContent = 'Esperando participantes para mostrar el recorrido';
-      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostracion hara una muestra agil de la urna antes de cerrar el resultado.';
+      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostracion podra recorrer la urna con focos dinamicos antes de cerrar el resultado.';
       document.getElementById('drawIntelFill').style.width = '14%';
       setRecordingState(recordingUrl ? 'Grabacion lista para reproducir o descargar' : 'Listo para grabar en esta pestaña');
       setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
@@ -580,7 +536,7 @@
       document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado de la demo' : 'Recorrido en vivo';
       document.getElementById('drawPhaseName').textContent = isSpotlight
         ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
-        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de muestra`;
+        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de la urna`;
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
       document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
 
@@ -692,10 +648,10 @@
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
-      document.getElementById('drawPhaseName').textContent = 'El sistema esta haciendo una muestra dinamica de la urna';
+      document.getElementById('drawPhaseName').textContent = 'El sistema esta haciendo un recorrido dinamico de la urna';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `Esta demo hara una muestra agil de la urna y terminara sobre el participante objetivo: ${targetToken}.`
-        : 'La demostracion recorrera una muestra dinamica de la urna y se detendra automaticamente al finalizar.';
+        ? `Esta demo mezclara focos, cambios de ritmo y cierres parciales antes de terminar sobre el participante objetivo: ${targetToken}.`
+        : 'La demostracion recorrera focos dinamicos de la urna y se detendra automaticamente al finalizar.';
       tick();
     }
 
