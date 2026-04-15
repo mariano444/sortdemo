@@ -1197,6 +1197,13 @@
     display: grid;
     gap: 0.18rem;
   }
+  .draw-status-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
   .draw-showcase-status-label {
     color: var(--gold);
     font-size: 0.78rem;
@@ -1212,6 +1219,41 @@
   .draw-showcase-status-hint {
     font-size: 0.85rem;
     color: var(--text2);
+  }
+  .draw-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.72rem;
+    border-radius: 999px;
+    background: rgba(232, 25, 44, 0.18);
+    border: 1px solid rgba(232, 25, 44, 0.42);
+    color: #ffd6da;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 0 22px rgba(232,25,44,0.18);
+  }
+  .draw-live-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5667;
+    box-shadow: 0 0 0 0 rgba(255,86,103,0.8);
+    animation: livePulse 1.25s infinite;
+  }
+  @keyframes livePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,86,103,0.8); }
+    70% { box-shadow: 0 0 0 10px rgba(255,86,103,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,86,103,0); }
+  }
+  .draw-recording-state {
+    font-size: 0.76rem;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .draw-intel-bar {
     position: relative;
@@ -1274,6 +1316,11 @@
     border-color: rgba(0,212,106,0.3);
     color: #8ff0be;
   }
+  .draw-control-btn.record {
+    background: linear-gradient(135deg, rgba(232,25,44,0.18), rgba(232,25,44,0.08));
+    border-color: rgba(232,25,44,0.35);
+    color: #ffd6da;
+  }
   .draw-showcase.paused .draw-intel-glow {
     animation-play-state: paused;
     opacity: 0.18;
@@ -1282,6 +1329,45 @@
     border-color: rgba(255,255,255,0.12);
     transform: none;
     animation: none;
+  }
+  .demo-video-panel {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    gap: 0.85rem;
+  }
+  .demo-video-panel.open {
+    display: grid;
+  }
+  .demo-video-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+  }
+  .demo-video-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .demo-video-sub {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .demo-video-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .demo-video-player {
+    width: 100%;
+    border-radius: 0.9rem;
+    background: #05070d;
+    border: 1px solid rgba(255,255,255,0.06);
   }
   .draw-rail {
     display: none;
@@ -2457,7 +2543,9 @@
           <p class="draw-showcase-sub">Inicia la demostracion para ver un recorrido mas dinamico por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, y en esta prueba cierra siempre sobre el participante configurado <strong>demo_seed_g</strong>. Este modulo existe solo para explicar el funcionamiento y no define resultados oficiales.</p>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
+            <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar demo</button>
             <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
+            <button class="draw-control-btn" type="button" id="viewDemoVideoBtn">Ver ultimo video</button>
             <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
           </div>
         </div>
@@ -2478,9 +2566,13 @@
             </div>
           </div>
           <div class="draw-showcase-status">
-            <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
+            <div class="draw-status-topline">
+              <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
+              <span class="draw-live-badge" id="drawLiveBadge">120 en vivo</span>
+            </div>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, la demo mostrara una pasada completa por cada chance antes del cierre.</span>
+            <span class="draw-recording-state" id="drawRecordingState">Listo para grabar en esta pestaña</span>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
@@ -2490,6 +2582,18 @@
       </div>
       <div class="draw-rail" id="drawRail">
         <div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>
+      </div>
+      <div class="demo-video-panel" id="demoVideoPanel">
+        <div class="demo-video-head">
+          <div>
+            <div class="demo-video-title">Grabacion de la demostracion</div>
+            <div class="demo-video-sub">Despues de grabar la demo podras verla otra vez o descargar el video.</div>
+          </div>
+          <div class="demo-video-actions">
+            <a class="draw-control-btn" id="demoVideoDownloadBtn" href="#" download="demo-recorrido.webm">Descargar video</a>
+          </div>
+        </div>
+        <video class="demo-video-player" id="demoVideoPreview" controls playsinline preload="metadata"></video>
       </div>
       <div class="demo-history" id="demoHistoryPanel">
         <div class="demo-history-head">
@@ -3732,6 +3836,14 @@ function startDemoTrial() {
   ensureDrawShowcaseController()?.startTrial();
 }
 
+function recordDemoTrial() {
+  ensureDrawShowcaseController()?.recordTrial();
+}
+
+function toggleDemoVideoPanel() {
+  ensureDrawShowcaseController()?.toggleVideoPanel();
+}
+
 function syncParticipantTableFocus(activeIndex, isSpotlight) {
   ensureDrawShowcaseController()?.syncParticipantTableFocus(activeIndex, isSpotlight);
 }
@@ -4546,7 +4658,9 @@ document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
 document.getElementById('trySelectionSystemBtn').onclick = launchSelectionDemo;
 document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
+document.getElementById('recordDemoBtn').onclick = recordDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
+document.getElementById('viewDemoVideoBtn').onclick = toggleDemoVideoPanel;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
 
 document.querySelectorAll('.faq-q').forEach(btn => {
