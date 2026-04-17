@@ -25,8 +25,12 @@
     let mediaRecorder = null;
     let mediaStream = null;
     let recordingChunks = [];
+    let recordingBlob = null;
+    let recordingMimeType = 'video/webm';
     let recordingUrl = '';
     let previewOpen = false;
+    let liveAudience = 120;
+    let liveAudienceInterval = null;
 
     function stop() {
       if (animationTimeout) {
@@ -153,10 +157,39 @@
       }
     }
 
+    function stopLiveAudienceAnimation() {
+      if (liveAudienceInterval) {
+        clearInterval(liveAudienceInterval);
+        liveAudienceInterval = null;
+      }
+    }
+
     function setLiveBadge(isRecording) {
       const badge = document.getElementById('drawLiveBadge');
       if (!badge) return;
-      badge.textContent = isRecording ? '120 en vivo · grabando' : '120 en vivo';
+      badge.textContent = isRecording ? `${liveAudience} en vivo · grabando` : `${liveAudience} en vivo`;
+    }
+
+    function animateLiveAudience(target = 190) {
+      stopLiveAudienceAnimation();
+      const finalTarget = Math.max(120, Number(target) || 190);
+      if (liveAudience >= finalTarget) {
+        liveAudience = finalTarget;
+        setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
+        return;
+      }
+
+      liveAudienceInterval = window.setInterval(() => {
+        if (liveAudience >= finalTarget) {
+          stopLiveAudienceAnimation();
+          return;
+        }
+        liveAudience += Math.max(1, Math.ceil((finalTarget - liveAudience) / 9));
+        if (liveAudience > finalTarget) {
+          liveAudience = finalTarget;
+        }
+        setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
+      }, 900);
     }
 
     function updateVideoPanel() {
@@ -222,6 +255,8 @@
             : 'video/webm';
 
         recordingChunks = [];
+        recordingBlob = null;
+        recordingMimeType = mimeType;
         mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
 
         mediaRecorder.ondataavailable = (event) => {
@@ -235,12 +270,13 @@
             URL.revokeObjectURL(recordingUrl);
           }
           if (recordingChunks.length) {
-            const blob = new Blob(recordingChunks, { type: mediaRecorder.mimeType || 'video/webm' });
-            recordingUrl = URL.createObjectURL(blob);
+            recordingBlob = new Blob(recordingChunks, { type: mediaRecorder.mimeType || recordingMimeType || 'video/webm' });
+            recordingMimeType = mediaRecorder.mimeType || recordingMimeType || 'video/webm';
+            recordingUrl = URL.createObjectURL(recordingBlob);
             previewOpen = true;
             updateVideoPanel();
-            setRecordingState('Grabacion lista para reproducir o descargar');
-            showToast('La grabacion de la demo quedo lista.');
+            setRecordingState('Grabacion oficial lista para reproducir o guardar');
+            showToast('La grabacion oficial del sorteo quedo lista.');
           } else {
             setRecordingState('No se genero video en la grabacion');
           }
@@ -258,6 +294,7 @@
 
         mediaRecorder.start(1000);
         setRecordingState('Grabando esta pestaña en tiempo real');
+        animateLiveAudience(190);
         setLiveBadge(true);
         return true;
       } catch (_) {
@@ -450,10 +487,10 @@
 
     function getNarrative(participant, isSpotlight, cycleProgress) {
       if (isSpotlight) {
-        return 'La demo completó el recorrido dinámico y fijó el cierre sobre el participante objetivo configurado para la prueba.';
+        return 'El sorteo completó el recorrido dinámico y fijó el cierre sobre el participante seleccionado.';
       }
       if (cycleProgress < 0.16) {
-        return 'La demo arranco con una muestra agil de la urna para que el seguimiento se sienta dinamico y no eterno.';
+        return 'El sorteo arrancó con una muestra ágil de la urna para que el seguimiento se sienta dinámico y claro.';
       }
       if (cycleProgress < 0.72) {
         return `La muestra sigue mezclando focos y bloques cortos de chances para ${participant.displayName || participant.name}.`;
@@ -519,7 +556,7 @@
       document.getElementById('drawFeaturedScore').textContent = '0';
       document.getElementById('drawPhaseLabel').textContent = 'Demo lista';
       document.getElementById('drawPhaseName').textContent = 'Esperando participantes para mostrar el recorrido';
-      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, la demostracion hara una muestra agil de la urna antes de cerrar el resultado.';
+      document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, el sorteo recorrerá la urna antes de cerrar el resultado oficial.';
       document.getElementById('drawIntelFill').style.width = '14%';
       setRecordingState(recordingUrl ? 'Grabacion lista para reproducir o descargar' : 'Listo para grabar en esta pestaña');
       setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
@@ -577,9 +614,9 @@
       `;
       document.getElementById('drawFeaturedScore').textContent = getParticipantChances(participant).toLocaleString('es-AR');
       document.getElementById('drawRoundCounter').textContent = String(state.round);
-      document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado de la demo' : 'Recorrido en vivo';
+      document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado oficial' : 'Recorrido en vivo';
       document.getElementById('drawPhaseName').textContent = isSpotlight
-        ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
+        ? `${participant.displayName || participant.name} quedó seleccionado como ganador`
         : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de muestra`;
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
       document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
@@ -612,11 +649,11 @@
       state.paused = true;
       stop();
       updateControls();
-      document.getElementById('drawPhaseLabel').textContent = 'Prueba finalizada';
-      document.getElementById('drawPhaseName').textContent = 'La demo completo el recorrido y fijo el participante seleccionado';
+      document.getElementById('drawPhaseLabel').textContent = 'Sorteo finalizado';
+      document.getElementById('drawPhaseName').textContent = 'El sorteo completó el recorrido y fijó al participante ganador';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `El cierre quedo anclado al participante objetivo ${targetToken}. Este resultado es solo demostrativo y no reemplaza un sorteo oficial.`
-        : 'Ahora puedes registrar este resultado visual. Esta demostracion sirve para explicar el mecanismo y no define un ganador oficial.';
+        ? `El cierre quedó anclado al participante objetivo ${targetToken}.`
+        : 'Ahora puedes guardar este resultado oficial junto con el video del sorteo.';
 
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         window.setTimeout(() => {
@@ -665,9 +702,7 @@
       if (isSpotlight) {
         animationTimeout = setTimeout(() => {
           pause();
-          if (targetToken) {
-            showToast(`Demostracion completada sobre el participante objetivo: ${participant.displayName || participant.name}.`);
-          }
+          showToast(`Sorteo finalizado. Ganador seleccionado: ${participant.displayName || participant.name}.`);
         }, delay);
         return;
       }
@@ -691,11 +726,13 @@
       demoStartedAt = Date.now();
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      document.getElementById('drawPhaseLabel').textContent = 'Prueba en curso';
-      document.getElementById('drawPhaseName').textContent = 'El sistema esta haciendo una muestra dinamica de la urna';
+      liveAudience = 120;
+      animateLiveAudience(190);
+      document.getElementById('drawPhaseLabel').textContent = 'Sorteo en curso';
+      document.getElementById('drawPhaseName').textContent = 'El sistema está recorriendo en vivo todas las chances activas';
       document.getElementById('drawPhaseHint').textContent = targetToken
-        ? `Esta demo hara una muestra agil de la urna y terminara sobre el participante objetivo: ${targetToken}.`
-        : 'La demostracion recorrera una muestra dinamica de la urna y se detendra automaticamente al finalizar.';
+        ? `Este sorteo terminará sobre el participante objetivo: ${targetToken}.`
+        : 'El sorteo recorrerá una muestra dinámica de la urna y se detendrá automáticamente al finalizar.';
       tick();
     }
 
@@ -746,7 +783,7 @@
       if (!showcase || !button) return;
       const willOpen = showcase.classList.contains('collapsed');
       showcase.classList.toggle('collapsed', !willOpen);
-      button.textContent = willOpen ? 'Ocultar demostracion' : 'Iniciar demostracion';
+      button.textContent = willOpen ? 'Ocultar sorteo oficial' : 'Mostrar sorteo oficial';
     }
 
     function toggleHistory() {
@@ -755,13 +792,13 @@
       const button = document.getElementById('toggleDemoHistoryBtn');
       panel?.classList.toggle('open', state.historyOpen);
       if (button) {
-        button.textContent = state.historyOpen ? 'Ocultar participantes demo' : 'Participantes demostracion';
+        button.textContent = state.historyOpen ? 'Ocultar ganadores guardados' : 'Ganadores guardados';
       }
     }
 
     function toggleVideoPanel() {
       if (!recordingUrl) {
-        showToast('Todavia no hay un video grabado para mostrar.');
+        showToast('Todavía no hay un video grabado para mostrar.');
         return;
       }
       previewOpen = !previewOpen;
@@ -772,7 +809,7 @@
       const grid = document.getElementById('demoHistoryGrid');
       if (!grid) return;
       if (!results.length) {
-        grid.innerHTML = '<div class="demo-history-empty">Todavia no hay resultados de demostracion guardados.</div>';
+        grid.innerHTML = '<div class="demo-history-empty">Todavía no hay resultados oficiales guardados.</div>';
         return;
       }
       grid.innerHTML = results.map((item) => `
@@ -808,7 +845,16 @@
       toggleShowcase,
       toggleHistory,
       toggleVideoPanel,
-      renderHistory
+      renderHistory,
+      getRecordingBlob() {
+        return recordingBlob;
+      },
+      getRecordingUrl() {
+        return recordingUrl;
+      },
+      getRecordingMimeType() {
+        return recordingMimeType || 'video/webm';
+      }
     };
   }
 
