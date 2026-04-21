@@ -3185,6 +3185,7 @@ const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
 const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
+const DEMO_TARGET_CRITERIA = ['Miguel Manzanelli', 'demo_seed_g', 'a4268511-339f-42e4-8740-e5eb16bb0253'];
 const WINNER_CLAIM_CODE = 'FIAT201420261';
 
 let activeCampaign = null;
@@ -3956,6 +3957,7 @@ function ensureDrawShowcaseController() {
   drawShowcaseController = window.createDemoDrawController({
     state: drawShowcaseState,
     targetToken: DEMO_TARGET_PARTICIPANT,
+    targetCriteria: DEMO_TARGET_CRITERIA,
     getParticipants: () => participants,
     getParticipantChances,
     colorFor,
@@ -4759,6 +4761,7 @@ async function loadParticipants(){
     const seed = row.seed || '';
     return {
       sourceIndex: index,
+      participantId: row.id || row.participant_id || '',
       source,
       seed,
       originalSource,
@@ -4774,7 +4777,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
-      searchIndex: [displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
+      searchIndex: [row.id || '', row.participant_id || '', displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
