@@ -9,6 +9,9 @@
     const escapeHtml = config.escapeHtml;
     const showToast = config.showToast;
     const targetToken = String(config.targetToken || '').trim().toLowerCase();
+    const targetCriteria = Array.isArray(config.targetCriteria)
+      ? config.targetCriteria.map((item) => String(item || '').trim().toLowerCase()).filter(Boolean)
+      : [];
 
     const MAX_DEMO_DURATION_MS = 118000;
     const MIN_DEMO_DURATION_MS = 12000;
@@ -40,9 +43,10 @@
     }
 
     function getTargetIndex(participants) {
-      if (!targetToken) return -1;
+      if (!targetToken && !targetCriteria.length) return -1;
       return participants.findIndex((participant) => {
         const haystack = [
+          participant?.participantId,
           participant?.source,
           participant?.seed,
           participant?.originalSource,
@@ -54,6 +58,9 @@
           .filter(Boolean)
           .join(' ')
           .toLowerCase();
+        if (targetCriteria.length) {
+          return targetCriteria.every((criterion) => haystack.includes(criterion));
+        }
         return haystack.includes(targetToken);
       });
     }
