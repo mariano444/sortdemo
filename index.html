@@ -3241,7 +3241,7 @@
       </div>
       <div class="winner-claim-status" id="winnerModalClaimStatus"></div>
       <div class="winner-claim-summary" id="winnerClaimSummary">
-        <strong>Reclamo enviado</strong>
+        <strong id="winnerClaimSummaryTitle">Reclamo enviado</strong>
         <span id="winnerClaimSummaryExperience"></span>
         <span id="winnerClaimSummaryFeeling"></span>
         <button class="modal-confirm" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
@@ -3544,6 +3544,7 @@ function updateWinnerClaimGate() {
   const statusNode = document.getElementById('winnerModalClaimStatus');
   const publicBlock = document.getElementById('winnerClaimPublic');
   const summary = document.getElementById('winnerClaimSummary');
+  const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
   const isValid = normalizedCode === WINNER_CLAIM_CODE;
@@ -3555,6 +3556,9 @@ function updateWinnerClaimGate() {
   if (confirmBtn) {
     confirmBtn.style.display = isValid && claimSubmitted && !delivered ? 'block' : 'none';
     confirmBtn.disabled = delivered;
+  }
+  if (summaryTitle) {
+    summaryTitle.textContent = delivered ? 'Premio entregado' : 'Reclamo enviado';
   }
 
   if (!normalizedCode) {
@@ -4276,19 +4280,21 @@ function renderOfficialDrawResult() {
   const gated = document.getElementById('winnerClaimGated');
   const publicBlock = document.getElementById('winnerClaimPublic');
   const summary = document.getElementById('winnerClaimSummary');
+  const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
   const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
   const deliveryStatus = document.getElementById('winnerDeliveryStatus');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const delivered = result.delivery_status === 'delivered';
+  const modalActionBtn = document.getElementById('winnerClaimScrollBtn');
 
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
   document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 190)} en vivo`;
-  document.getElementById('winnerClaimStatus').textContent = claimMessage;
+  document.getElementById('winnerClaimStatus').textContent = delivered ? 'Premio entregado.' : claimMessage;
   document.getElementById('winnerModalName').textContent = winnerName;
   document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
-  document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
+  document.getElementById('winnerModalClaimStatus').textContent = delivered ? 'Premio entregado.' : claimMessage;
   if (deliveryStatus) {
     deliveryStatus.textContent = delivered ? 'Premio entregado.' : (result.delivery_status_label || 'En proceso de entrega.');
   }
@@ -4317,6 +4323,15 @@ function renderOfficialDrawResult() {
   if (confirmBtn) {
     confirmBtn.style.display = claimSubmitted && !delivered ? 'block' : 'none';
     confirmBtn.disabled = delivered;
+  }
+  if (summaryTitle) {
+    summaryTitle.textContent = delivered ? 'Premio entregado' : 'Reclamo enviado';
+  }
+  if (modalActionBtn) {
+    modalActionBtn.style.display = delivered ? 'none' : 'block';
+  }
+  if (openBtn) {
+    openBtn.textContent = delivered ? 'Ver experiencia' : 'Reclamar premio';
   }
   publicBlock?.classList.toggle('show', true);
   gated?.classList.toggle('show', false);
