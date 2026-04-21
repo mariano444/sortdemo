@@ -3244,6 +3244,7 @@
         <strong>Reclamo enviado</strong>
         <span id="winnerClaimSummaryExperience"></span>
         <span id="winnerClaimSummaryFeeling"></span>
+        <button class="modal-confirm" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
       </div>
     </div>
   </div>
@@ -3453,6 +3454,11 @@ function readPersistedOfficialDrawResult() {
   }
 }
 
+function isWinnerCodeValid() {
+  const claimCodeInput = document.getElementById('winnerClaimCode');
+  return String(claimCodeInput?.value || '').trim().toUpperCase() === WINNER_CLAIM_CODE;
+}
+
 function cleanMojibakeText(value) {
   if (value == null) return value;
   let text = String(value);
@@ -3537,22 +3543,37 @@ function updateWinnerClaimGate() {
   const gated = document.getElementById('winnerClaimGated');
   const statusNode = document.getElementById('winnerModalClaimStatus');
   const publicBlock = document.getElementById('winnerClaimPublic');
+  const summary = document.getElementById('winnerClaimSummary');
+  const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
   const isValid = normalizedCode === WINNER_CLAIM_CODE;
-  gated?.classList.toggle('show', isValid);
+  const claimSubmitted = Boolean(officialDrawResult?.claim_submitted_at);
+  const delivered = officialDrawResult?.delivery_status === 'delivered';
+  gated?.classList.toggle('show', isValid && !claimSubmitted);
   publicBlock?.classList.toggle('show-validated', isValid);
+  summary?.classList.toggle('show', isValid && claimSubmitted);
+  if (confirmBtn) {
+    confirmBtn.style.display = isValid && claimSubmitted && !delivered ? 'block' : 'none';
+    confirmBtn.disabled = delivered;
+  }
 
   if (!normalizedCode) {
     if (statusNode && !officialDrawResult?.claim_submitted_at) {
-      statusNode.textContent = '';
+      statusNode.textContent = officialDrawResult?.delivery_status_label || 'En proceso de entrega.';
     }
     return;
   }
 
-  if (!officialDrawResult?.claim_submitted_at && statusNode) {
-    statusNode.textContent = isValid
-      ? 'Código validado. Ahora completa tu experiencia y lo que sentiste al ganar.'
-      : 'El código ingresado no coincide con el código único enviado.';
+  if (statusNode) {
+    if (!isValid) {
+      statusNode.textContent = officialDrawResult?.delivery_status_label || 'En proceso de entrega.';
+    } else if (!claimSubmitted) {
+      statusNode.textContent = 'Código validado. Ahora completa tu experiencia y lo que sentiste al ganar.';
+    } else if (delivered) {
+      statusNode.textContent = 'Premio entregado.';
+    } else {
+      statusNode.textContent = 'Reclamo enviado. Ahora puedes confirmar el premio recibido.';
+    }
   }
 }
 
@@ -4258,6 +4279,8 @@ function renderOfficialDrawResult() {
   const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
   const deliveryStatus = document.getElementById('winnerDeliveryStatus');
+  const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
+  const delivered = result.delivery_status === 'delivered';
 
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
@@ -4267,7 +4290,7 @@ function renderOfficialDrawResult() {
   document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
   document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
   if (deliveryStatus) {
-    deliveryStatus.textContent = claimSubmitted ? 'Entregado.' : 'En proceso de entrega.';
+    deliveryStatus.textContent = delivered ? 'Premio entregado.' : (result.delivery_status_label || 'En proceso de entrega.');
   }
   if (claimCodeInput && !claimSubmitted) {
     claimCodeInput.value = '';
@@ -4291,9 +4314,13 @@ function renderOfficialDrawResult() {
     submitBtn.disabled = claimSubmitted;
     submitBtn.style.opacity = claimSubmitted ? '0.55' : '1';
   }
-  publicBlock?.classList.toggle('show', !claimSubmitted);
-  gated?.classList.toggle('show', claimSubmitted);
-  summary?.classList.toggle('show', claimSubmitted);
+  if (confirmBtn) {
+    confirmBtn.style.display = claimSubmitted && !delivered ? 'block' : 'none';
+    confirmBtn.disabled = delivered;
+  }
+  publicBlock?.classList.toggle('show', true);
+  gated?.classList.toggle('show', false);
+  summary?.classList.toggle('show', false);
   if (summaryExperience) {
     summaryExperience.textContent = claimSubmitted
       ? `Experiencia: ${result.claim_experience || ''}`
@@ -4325,9 +4352,7 @@ function renderOfficialDrawResult() {
     if (copy) copy.textContent = 'Foto enviada con el reclamo del premio.';
   }
 
-  if (!claimSubmitted) {
-    updateWinnerClaimGate();
-  }
+  updateWinnerClaimGate();
 
   card?.classList.add('show');
   openBtn && (openBtn.disabled = false);
@@ -4808,6 +4833,7 @@ document.getElementById('winnerClaimCode')?.addEventListener('focus', (event) =>
   event.target.select();
 });
 document.getElementById('winnerClaimCode')?.addEventListener('input', updateWinnerClaimGate);
+document.getElementById('winnerConfirmDeliveryBtn')?.addEventListener('click', confirmWinnerDelivery);
 
 async function submitWinnerClaim() {
   if (!officialDrawResult) {
@@ -4863,6 +4889,24 @@ async function submitWinnerClaim() {
     statusNode.textContent = 'No se pudo enviar el reclamo del premio.';
     showToast('No se pudo enviar el reclamo del premio.');
   }
+}
+
+async function confirmWinnerDelivery() {
+  if (!officialDrawResult || !isWinnerCodeValid()) {
+    showToast('Ingresa el código único correcto para confirmar el premio recibido.');
+    return;
+  }
+
+  officialDrawResult = {
+    ...officialDrawResult,
+    delivery_status: 'delivered',
+    delivery_status_label: 'Premio entregado',
+    delivery_confirmed_at: new Date().toISOString()
+  };
+  persistOfficialDrawResult(officialDrawResult);
+  await loadDemoResults();
+  document.getElementById('winnerModalClaimStatus').textContent = 'Premio entregado.';
+  showToast('Premio entregado confirmado.');
 }
 
 function openOpinionModal({ message, author, city }) {
