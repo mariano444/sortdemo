@@ -3184,7 +3184,7 @@ const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014
 const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
-const DEMO_TARGET_PARTICIPANT = '';
+const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
 const WINNER_CLAIM_CODE = 'FIAT201420261';
 
 let activeCampaign = null;
@@ -4146,6 +4146,7 @@ async function saveCurrentDemoResult() {
     const { data, error } = await supabaseClient.rpc('save_official_draw_result', {
       p_campaign_slug: CAMPAIGN_SLUG,
       p_participant_public_code: participant.publicCode || '',
+      p_participant_source: participant.source || '',
       p_display_name: participant.displayName || participant.name,
       p_full_name: participant.name || participant.displayName || '',
       p_video_data_url: videoDataUrl,
