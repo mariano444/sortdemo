@@ -4754,10 +4754,14 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
-    const source = row.source || row.seed || '';
+    const source = row.seed || row.source || '';
+    const originalSource = row.source || '';
+    const seed = row.seed || '';
     return {
       sourceIndex: index,
       source,
+      seed,
+      originalSource,
       name: fullName,
       displayName,
     detailLabel: row.is_anonymous ? (row.display_name || 'AnÃ³nimo') : row.full_name,
@@ -4770,6 +4774,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
+      searchIndex: [displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
@@ -4883,10 +4888,14 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
-    const source = row.source || row.seed || '';
+    const source = row.seed || row.source || '';
+    const originalSource = row.source || '';
+    const seed = row.seed || '';
     return {
       sourceIndex: index,
       source,
+      seed,
+      originalSource,
       name: fullName,
       displayName,
       detailLabel: row.is_anonymous ? (displayName || 'AnÃƒÂ³nimo') : fullName,
@@ -4899,7 +4908,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
-      searchIndex: [displayName, fullName, province, city, row.public_code || '', source].join(' ').toLowerCase(),
+      searchIndex: [displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
