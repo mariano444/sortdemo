@@ -1904,6 +1904,15 @@
     transition: opacity 0.3s;
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
+  body.modal-open > *:not(#winnerModal) {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+  }
+  body.modal-open #winnerModal {
+    filter: none;
+    pointer-events: all;
+  }
   .modal {
     background: var(--dark2);
     border: 1px solid rgba(245,200,66,0.3);
@@ -2177,6 +2186,35 @@
   .winner-modal-grid {
     display: grid;
     gap: 0.9rem;
+  }
+  .winner-claim-gated {
+    display: none;
+    gap: 0.9rem;
+  }
+  .winner-claim-gated.show {
+    display: grid;
+  }
+  .winner-claim-summary {
+    display: none;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .winner-claim-summary.show {
+    display: grid;
+  }
+  .winner-claim-summary strong {
+    color: var(--gold);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .winner-claim-summary span {
+    color: var(--text2);
+    line-height: 1.6;
+    white-space: pre-wrap;
   }
   .winner-modal-video {
     width: 100%;
@@ -3172,27 +3210,34 @@
         <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
         <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Tu experiencia con el sorteo *</label>
-        <textarea class="form-input form-textarea" id="winnerClaimExperience" placeholder="Contanos cómo fue tu experiencia participando en el sorteo."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Qué sentiste al enterarte que habías ganado *</label>
-        <textarea class="form-input form-textarea" id="winnerClaimFeeling" placeholder="Contanos qué sentiste al enterarte del resultado."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Subir foto del ganador *</label>
-        <div class="file-upload">
-          <input class="file-upload-input" type="file" id="winnerClaimPhoto" accept="image/*">
-          <div class="file-upload-help">La foto quedará asociada al reclamo oficial del premio.</div>
-          <div class="photo-preview" id="winnerClaimPhotoPreview">
-            <img id="winnerClaimPhotoPreviewImage" alt="Vista previa del reclamo del premio">
-            <div class="photo-preview-copy" id="winnerClaimPhotoPreviewCopy">Foto lista para adjuntarse al reclamo del premio.</div>
+      <div class="winner-claim-gated" id="winnerClaimGated">
+        <div class="form-group">
+          <label class="form-label">Tu experiencia con el sorteo *</label>
+          <textarea class="form-input form-textarea" id="winnerClaimExperience" placeholder="Contanos cómo fue tu experiencia participando en el sorteo."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qué sentiste al enterarte que habías ganado *</label>
+          <textarea class="form-input form-textarea" id="winnerClaimFeeling" placeholder="Contanos qué sentiste al enterarte del resultado."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subir foto del ganador</label>
+          <div class="file-upload">
+            <input class="file-upload-input" type="file" id="winnerClaimPhoto" accept="image/*">
+            <div class="form-help">La foto es opcional y quedará asociada al reclamo oficial del premio.</div>
+            <div class="photo-preview" id="winnerClaimPhotoPreview">
+              <img id="winnerClaimPhotoPreviewImage" alt="Vista previa del reclamo del premio">
+              <div class="photo-preview-copy" id="winnerClaimPhotoPreviewCopy">Foto lista para adjuntarse al reclamo del premio.</div>
+            </div>
           </div>
         </div>
+        <button class="modal-confirm" id="winnerClaimSubmitBtn">ENVIAR RECLAMO DEL PREMIO</button>
       </div>
-      <button class="modal-confirm" id="winnerClaimSubmitBtn">ENVIAR RECLAMO DEL PREMIO</button>
       <div class="winner-claim-status" id="winnerModalClaimStatus"></div>
+      <div class="winner-claim-summary" id="winnerClaimSummary">
+        <strong>Reclamo enviado</strong>
+        <span id="winnerClaimSummaryExperience"></span>
+        <span id="winnerClaimSummaryFeeling"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -3478,6 +3523,28 @@ function updateWinnerClaimPhotoPreview(file) {
   image.src = objectUrl;
   copy.textContent = `${file.name} listo para adjuntarse al reclamo del premio.`;
   preview.classList.add('show');
+}
+
+function updateWinnerClaimGate() {
+  const claimCodeInput = document.getElementById('winnerClaimCode');
+  const gated = document.getElementById('winnerClaimGated');
+  const statusNode = document.getElementById('winnerModalClaimStatus');
+  const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
+  const isValid = normalizedCode === WINNER_CLAIM_CODE;
+  gated?.classList.toggle('show', isValid);
+
+  if (!normalizedCode) {
+    if (statusNode && !officialDrawResult?.claim_submitted_at) {
+      statusNode.textContent = '';
+    }
+    return;
+  }
+
+  if (!officialDrawResult?.claim_submitted_at && statusNode) {
+    statusNode.textContent = isValid
+      ? 'Código validado. Ahora completa tu experiencia y lo que sentiste al ganar.'
+      : 'El código ingresado no coincide con el código único enviado.';
+  }
 }
 
 async function uploadParticipantPhoto(file, phone) {
@@ -4176,6 +4243,10 @@ function renderOfficialDrawResult() {
   const experienceInput = document.getElementById('winnerClaimExperience');
   const feelingInput = document.getElementById('winnerClaimFeeling');
   const submitBtn = document.getElementById('winnerClaimSubmitBtn');
+  const gated = document.getElementById('winnerClaimGated');
+  const summary = document.getElementById('winnerClaimSummary');
+  const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
+  const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
 
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
@@ -4185,7 +4256,7 @@ function renderOfficialDrawResult() {
   document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
   document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
   if (claimCodeInput && !claimSubmitted) {
-    claimCodeInput.value = result.claim_code || WINNER_CLAIM_CODE;
+    claimCodeInput.value = '';
   }
   if (experienceInput && claimSubmitted) {
     experienceInput.value = result.claim_experience || '';
@@ -4206,6 +4277,18 @@ function renderOfficialDrawResult() {
     submitBtn.disabled = claimSubmitted;
     submitBtn.style.opacity = claimSubmitted ? '0.55' : '1';
   }
+  gated?.classList.toggle('show', claimSubmitted);
+  summary?.classList.toggle('show', claimSubmitted);
+  if (summaryExperience) {
+    summaryExperience.textContent = claimSubmitted
+      ? `Experiencia: ${result.claim_experience || ''}`
+      : '';
+  }
+  if (summaryFeeling) {
+    summaryFeeling.textContent = claimSubmitted
+      ? `Al enterarse: ${result.claim_feeling || ''}`
+      : '';
+  }
 
   if (videoSource) {
     if (cardVideo) {
@@ -4225,6 +4308,10 @@ function renderOfficialDrawResult() {
     preview?.classList.add('show');
     if (image) image.src = result.claim_photo_data_url;
     if (copy) copy.textContent = 'Foto enviada con el reclamo del premio.';
+  }
+
+  if (!claimSubmitted) {
+    updateWinnerClaimGate();
   }
 
   card?.classList.add('show');
@@ -4705,6 +4792,7 @@ document.getElementById('winnerClaimScrollBtn')?.addEventListener('click', () =>
 document.getElementById('winnerClaimCode')?.addEventListener('focus', (event) => {
   event.target.select();
 });
+document.getElementById('winnerClaimCode')?.addEventListener('input', updateWinnerClaimGate);
 
 async function submitWinnerClaim() {
   if (!officialDrawResult) {
@@ -4721,14 +4809,14 @@ async function submitWinnerClaim() {
     statusNode.textContent = 'El código ingresado no coincide con el código único enviado.';
     return;
   }
-  if (!experience || !feeling || !selectedWinnerClaimPhoto) {
-    statusNode.textContent = 'Completa el código, la experiencia, lo que sentiste y la foto del ganador.';
+  if (!experience || !feeling) {
+    statusNode.textContent = 'Completa el código, la experiencia y lo que sentiste al ganar.';
     return;
   }
 
   try {
     statusNode.textContent = 'Enviando reclamo del premio...';
-    const photoDataUrl = await fileToDataUrl(selectedWinnerClaimPhoto);
+    const photoDataUrl = selectedWinnerClaimPhoto ? await fileToDataUrl(selectedWinnerClaimPhoto) : '';
     let rpcData = null;
     try {
       const { data, error } = await supabaseClient.rpc('submit_winner_claim', {
