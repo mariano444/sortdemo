@@ -914,6 +914,12 @@
     gap: 1rem;
     flex-wrap: wrap;
   }
+  .demo-launcher-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
   .demo-launcher-copy {
     display: grid;
     gap: 0.28rem;
@@ -1191,6 +1197,13 @@
     display: grid;
     gap: 0.18rem;
   }
+  .draw-status-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
   .draw-showcase-status-label {
     color: var(--gold);
     font-size: 0.78rem;
@@ -1206,6 +1219,41 @@
   .draw-showcase-status-hint {
     font-size: 0.85rem;
     color: var(--text2);
+  }
+  .draw-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.72rem;
+    border-radius: 999px;
+    background: rgba(232, 25, 44, 0.18);
+    border: 1px solid rgba(232, 25, 44, 0.42);
+    color: #ffd6da;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 0 22px rgba(232,25,44,0.18);
+  }
+  .draw-live-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5667;
+    box-shadow: 0 0 0 0 rgba(255,86,103,0.8);
+    animation: livePulse 1.25s infinite;
+  }
+  @keyframes livePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,86,103,0.8); }
+    70% { box-shadow: 0 0 0 10px rgba(255,86,103,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,86,103,0); }
+  }
+  .draw-recording-state {
+    font-size: 0.76rem;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
   .draw-intel-bar {
     position: relative;
@@ -1268,6 +1316,11 @@
     border-color: rgba(0,212,106,0.3);
     color: #8ff0be;
   }
+  .draw-control-btn.record {
+    background: linear-gradient(135deg, rgba(232,25,44,0.18), rgba(232,25,44,0.08));
+    border-color: rgba(232,25,44,0.35);
+    color: #ffd6da;
+  }
   .draw-showcase.paused .draw-intel-glow {
     animation-play-state: paused;
     opacity: 0.18;
@@ -1276,6 +1329,45 @@
     border-color: rgba(255,255,255,0.12);
     transform: none;
     animation: none;
+  }
+  .demo-video-panel {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    gap: 0.85rem;
+  }
+  .demo-video-panel.open {
+    display: grid;
+  }
+  .demo-video-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+  }
+  .demo-video-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .demo-video-sub {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+  .demo-video-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .demo-video-player {
+    width: 100%;
+    border-radius: 0.9rem;
+    background: #05070d;
+    border: 1px solid rgba(255,255,255,0.06);
   }
   .draw-rail {
     display: none;
@@ -1386,7 +1478,7 @@
   .search-input:focus { border-color: var(--gold); }
   .search-input::placeholder { color: var(--text2); }
 
-  table { width: 100%; min-width: 100%; border-collapse: collapse; table-layout: auto; }
+  table { width: 100%; min-width: 980px; border-collapse: collapse; table-layout: auto; }
   th {
     background: var(--dark3);
     font-size: 0.7rem; font-weight: 700;
@@ -1812,6 +1904,15 @@
     transition: opacity 0.3s;
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
+  body.modal-open > *:not(#winnerModal) {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+  }
+  body.modal-open #winnerModal {
+    filter: none;
+    pointer-events: all;
+  }
   .modal {
     background: var(--dark2);
     border: 1px solid rgba(245,200,66,0.3);
@@ -2010,6 +2111,165 @@
     line-height: 1.7;
     margin-top: 1rem;
     white-space: pre-wrap;
+  }
+  .winner-result-card {
+    display: none;
+    margin: 1.4rem 0 1.8rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, rgba(245,200,66,0.12), rgba(24,24,34,0.96));
+    border: 1px solid rgba(245,200,66,0.28);
+    box-shadow: 0 20px 44px rgba(0,0,0,0.26);
+  }
+  .winner-result-card.show {
+    display: grid;
+    gap: 1rem;
+  }
+  .winner-result-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .winner-result-kicker {
+    color: var(--gold);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .winner-result-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 0.92;
+    color: var(--text);
+  }
+  .winner-result-copy,
+  .winner-result-meta,
+  .winner-claim-status {
+    color: var(--text2);
+    line-height: 1.6;
+    font-size: 0.92rem;
+  }
+  .winner-result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .winner-result-video {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #050507;
+    min-height: 240px;
+  }
+  .winner-claim-note {
+    margin-top: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+  .winner-modal {
+    max-width: 640px;
+  }
+  .winner-modal.fixed .modal-close {
+    display: none;
+  }
+  .winner-modal .modal-title {
+    padding-right: 2rem;
+  }
+  .winner-modal-grid {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .winner-claim-gated {
+    display: none;
+    gap: 0.9rem;
+  }
+  .winner-claim-public {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .winner-claim-gated.show {
+    display: grid;
+  }
+  .winner-claim-summary {
+    display: none;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .winner-claim-summary.show {
+    display: grid;
+  }
+  .winner-claim-summary strong {
+    color: var(--gold);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .winner-claim-summary span {
+    color: var(--text2);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .winner-modal-video {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #050507;
+    min-height: 220px;
+  }
+  body.has-official-winner .demo-launcher,
+  body.has-official-winner .demo-history-card,
+  body.has-official-winner .draw-rail-card:not(.spotlight),
+  body.has-official-winner .participant-main-row.demo-blurred td,
+  body.has-official-winner .participant-main-row.demo-blurred + .participant-detail-row td {
+    filter: blur(3px);
+    opacity: 0.42;
+  }
+  body.has-official-winner .draw-featured-card:not(.spotlight) {
+    filter: blur(3px);
+    opacity: 0.45;
+  }
+  body.has-official-winner .participant-main-row.demo-blurred {
+    position: relative;
+  }
+  body.has-official-winner .participant-main-row.demo-blurred::after,
+  body.has-official-winner .draw-rail-card:not(.spotlight)::after,
+  body.has-official-winner .demo-history-card::after {
+    content: 'DEMO';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+  body.has-official-winner .draw-rail-card:not(.spotlight),
+  body.has-official-winner .demo-history-card {
+    position: relative;
+  }
+  body.has-official-winner #winnerModal {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .winner-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   /* ---- TOAST ---- */
@@ -2228,7 +2488,7 @@
   <div class="hero-bg"></div>
   <div class="hero-sparks" id="sparks"></div>
 
-  <div class="hero-badge">SORTEO - QUEDAN POCOS LUGARES</div>
+  <div class="hero-badge">SORTEO NACIONAL - QUEDAN POCOS LUGARES</div>
 
   <h1 class="hero-title">GRAN<br>SORTEO</h1>
   <p class="hero-subtitle">Un gran premio. Un Fiat Uno 2014 impecable.</p>
@@ -2304,7 +2564,7 @@
 
 <!-- URGENCY STRIP -->
 <div class="urgency-strip">
-  <span>SORTEO · FIAT UNO 2014 IMPECABLE · PREMIO · 1 DE MAYO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · </span>
+  <span>SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO · 1 DE MAYO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · SORTEO NACIONAL · FIAT UNO 2014 IMPECABLE · PREMIO UNICO · 26 DE JULIO O ANTES AL AGOTAR CHANCES · QUEDAN POCOS LUGARES · </span>
 </div>
 
 <!-- TRUST STRIP -->
@@ -2429,27 +2689,32 @@
     <p class="section-sub">Cada participaciÃ³n aprobada aparece aquÃ­ con su fecha y cantidad de chances, para que puedas ver que el ingreso quedÃ³ registrado y que el proceso se mantiene visible.</p>
 
     <p class="section-sub" style="margin-top:0.9rem; max-width:760px">Cuando una compra se acredita, queda asociada al participante y pasa a formar parte del registro visible del sorteo. Eso ayuda a dar seguimiento real y a reforzar la confianza de quien participa.</p>
-    <div class="demo-launcher reveal hidden">
+    <div class="demo-launcher reveal">
       <div class="demo-launcher-copy">
-        <div class="demo-launcher-title">Demostracion en tiempo real</div>
-        <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
+        <div class="demo-launcher-title">Sorteo oficial en tiempo real</div>
+        <div class="demo-launcher-sub">Este bloque permite ejecutar el sorteo oficial en vivo, grabarlo y dejar publicado el video junto con el ganador para que el resultado quede fijo en la landing.</div>
       </div>
-      <button class="draw-control-btn primary" type="button" id="toggleDemoBtn">Iniciar demostracion</button>
+      <div class="demo-launcher-actions">
+        <button class="draw-control-btn primary" type="button" id="trySelectionSystemBtn">Iniciar sorteo oficial</button>
+        <button class="draw-control-btn" type="button" id="toggleDemoBtn">Mostrar sorteo oficial</button>
+      </div>
     </div>
 
-    <div class="draw-showcase reveal collapsed hidden" id="drawShowcase">
+    <div class="draw-showcase reveal collapsed" id="drawShowcase">
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
-            <span class="draw-showcase-kicker">Demostracion de transparencia</span>
-            <span class="draw-demo-badge">Demostracion</span>
+            <span class="draw-showcase-kicker">Sorteo oficial grabado</span>
+            <span class="draw-demo-badge">Oficial</span>
           </div>
-          <h3 class="draw-showcase-title">Probador visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">Inicia la demostracion para observar en tiempo real como el sistema recorre participantes, se detiene automaticamente y deja asentado el punto exacto donde finaliza la prueba. Este modulo existe solo para demostrar el funcionamiento y no define resultados oficiales.</p>
+          <h3 class="draw-showcase-title">Recorrido visual del <span>software de seleccion</span></h3>
+          <p class="draw-showcase-sub">Inicia el sorteo oficial para ver el recorrido por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, luego fija al ganador real y permite guardar el resultado con su video.</p>
           <div class="draw-controls">
-            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Iniciar prueba</button>
-            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
-            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
+            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
+            <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar sorteo</button>
+            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar ganador oficial</button>
+            <button class="draw-control-btn" type="button" id="viewDemoVideoBtn">Ver ultimo video</button>
+            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Ganadores guardados</button>
           </div>
         </div>
         <div class="draw-showcase-stage">
@@ -2469,9 +2734,13 @@
             </div>
           </div>
           <div class="draw-showcase-status">
-            <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
+            <div class="draw-status-topline">
+              <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
+              <span class="draw-live-badge" id="drawLiveBadge">120 en vivo</span>
+            </div>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
-            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sistema empezara a recorrerlos en bucle.</span>
+            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sorteo mostrara una pasada completa por cada chance antes del cierre.</span>
+            <span class="draw-recording-state" id="drawRecordingState">Listo para grabar en esta pestaña</span>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
               <div class="draw-intel-glow"></div>
@@ -2482,17 +2751,46 @@
       <div class="draw-rail" id="drawRail">
         <div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>
       </div>
+      <div class="demo-video-panel" id="demoVideoPanel">
+        <div class="demo-video-head">
+          <div>
+            <div class="demo-video-title">Grabacion del sorteo oficial</div>
+            <div class="demo-video-sub">Despues de grabar el sorteo podras verlo otra vez o descargar el video.</div>
+          </div>
+          <div class="demo-video-actions">
+            <a class="draw-control-btn" id="demoVideoDownloadBtn" href="#" download="sorteo-oficial.webm">Descargar video</a>
+          </div>
+        </div>
+        <video class="demo-video-player" id="demoVideoPreview" controls playsinline preload="metadata"></video>
+      </div>
       <div class="demo-history" id="demoHistoryPanel">
         <div class="demo-history-head">
           <div>
-            <div class="demo-history-title">Participantes demostracion</div>
-            <div class="demo-history-sub">Historial de participantes asentados manualmente desde esta demostracion.</div>
+            <div class="demo-history-title">Ganadores guardados</div>
+            <div class="demo-history-sub">Historial del resultado oficial almacenado para esta campaña.</div>
           </div>
         </div>
         <div class="demo-history-grid" id="demoHistoryGrid">
-          <div class="demo-history-empty">Todavia no hay resultados de demostracion guardados.</div>
+          <div class="demo-history-empty">Todavia no hay resultados oficiales guardados.</div>
         </div>
       </div>
+    </div>
+
+    <div class="winner-result-card reveal" id="winnerResultCard">
+      <div class="winner-result-head">
+        <div>
+          <div class="winner-result-kicker">Ganador oficial confirmado</div>
+          <div class="winner-result-name" id="winnerResultName">Esperando ganador oficial</div>
+          <div class="winner-result-copy" id="winnerResultCopy">Cuando se guarde el resultado, el ganador y el video quedarán fijos en esta sección.</div>
+        </div>
+        <div class="winner-result-actions">
+          <button class="draw-control-btn accent" type="button" id="openWinnerModalBtn">Reclamar premio</button>
+        </div>
+      </div>
+      <div class="winner-result-meta" id="winnerResultMeta"></div>
+      <video class="winner-result-video" id="winnerResultVideo" controls playsinline preload="metadata"></video>
+      <div class="winner-claim-status" id="winnerClaimStatus"></div>
+      <div class="winner-claim-note">Ganador del premio: te enviaremos un código único para reclamar el premio. Podrás reclamarlo dentro de los 7 días hábiles desde la confirmación oficial.</div>
     </div>
 
     <div class="participants-table-wrap reveal">
@@ -2504,16 +2802,20 @@
       <div style="overflow-x:auto" id="participantsTableScroller">
         <table>
           <colgroup>
-            <col style="width:40%">
-            <col style="width:20%">
-            <col style="width:16%">
-            <col style="width:24%">
+            <col style="width:34%">
+            <col style="width:15%">
+            <col style="width:15%">
+            <col style="width:12%">
+            <col style="width:12%">
+            <col style="width:12%">
           </colgroup>
           <thead>
             <tr>
               <th data-col="participant-head">Participante</th>
               <th>Provincia</th>
-              <th>Chances</th>
+              <th>Ciudad</th>
+              <th>Compradas</th>
+              <th>Fecha</th>
               <th>Mensaje</th>
             </tr>
           </thead>
@@ -2556,7 +2858,7 @@
       <!--p class="auto-showcase-text">Una presentacion mas prolija del premio, ubicada debajo de la lista de participantes para acompañar el recorrido de la pagina con una seccion visual mas armoniosa, clara y profesional.</p-->
       <div class="auto-showcase-pills">
         <span class="auto-pill">Premio unico</span>
-        <span class="auto-pill">6 fotos </span>
+        <span class="auto-pill">6 fotos reales</span>
         <span class="auto-pill">Exterior e interior</span>
         <span class="auto-pill">Entrega coordinada</span>
       </div>
@@ -2755,7 +3057,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-q">Â¿CuÃ¡ndo se entrega el premio? <span class="faq-arrow">â–¼</span></button>
-        <div class="faq-a">El premio se coordina con el ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro del Fiat Uno 2014 o su equivalente en dinero.</div>
+        <div class="faq-a">El premio se coordina con el ganador dentro de las 48 horas posteriores al sorteo. Se contacta al ganador, se valida la forma de entrega y se organiza el retiro del Fiat Uno 2014 publicado.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Â¿Puedo comprar mÃ¡s de un pack? <span class="faq-arrow">â–¼</span></button>
@@ -2893,12 +3195,67 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="winnerModal">
+  <div class="modal winner-modal">
+    <button class="modal-close" id="winnerModalClose">✕</button>
+    <div class="modal-title">Ganador del premio</div>
+    <p class="modal-sub" id="winnerModalSub">Te enviaremos un código único para reclamar el premio. El reclamo debe completarse dentro de los 7 días hábiles.</p>
+    <div class="modal-assurance">
+      <strong id="winnerModalName">Esperando ganador oficial</strong>
+      <span id="winnerModalMeta">Cuando el sorteo se guarde, este modal quedará fijo con el ganador y el reclamo del premio.</span>
+    </div>
+    <div class="winner-modal-grid">
+      <video class="winner-modal-video" id="winnerModalVideo" controls playsinline preload="metadata"></video>
+      <div class="winner-modal-actions">
+        <button class="draw-control-btn accent" type="button" id="winnerClaimScrollBtn">Reclamar premio</button>
+      </div>
+      <div class="winner-claim-status" id="winnerDeliveryStatus">En proceso de entrega.</div>
+      <div class="winner-claim-public" id="winnerClaimPublic">
+        <div class="form-group">
+          <label class="form-label">Código único *</label>
+          <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
+          <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
+        </div>
+      </div>
+      <div class="winner-claim-gated" id="winnerClaimGated">
+        <div class="form-group">
+          <label class="form-label">Tu experiencia con el sorteo *</label>
+          <textarea class="form-input form-textarea" id="winnerClaimExperience" placeholder="Contanos cómo fue tu experiencia participando en el sorteo."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qué sentiste al enterarte que habías ganado *</label>
+          <textarea class="form-input form-textarea" id="winnerClaimFeeling" placeholder="Contanos qué sentiste al enterarte del resultado."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subir foto del ganador</label>
+          <div class="file-upload">
+            <input class="file-upload-input" type="file" id="winnerClaimPhoto" accept="image/*">
+            <div class="form-help">La foto es opcional y quedará asociada al reclamo oficial del premio.</div>
+            <div class="photo-preview" id="winnerClaimPhotoPreview">
+              <img id="winnerClaimPhotoPreviewImage" alt="Vista previa del reclamo del premio">
+              <div class="photo-preview-copy" id="winnerClaimPhotoPreviewCopy">Foto lista para adjuntarse al reclamo del premio.</div>
+            </div>
+          </div>
+        </div>
+        <button class="modal-confirm" id="winnerClaimSubmitBtn">ENVIAR RECLAMO DEL PREMIO</button>
+      </div>
+      <div class="winner-claim-status" id="winnerModalClaimStatus"></div>
+      <div class="winner-claim-summary" id="winnerClaimSummary">
+        <strong>Reclamo enviado</strong>
+        <span id="winnerClaimSummaryExperience"></span>
+        <span id="winnerClaimSummaryFeeling"></span>
+        <button class="modal-confirm" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">âœ… Â¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
 <div class="live-feed" id="liveFeed">
   <div class="live-feed-card">
     <div class="live-feed-kicker">Actividad en vivo</div>
-    <div class="live-feed-text" id="liveFeedText">Se actualiza con ingresos reales y demo.</div>
+    <div class="live-feed-text" id="liveFeedText">Se actualiza con ingresos reales y actividad oficial.</div>
     <div class="live-feed-sub" id="liveFeedSub">Ahora mismo</div>
   </div>
 </div>
@@ -2908,6 +3265,7 @@
 </a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./assets/js/draw-showcase.js"></script>
 <script>
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_zBhxdMJHw_uy_m3uRDj-ng_0yXz42EN';
@@ -2921,17 +3279,27 @@ const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014
 const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
+const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
+const DEMO_TARGET_CRITERIA = ['Miguel Manzanelli', 'demo_seed_g', 'a4268511-339f-42e4-8740-e5eb16bb0253'];
+const LOCKED_WINNER = {
+  id: 'a4268511-339f-42e4-8740-e5eb16bb0253',
+  seed: 'demo_seed_g',
+  name: 'Miguel Manzanelli'
+};
+const WINNER_CLAIM_CODE = 'FIAT201420261';
 
 let activeCampaign = null;
 let packages = [];
 let participants = [];
 let demoResults = [];
+let officialDrawResult = null;
 let selectedPkg = null;
 let selectedPhotoFile = null;
+let selectedWinnerClaimPhoto = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
-let drawAnimationTimeout = null;
+let drawShowcaseController = null;
 const fallbackProofMessages = [
   {
     name: 'Mariana',
@@ -2956,6 +3324,7 @@ const fallbackProofMessages = [
 ];
 let latestOrderStatus = null;
 const expandedParticipantRows = new Set();
+const OFFICIAL_DRAW_STORAGE_KEY = `official-draw-result:${CAMPAIGN_SLUG}`;
 const drawShowcaseState = {
   basePool: [],
   cycle: [],
@@ -3051,6 +3420,45 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 4500);
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
+    reader.onerror = () => reject(reader.error || new Error('No se pudo leer el archivo.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function persistOfficialDrawResult(result) {
+  try {
+    if (!result) {
+      localStorage.removeItem(OFFICIAL_DRAW_STORAGE_KEY);
+      return;
+    }
+    localStorage.setItem(OFFICIAL_DRAW_STORAGE_KEY, JSON.stringify(result));
+  } catch (_) {
+    // ignore storage errors
+  }
+}
+
+function readPersistedOfficialDrawResult() {
+  try {
+    const raw = localStorage.getItem(OFFICIAL_DRAW_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function isWinnerCodeValid() {
+  const claimCodeInput = document.getElementById('winnerClaimCode');
+  return String(claimCodeInput?.value || '').trim().toUpperCase() === WINNER_CLAIM_CODE;
+}
+
 function cleanMojibakeText(value) {
   if (value == null) return value;
   let text = String(value);
@@ -3111,6 +3519,62 @@ function updatePhotoPreview(file) {
   image.src = objectUrl;
   copy.textContent = `${file.name} listo para acompaÃ±ar tu participacion.`;
   preview.classList.add('show');
+}
+
+function updateWinnerClaimPhotoPreview(file) {
+  const preview = document.getElementById('winnerClaimPhotoPreview');
+  const image = document.getElementById('winnerClaimPhotoPreviewImage');
+  const copy = document.getElementById('winnerClaimPhotoPreviewCopy');
+  if (!preview || !image || !copy) return;
+  if (!file) {
+    preview.classList.remove('show');
+    image.removeAttribute('src');
+    copy.textContent = 'Foto lista para adjuntarse al reclamo del premio.';
+    return;
+  }
+  const objectUrl = URL.createObjectURL(file);
+  image.src = objectUrl;
+  copy.textContent = `${file.name} listo para adjuntarse al reclamo del premio.`;
+  preview.classList.add('show');
+}
+
+function updateWinnerClaimGate() {
+  const claimCodeInput = document.getElementById('winnerClaimCode');
+  const gated = document.getElementById('winnerClaimGated');
+  const statusNode = document.getElementById('winnerModalClaimStatus');
+  const publicBlock = document.getElementById('winnerClaimPublic');
+  const summary = document.getElementById('winnerClaimSummary');
+  const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
+  const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
+  const isValid = normalizedCode === WINNER_CLAIM_CODE;
+  const claimSubmitted = Boolean(officialDrawResult?.claim_submitted_at);
+  const delivered = officialDrawResult?.delivery_status === 'delivered';
+  gated?.classList.toggle('show', isValid && !claimSubmitted);
+  publicBlock?.classList.toggle('show-validated', isValid);
+  summary?.classList.toggle('show', isValid && claimSubmitted);
+  if (confirmBtn) {
+    confirmBtn.style.display = isValid && claimSubmitted && !delivered ? 'block' : 'none';
+    confirmBtn.disabled = delivered;
+  }
+
+  if (!normalizedCode) {
+    if (statusNode && !officialDrawResult?.claim_submitted_at) {
+      statusNode.textContent = officialDrawResult?.delivery_status_label || 'En proceso de entrega.';
+    }
+    return;
+  }
+
+  if (statusNode) {
+    if (!isValid) {
+      statusNode.textContent = officialDrawResult?.delivery_status_label || 'En proceso de entrega.';
+    } else if (!claimSubmitted) {
+      statusNode.textContent = 'Código validado. Ahora completa tu experiencia y lo que sentiste al ganar.';
+    } else if (delivered) {
+      statusNode.textContent = 'Premio entregado.';
+    } else {
+      statusNode.textContent = 'Reclamo enviado. Ahora puedes confirmar el premio recibido.';
+    }
+  }
 }
 
 async function uploadParticipantPhoto(file, phone) {
@@ -3653,6 +4117,375 @@ function startDrawShowcase() {
   renderDrawShowcase(entry, false, delay);
 }
 
+function ensureDrawShowcaseController() {
+  if (drawShowcaseController) return drawShowcaseController;
+  if (typeof window.createDemoDrawController !== 'function') return null;
+  drawShowcaseController = window.createDemoDrawController({
+    state: drawShowcaseState,
+    targetToken: DEMO_TARGET_PARTICIPANT,
+    targetCriteria: DEMO_TARGET_CRITERIA,
+    targetParticipant: LOCKED_WINNER,
+    getParticipants: () => participants,
+    getParticipantChances,
+    colorFor,
+    initials,
+    participantLocation,
+    escapeHtml,
+    showToast
+  });
+  return drawShowcaseController;
+}
+
+function refreshDrawEntryPool() {
+  ensureDrawShowcaseController()?.syncParticipants();
+}
+
+function getActiveDemoParticipant() {
+  return ensureDrawShowcaseController()?.getActiveParticipant() || null;
+}
+
+function getDrawRecordingBlob() {
+  return ensureDrawShowcaseController()?.getRecordingBlob?.() || null;
+}
+
+function getDrawRecordingUrl() {
+  return ensureDrawShowcaseController()?.getRecordingUrl?.() || '';
+}
+
+function getDrawRecordingMimeType() {
+  return ensureDrawShowcaseController()?.getRecordingMimeType?.() || 'video/webm';
+}
+
+function renderDemoHistory() {
+  ensureDrawShowcaseController()?.renderHistory(demoResults);
+}
+
+function toggleDemoHistory() {
+  ensureDrawShowcaseController()?.toggleHistory();
+}
+
+function toggleDemoShowcase() {
+  ensureDrawShowcaseController()?.toggleShowcase();
+}
+
+function launchSelectionDemo() {
+  const showcase = document.getElementById('drawShowcase');
+  const toggleBtn = document.getElementById('toggleDemoBtn');
+  if (showcase?.classList.contains('collapsed')) {
+    ensureDrawShowcaseController()?.toggleShowcase();
+  }
+  if (toggleBtn) {
+    toggleBtn.textContent = 'Ocultar sorteo oficial';
+  }
+  showcase?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.setTimeout(() => {
+    startDemoTrial();
+  }, 180);
+}
+
+function updateDrawControls() {
+  ensureDrawShowcaseController()?.updateControls();
+}
+
+function pauseDrawShowcase() {
+  ensureDrawShowcaseController()?.pause();
+}
+
+function startDemoTrial() {
+  ensureDrawShowcaseController()?.startTrial();
+}
+
+function recordDemoTrial() {
+  ensureDrawShowcaseController()?.recordTrial();
+}
+
+function toggleDemoVideoPanel() {
+  ensureDrawShowcaseController()?.toggleVideoPanel();
+}
+
+function syncParticipantTableFocus(activeIndex, isSpotlight) {
+  ensureDrawShowcaseController()?.syncParticipantTableFocus(activeIndex, isSpotlight);
+}
+
+function renderDrawShowcaseEmpty() {
+  ensureDrawShowcaseController()?.renderEmpty();
+}
+
+function setWinnerModalOpen(isOpen) {
+  if (!isOpen && officialDrawResult) {
+    isOpen = true;
+  }
+  document.getElementById('winnerModal')?.classList.toggle('open', isOpen);
+  document.body.classList.toggle('modal-open', isOpen);
+}
+
+function formatDateTime(value) {
+  if (!value) return '';
+  return new Date(value).toLocaleString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function matchesLockedWinnerParticipant(participant) {
+  if (!participant) return false;
+  const normalize = (value) => String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+  const participantId = normalize(participant.participantId);
+  const participantSeed = normalize(participant.seed || participant.source || participant.originalSource);
+  const participantName = normalize(participant.name || participant.displayName);
+  return participantId === normalize(LOCKED_WINNER.id)
+    && participantSeed === normalize(LOCKED_WINNER.seed)
+    && participantName === normalize(LOCKED_WINNER.name);
+}
+
+function renderOfficialDrawResult() {
+  const card = document.getElementById('winnerResultCard');
+  const openBtn = document.getElementById('openWinnerModalBtn');
+  const cardVideo = document.getElementById('winnerResultVideo');
+  const modalVideo = document.getElementById('winnerModalVideo');
+  const result = officialDrawResult;
+  document.body.classList.toggle('has-official-winner', Boolean(result));
+  document.getElementById('winnerModal')?.querySelector('.winner-modal')?.classList.toggle('fixed', Boolean(result));
+
+  if (!result) {
+    card?.classList.remove('show');
+    if (cardVideo) cardVideo.removeAttribute('src');
+    if (modalVideo) modalVideo.removeAttribute('src');
+    return;
+  }
+
+  const winnerName = result.display_name || result.full_name || 'Ganador confirmado';
+  const publicCode = result.participant_public_code || 'Sin código público';
+  const savedAt = formatDateTime(result.saved_at);
+  const claimSubmitted = Boolean(result.claim_submitted_at);
+  const claimMessage = claimSubmitted
+    ? `Reclamo enviado el ${formatDateTime(result.claim_submitted_at)}.`
+    : 'Pendiente de reclamo del premio.';
+  const videoSource = result.video_data_url || getDrawRecordingUrl();
+  const claimCodeInput = document.getElementById('winnerClaimCode');
+  const experienceInput = document.getElementById('winnerClaimExperience');
+  const feelingInput = document.getElementById('winnerClaimFeeling');
+  const submitBtn = document.getElementById('winnerClaimSubmitBtn');
+  const gated = document.getElementById('winnerClaimGated');
+  const publicBlock = document.getElementById('winnerClaimPublic');
+  const summary = document.getElementById('winnerClaimSummary');
+  const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
+  const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
+  const deliveryStatus = document.getElementById('winnerDeliveryStatus');
+  const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
+  const delivered = result.delivery_status === 'delivered';
+
+  document.getElementById('winnerResultName').textContent = winnerName;
+  document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
+  document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 190)} en vivo`;
+  document.getElementById('winnerClaimStatus').textContent = claimMessage;
+  document.getElementById('winnerModalName').textContent = winnerName;
+  document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
+  document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
+  if (deliveryStatus) {
+    deliveryStatus.textContent = delivered ? 'Premio entregado.' : (result.delivery_status_label || 'En proceso de entrega.');
+  }
+  if (claimCodeInput && !claimSubmitted) {
+    claimCodeInput.value = '';
+  }
+  if (experienceInput && claimSubmitted) {
+    experienceInput.value = result.claim_experience || '';
+    experienceInput.disabled = true;
+  } else if (experienceInput) {
+    experienceInput.disabled = false;
+  }
+  if (feelingInput && claimSubmitted) {
+    feelingInput.value = result.claim_feeling || '';
+    feelingInput.disabled = true;
+  } else if (feelingInput) {
+    feelingInput.disabled = false;
+  }
+  if (claimCodeInput) {
+    claimCodeInput.readOnly = claimSubmitted;
+  }
+  if (submitBtn) {
+    submitBtn.disabled = claimSubmitted;
+    submitBtn.style.opacity = claimSubmitted ? '0.55' : '1';
+  }
+  if (confirmBtn) {
+    confirmBtn.style.display = claimSubmitted && !delivered ? 'block' : 'none';
+    confirmBtn.disabled = delivered;
+  }
+  publicBlock?.classList.toggle('show', true);
+  gated?.classList.toggle('show', false);
+  summary?.classList.toggle('show', false);
+  if (summaryExperience) {
+    summaryExperience.textContent = claimSubmitted
+      ? `Experiencia: ${result.claim_experience || ''}`
+      : '';
+  }
+  if (summaryFeeling) {
+    summaryFeeling.textContent = claimSubmitted
+      ? `Al enterarse: ${result.claim_feeling || ''}`
+      : '';
+  }
+
+  if (videoSource) {
+    if (cardVideo) {
+      cardVideo.src = videoSource;
+      cardVideo.load();
+    }
+    if (modalVideo) {
+      modalVideo.src = videoSource;
+      modalVideo.load();
+    }
+  }
+
+  if (claimSubmitted && result.claim_photo_data_url) {
+    const preview = document.getElementById('winnerClaimPhotoPreview');
+    const image = document.getElementById('winnerClaimPhotoPreviewImage');
+    const copy = document.getElementById('winnerClaimPhotoPreviewCopy');
+    preview?.classList.add('show');
+    if (image) image.src = result.claim_photo_data_url;
+    if (copy) copy.textContent = 'Foto enviada con el reclamo del premio.';
+  }
+
+  updateWinnerClaimGate();
+
+  card?.classList.add('show');
+  openBtn && (openBtn.disabled = false);
+}
+
+async function loadDemoResults() {
+  try {
+    const { data, error } = await supabaseClient.rpc('get_official_draw_result', {
+      p_campaign_slug: CAMPAIGN_SLUG
+    });
+    if (error) throw error;
+    officialDrawResult = data || null;
+    persistOfficialDrawResult(officialDrawResult);
+    demoResults = officialDrawResult ? [{
+      ...officialDrawResult,
+      city: officialDrawResult.city || '',
+      province: officialDrawResult.province || '',
+      chances: officialDrawResult.chances || 0,
+      public_code: officialDrawResult.participant_public_code || '',
+      display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+      full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+      recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+    }] : [];
+  } catch (error) {
+    console.warn('No se pudo cargar el resultado oficial.', error);
+    officialDrawResult = readPersistedOfficialDrawResult();
+    demoResults = officialDrawResult ? [{
+      ...officialDrawResult,
+      city: officialDrawResult.city || '',
+      province: officialDrawResult.province || '',
+      chances: officialDrawResult.chances || 0,
+      public_code: officialDrawResult.participant_public_code || '',
+      display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+      full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+      recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+    }] : [];
+  }
+  renderDemoHistory();
+  renderOfficialDrawResult();
+}
+
+async function saveCurrentDemoResult() {
+  const participant = getActiveDemoParticipant();
+  if (!participant) {
+    showToast('Todavía no hay un participante ganador seleccionado.');
+    return;
+  }
+  const recordingBlob = getDrawRecordingBlob();
+  if (!recordingBlob) {
+    showToast('Primero graba el sorteo para poder guardar el video en la base de datos.');
+    return;
+  }
+  try {
+    const videoDataUrl = await fileToDataUrl(recordingBlob);
+    let rpcData = null;
+    try {
+      const { data, error } = await supabaseClient.rpc('save_official_draw_result', {
+        p_campaign_slug: CAMPAIGN_SLUG,
+        p_participant_public_code: participant.publicCode || '',
+        p_participant_source: participant.source || '',
+        p_display_name: participant.displayName || participant.name,
+        p_full_name: participant.name || participant.displayName || '',
+        p_video_data_url: videoDataUrl,
+        p_video_mime_type: getDrawRecordingMimeType(),
+        p_live_count: 190
+      });
+      if (error) throw error;
+      rpcData = data || null;
+    } catch (rpcError) {
+      console.warn('No se pudo guardar en Supabase. Se usará almacenamiento local.', rpcError);
+    }
+
+    officialDrawResult = rpcData || {
+      campaign_slug: CAMPAIGN_SLUG,
+      participant_public_code: participant.publicCode || '',
+      participant_source: participant.source || '',
+      display_name: participant.displayName || participant.name,
+      full_name: participant.name || participant.displayName || '',
+      video_data_url: videoDataUrl,
+      video_mime_type: getDrawRecordingMimeType(),
+      live_count: 190,
+      claim_code: WINNER_CLAIM_CODE,
+      claim_deadline_label: 'Reclamo válido dentro de 7 días hábiles',
+      saved_at: new Date().toISOString(),
+      city: participant.city || '',
+      province: participant.province || '',
+      chances: Number(participant.chances || participant.purchasedChances || 0)
+    };
+    persistOfficialDrawResult(officialDrawResult);
+    await loadDemoResults();
+    if (!drawShowcaseState.historyOpen) {
+      toggleDemoHistory();
+    }
+    renderOfficialDrawResult();
+    setWinnerModalOpen(true);
+    showToast(`Ganador oficial guardado: ${participant.displayName || participant.name}.`);
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo guardar el ganador oficial. Revisa la migración SQL.');
+  }
+}
+
+function renderDrawShowcase(entry, isSpotlight) {
+  const controller = ensureDrawShowcaseController();
+  if (!controller) return;
+  if (!entry) {
+    controller.renderEmpty();
+    return;
+  }
+  controller.prepareRound();
+  drawShowcaseState.cyclePosition = Math.max(0, drawShowcaseState.cycle.findIndex((item) => (
+    item.participantIndex === entry.participantIndex && item.chanceNumber === entry.chanceNumber
+  )));
+  drawShowcaseState.spotlightPosition = isSpotlight ? drawShowcaseState.cyclePosition : drawShowcaseState.spotlightPosition;
+  controller.tick();
+}
+
+function stopDrawShowcase() {
+  ensureDrawShowcaseController()?.stop();
+}
+
+function prepareDrawShowcaseRound() {
+  ensureDrawShowcaseController()?.prepareRound();
+}
+
+function tickDrawShowcase() {
+  ensureDrawShowcaseController()?.tick();
+}
+
+function startDrawShowcase() {
+  ensureDrawShowcaseController()?.reset();
+}
+
 async function shareWhatsappLink() {
   const value = document.getElementById('shareLinkInput').value;
   if (!value) return;
@@ -3763,14 +4596,16 @@ function renderParticipants(filter=''){
     const purchasedChances = Math.max(1, Number(p.currentChances || p.purchasedChances || p.chances || 0));
     const detailId = `${p.publicCode || p.name}-${sourceIndex}-${p.date}`;
     const row = document.createElement('tr');
-    row.className = 'participant-main-row';
+    row.className = `participant-main-row${matchesLockedWinnerParticipant(participant) ? '' : ' demo-blurred'}`;
     row.dataset.detailId = detailId;
     row.dataset.participantIndex = String(sourceIndex);
     const avatarHtml = renderParticipantAvatar(p, p.displayName || p.name, colorFor(sourceIndex));
     row.innerHTML = `
       <td data-col="participant"><div class="td-name-cell">${avatarHtml}<div class="td-name-copy"><div class="td-name">${p.displayName || p.name}</div></div></div></td>
       <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
+      <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
       <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
+      <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
       <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     body.appendChild(row);
@@ -3783,7 +4618,9 @@ function renderParticipants(filter=''){
         detailRow.innerHTML = `
           <td data-col="participant"><div class="td-name-cell">${detailAvatarHtml}<div class="td-name-copy"><div class="td-name">${p.detailLabel || p.displayName || p.name}</div></div></div></td>
           <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${p.province || '-'}</span></td>
+          <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${p.city || '-'}</span></td>
           <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
+          <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${p.date}</td>
           <td data-col="message" class="message-cell"><button type="button" class="message-trigger${p.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(p.opinionMessage || '')}" data-author="${encodeURIComponent(p.displayName || p.name)}" data-city="${encodeURIComponent(participantLocation(p))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${p.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         body.appendChild(detailRow);
@@ -3818,7 +4655,7 @@ function renderParticipants(filter=''){
   });
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
   }
 
   updateStats();
@@ -3969,8 +4806,108 @@ document.getElementById('f-photo').addEventListener('change', (event) => {
   selectedPhotoFile = file || null;
   updatePhotoPreview(selectedPhotoFile);
 });
+document.getElementById('winnerClaimPhoto')?.addEventListener('change', (event) => {
+  const [file] = event.target.files || [];
+  selectedWinnerClaimPhoto = file || null;
+  updateWinnerClaimPhotoPreview(selectedWinnerClaimPhoto);
+});
 document.getElementById('opinionModalClose').onclick = () => document.getElementById('opinionModal').classList.remove('open');
 document.getElementById('opinionModal').onclick = e => { if (e.target === document.getElementById('opinionModal')) document.getElementById('opinionModal').classList.remove('open'); };
+document.getElementById('winnerModalClose')?.addEventListener('click', () => setWinnerModalOpen(false));
+document.getElementById('winnerModal')?.addEventListener('click', (event) => {
+  if (event.target === document.getElementById('winnerModal')) {
+    setWinnerModalOpen(false);
+  }
+});
+document.getElementById('openWinnerModalBtn')?.addEventListener('click', () => {
+  if (!officialDrawResult) {
+    showToast('Todavía no hay un ganador oficial guardado.');
+    return;
+  }
+  setWinnerModalOpen(true);
+});
+document.getElementById('winnerClaimScrollBtn')?.addEventListener('click', () => {
+  document.getElementById('winnerClaimCode')?.focus();
+});
+document.getElementById('winnerClaimCode')?.addEventListener('focus', (event) => {
+  event.target.select();
+});
+document.getElementById('winnerClaimCode')?.addEventListener('input', updateWinnerClaimGate);
+document.getElementById('winnerConfirmDeliveryBtn')?.addEventListener('click', confirmWinnerDelivery);
+
+async function submitWinnerClaim() {
+  if (!officialDrawResult) {
+    showToast('Todavía no hay un ganador oficial guardado.');
+    return;
+  }
+
+  const claimCode = (document.getElementById('winnerClaimCode')?.value || '').trim().toUpperCase();
+  const experience = (document.getElementById('winnerClaimExperience')?.value || '').trim();
+  const feeling = (document.getElementById('winnerClaimFeeling')?.value || '').trim();
+  const statusNode = document.getElementById('winnerModalClaimStatus');
+
+  if (claimCode !== WINNER_CLAIM_CODE) {
+    statusNode.textContent = 'El código ingresado no coincide con el código único enviado.';
+    return;
+  }
+  if (!experience || !feeling) {
+    statusNode.textContent = 'Completa el código, la experiencia y lo que sentiste al ganar.';
+    return;
+  }
+
+  try {
+    statusNode.textContent = 'Enviando reclamo del premio...';
+    const photoDataUrl = selectedWinnerClaimPhoto ? await fileToDataUrl(selectedWinnerClaimPhoto) : '';
+    let rpcData = null;
+    try {
+      const { data, error } = await supabaseClient.rpc('submit_winner_claim', {
+        p_campaign_slug: CAMPAIGN_SLUG,
+        p_claim_code: claimCode,
+        p_experience: experience,
+        p_feeling: feeling,
+        p_photo_data_url: photoDataUrl
+      });
+      if (error) throw error;
+      rpcData = data || null;
+    } catch (rpcError) {
+      console.warn('No se pudo enviar el reclamo a Supabase. Se guardará localmente.', rpcError);
+    }
+
+    officialDrawResult = rpcData || {
+      ...officialDrawResult,
+      claim_submitted_at: new Date().toISOString(),
+      claim_experience: experience,
+      claim_feeling: feeling,
+      claim_photo_data_url: photoDataUrl
+    };
+    persistOfficialDrawResult(officialDrawResult);
+    await loadDemoResults();
+    statusNode.textContent = 'Reclamo del premio enviado correctamente.';
+    showToast('Reclamo del premio enviado correctamente.');
+  } catch (error) {
+    console.error(error);
+    statusNode.textContent = 'No se pudo enviar el reclamo del premio.';
+    showToast('No se pudo enviar el reclamo del premio.');
+  }
+}
+
+async function confirmWinnerDelivery() {
+  if (!officialDrawResult || !isWinnerCodeValid()) {
+    showToast('Ingresa el código único correcto para confirmar el premio recibido.');
+    return;
+  }
+
+  officialDrawResult = {
+    ...officialDrawResult,
+    delivery_status: 'delivered',
+    delivery_status_label: 'Premio entregado',
+    delivery_confirmed_at: new Date().toISOString()
+  };
+  persistOfficialDrawResult(officialDrawResult);
+  await loadDemoResults();
+  document.getElementById('winnerModalClaimStatus').textContent = 'Premio entregado.';
+  showToast('Premio entregado confirmado.');
+}
 
 function openOpinionModal({ message, author, city }) {
   document.getElementById('opinionAuthor').textContent = author;
@@ -4141,8 +5078,15 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
+    const source = row.seed || row.source || '';
+    const originalSource = row.source || '';
+    const seed = row.seed || '';
     return {
       sourceIndex: index,
+      participantId: row.id || row.participant_id || '',
+      source,
+      seed,
+      originalSource,
       name: fullName,
       displayName,
     detailLabel: row.is_anonymous ? (row.display_name || 'AnÃ³nimo') : row.full_name,
@@ -4155,6 +5099,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
+      searchIndex: [row.id || '', row.participant_id || '', displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
@@ -4182,7 +5127,7 @@ function renderParticipants(filter=''){
     : participants;
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
     updateStats();
     return;
   }
@@ -4194,14 +5139,16 @@ function renderParticipants(filter=''){
     const detailId = `${participant.publicCode || participant.name}-${sourceIndex}-${participant.date}`;
     const avatarHtml = renderParticipantAvatar(participant, participant.displayName || participant.name, colorFor(sourceIndex));
 
-    const row = document.createElement('tr');
-    row.className = 'participant-main-row';
+      const row = document.createElement('tr');
+      row.className = `participant-main-row${matchesLockedWinnerParticipant(participant) ? '' : ' demo-blurred'}`;
     row.dataset.detailId = detailId;
     row.dataset.participantIndex = String(sourceIndex);
     row.innerHTML = `
       <td data-col="participant"><div class="participant-cell">${avatarHtml}<span class="participant-label">${escapeHtml(participant.displayName || participant.name)}</span></div></td>
       <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.province || '-')}</span></td>
+      <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
       <td data-col="entries"><span class="chances-badge">x${purchasedChances.toLocaleString('es-AR')}</span></td>
+      <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
       <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
     `;
     fragment.appendChild(row);
@@ -4213,7 +5160,9 @@ function renderParticipants(filter=''){
         detailRow.innerHTML = `
           <td data-col="participant"><div class="participant-cell">${avatarHtml}<span class="participant-label">${escapeHtml(participant.detailLabel || participant.displayName || participant.name)}</span></div></td>
           <td data-col="province"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.province || '-')}</span></td>
+          <td data-col="city"><span style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.city || '-')}</span></td>
           <td data-col="entries"><span class="chances-badge">x${chanceNumber}</span></td>
+          <td data-col="date" style="font-size:0.8rem;color:var(--text2)">${escapeHtml(participant.date)}</td>
           <td data-col="message" class="message-cell"><button type="button" class="message-trigger${participant.opinionMessage ? '' : ' empty'}" data-opinion="${encodeURIComponent(participant.opinionMessage || '')}" data-author="${encodeURIComponent(participant.displayName || participant.name)}" data-city="${encodeURIComponent(participantLocation(participant))}"><span class="message-trigger-icon">ðŸ’¬</span><span>${participant.opinionMessage ? 'Ver mensaje' : 'Sin mensaje'}</span></button></td>
         `;
         fragment.appendChild(detailRow);
@@ -4264,8 +5213,15 @@ async function loadParticipants(){
     const fullName = row.full_name || displayName;
     const province = location.province;
     const city = location.city;
+    const source = row.seed || row.source || '';
+    const originalSource = row.source || '';
+    const seed = row.seed || '';
     return {
       sourceIndex: index,
+      participantId: row.id || row.participant_id || '',
+      source,
+      seed,
+      originalSource,
       name: fullName,
       displayName,
       detailLabel: row.is_anonymous ? (displayName || 'AnÃƒÂ³nimo') : fullName,
@@ -4278,7 +5234,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
-      searchIndex: [displayName, fullName, province, city, row.public_code || ''].join(' ').toLowerCase(),
+      searchIndex: [row.id || '', row.participant_id || '', displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
@@ -4369,10 +5325,14 @@ document.getElementById('copyCourseCodeBtn').onclick = copyCourseCode;
 document.getElementById('openCourseBtn').onclick = openBonusCourse;
 document.getElementById('copyShareBtn').onclick = copyShareLink;
 document.getElementById('shareWhatsappBtn').onclick = shareWhatsappLink;
+document.getElementById('trySelectionSystemBtn').onclick = launchSelectionDemo;
 document.getElementById('toggleDemoBtn').onclick = toggleDemoShowcase;
 document.getElementById('drawStartBtn').onclick = startDemoTrial;
+document.getElementById('recordDemoBtn').onclick = recordDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
+document.getElementById('viewDemoVideoBtn').onclick = toggleDemoVideoPanel;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
+document.getElementById('winnerClaimSubmitBtn').onclick = submitWinnerClaim;
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
@@ -4405,6 +5365,9 @@ async function bootLanding(){
     await loadPackages();
     await loadParticipants();
     await loadDemoResults();
+    if (officialDrawResult) {
+      setWinnerModalOpen(true);
+    }
     renderPackages();
     renderParticipants();
     repairDocumentText();
