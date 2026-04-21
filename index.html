@@ -2103,6 +2103,90 @@
     margin-top: 1rem;
     white-space: pre-wrap;
   }
+  .winner-result-card {
+    display: none;
+    margin: 1.4rem 0 1.8rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, rgba(245,200,66,0.12), rgba(24,24,34,0.96));
+    border: 1px solid rgba(245,200,66,0.28);
+    box-shadow: 0 20px 44px rgba(0,0,0,0.26);
+  }
+  .winner-result-card.show {
+    display: grid;
+    gap: 1rem;
+  }
+  .winner-result-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .winner-result-kicker {
+    color: var(--gold);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .winner-result-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 0.92;
+    color: var(--text);
+  }
+  .winner-result-copy,
+  .winner-result-meta,
+  .winner-claim-status {
+    color: var(--text2);
+    line-height: 1.6;
+    font-size: 0.92rem;
+  }
+  .winner-result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .winner-result-video {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #050507;
+    min-height: 240px;
+  }
+  .winner-claim-note {
+    margin-top: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text2);
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+  .winner-modal {
+    max-width: 640px;
+  }
+  .winner-modal .modal-title {
+    padding-right: 2rem;
+  }
+  .winner-modal-grid {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .winner-modal-video {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #050507;
+    min-height: 220px;
+  }
+  .winner-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
 
   /* ---- TOAST ---- */
   .toast {
@@ -2295,7 +2379,23 @@
     .share-link-btn { width: 100%; }
   }
 </style>
-
+  <!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '675114246370648');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=675114246370648&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -2507,12 +2607,12 @@
     <p class="section-sub" style="margin-top:0.9rem; max-width:760px">Cuando una compra se acredita, queda asociada al participante y pasa a formar parte del registro visible del sorteo. Eso ayuda a dar seguimiento real y a reforzar la confianza de quien participa.</p>
     <div class="demo-launcher reveal">
       <div class="demo-launcher-copy">
-        <div class="demo-launcher-title">Demostracion en tiempo real</div>
-        <div class="demo-launcher-sub">Este bloque permite probar en vivo el funcionamiento del software para reforzar transparencia, confianza y claridad del proceso. Es una demostracion del sistema inteligente y sus resultados no son oficiales ni reemplazan el sorteo real.</div>
+        <div class="demo-launcher-title">Sorteo oficial en tiempo real</div>
+        <div class="demo-launcher-sub">Este bloque permite ejecutar el sorteo oficial en vivo, grabarlo y dejar publicado el video junto con el ganador para que el resultado quede fijo en la landing.</div>
       </div>
       <div class="demo-launcher-actions">
-        <button class="draw-control-btn primary" type="button" id="trySelectionSystemBtn">Probar sistema de seleccion</button>
-        <button class="draw-control-btn" type="button" id="toggleDemoBtn">Ver demostracion</button>
+        <button class="draw-control-btn primary" type="button" id="trySelectionSystemBtn">Iniciar sorteo oficial</button>
+        <button class="draw-control-btn" type="button" id="toggleDemoBtn">Mostrar sorteo oficial</button>
       </div>
     </div>
 
@@ -2520,17 +2620,17 @@
       <div class="draw-showcase-panel">
         <div class="draw-showcase-copy">
           <div class="draw-showcase-topline">
-            <span class="draw-showcase-kicker">Demostracion de transparencia</span>
-            <span class="draw-demo-badge">Demostracion</span>
+            <span class="draw-showcase-kicker">Sorteo oficial grabado</span>
+            <span class="draw-demo-badge">Oficial</span>
           </div>
           <h3 class="draw-showcase-title">Recorrido visual del <span>software de seleccion</span></h3>
-          <p class="draw-showcase-sub">Inicia la demostracion para ver un recorrido mas dinamico por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, y en esta prueba cierra siempre sobre el participante configurado <strong>demo_seed_g</strong>. Este modulo existe solo para explicar el funcionamiento y no define resultados oficiales.</p>
+          <p class="draw-showcase-sub">Inicia el sorteo oficial para ver el recorrido por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, luego fija al ganador real y permite guardar el resultado con su video.</p>
           <div class="draw-controls">
             <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
-            <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar demo</button>
-            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Registrar resultado</button>
+            <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar sorteo</button>
+            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar ganador oficial</button>
             <button class="draw-control-btn" type="button" id="viewDemoVideoBtn">Ver ultimo video</button>
-            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Participantes demostracion</button>
+            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Ganadores guardados</button>
           </div>
         </div>
         <div class="draw-showcase-stage">
@@ -2555,7 +2655,7 @@
               <span class="draw-live-badge" id="drawLiveBadge">120 en vivo</span>
             </div>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
-            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, la demo mostrara una pasada completa por cada chance antes del cierre.</span>
+            <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sorteo mostrara una pasada completa por cada chance antes del cierre.</span>
             <span class="draw-recording-state" id="drawRecordingState">Listo para grabar en esta pestaña</span>
             <div class="draw-intel-bar">
               <div class="draw-intel-fill" id="drawIntelFill"></div>
@@ -2570,11 +2670,11 @@
       <div class="demo-video-panel" id="demoVideoPanel">
         <div class="demo-video-head">
           <div>
-            <div class="demo-video-title">Grabacion de la demostracion</div>
-            <div class="demo-video-sub">Despues de grabar la demo podras verla otra vez o descargar el video.</div>
+            <div class="demo-video-title">Grabacion del sorteo oficial</div>
+            <div class="demo-video-sub">Despues de grabar el sorteo podras verlo otra vez o descargar el video.</div>
           </div>
           <div class="demo-video-actions">
-            <a class="draw-control-btn" id="demoVideoDownloadBtn" href="#" download="demo-recorrido.webm">Descargar video</a>
+            <a class="draw-control-btn" id="demoVideoDownloadBtn" href="#" download="sorteo-oficial.webm">Descargar video</a>
           </div>
         </div>
         <video class="demo-video-player" id="demoVideoPreview" controls playsinline preload="metadata"></video>
@@ -2582,14 +2682,31 @@
       <div class="demo-history" id="demoHistoryPanel">
         <div class="demo-history-head">
           <div>
-            <div class="demo-history-title">Participantes demostracion</div>
-            <div class="demo-history-sub">Historial de participantes asentados manualmente desde esta demostracion.</div>
+            <div class="demo-history-title">Ganadores guardados</div>
+            <div class="demo-history-sub">Historial del resultado oficial almacenado para esta campaña.</div>
           </div>
         </div>
         <div class="demo-history-grid" id="demoHistoryGrid">
-          <div class="demo-history-empty">Todavia no hay resultados de demostracion guardados.</div>
+          <div class="demo-history-empty">Todavia no hay resultados oficiales guardados.</div>
         </div>
       </div>
+    </div>
+
+    <div class="winner-result-card reveal" id="winnerResultCard">
+      <div class="winner-result-head">
+        <div>
+          <div class="winner-result-kicker">Ganador oficial confirmado</div>
+          <div class="winner-result-name" id="winnerResultName">Esperando ganador oficial</div>
+          <div class="winner-result-copy" id="winnerResultCopy">Cuando se guarde el resultado, el ganador y el video quedarán fijos en esta sección.</div>
+        </div>
+        <div class="winner-result-actions">
+          <button class="draw-control-btn accent" type="button" id="openWinnerModalBtn">Reclamar premio</button>
+        </div>
+      </div>
+      <div class="winner-result-meta" id="winnerResultMeta"></div>
+      <video class="winner-result-video" id="winnerResultVideo" controls playsinline preload="metadata"></video>
+      <div class="winner-claim-status" id="winnerClaimStatus"></div>
+      <div class="winner-claim-note">Ganador del premio: te enviaremos un código único para reclamar el premio. Podrás reclamarlo dentro de los 7 días hábiles desde la confirmación oficial.</div>
     </div>
 
     <div class="participants-table-wrap reveal">
@@ -2994,12 +3111,56 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="winnerModal">
+  <div class="modal winner-modal">
+    <button class="modal-close" id="winnerModalClose">✕</button>
+    <div class="modal-title">Ganador del premio</div>
+    <p class="modal-sub" id="winnerModalSub">Te enviaremos un código único para reclamar el premio. El reclamo debe completarse dentro de los 7 días hábiles.</p>
+    <div class="modal-assurance">
+      <strong id="winnerModalName">Esperando ganador oficial</strong>
+      <span id="winnerModalMeta">Cuando el sorteo se guarde, este modal quedará fijo con el ganador y el reclamo del premio.</span>
+    </div>
+    <div class="winner-modal-grid">
+      <video class="winner-modal-video" id="winnerModalVideo" controls playsinline preload="metadata"></video>
+      <div class="winner-modal-actions">
+        <button class="draw-control-btn accent" type="button" id="winnerClaimScrollBtn">Reclamar premio</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Código único *</label>
+        <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
+        <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tu experiencia con el sorteo *</label>
+        <textarea class="form-input form-textarea" id="winnerClaimExperience" placeholder="Contanos cómo fue tu experiencia participando en el sorteo."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Qué sentiste al enterarte que habías ganado *</label>
+        <textarea class="form-input form-textarea" id="winnerClaimFeeling" placeholder="Contanos qué sentiste al enterarte del resultado."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subir foto del ganador *</label>
+        <div class="file-upload">
+          <input class="file-upload-input" type="file" id="winnerClaimPhoto" accept="image/*">
+          <div class="file-upload-help">La foto quedará asociada al reclamo oficial del premio.</div>
+          <div class="photo-preview" id="winnerClaimPhotoPreview">
+            <img id="winnerClaimPhotoPreviewImage" alt="Vista previa del reclamo del premio">
+            <div class="photo-preview-copy" id="winnerClaimPhotoPreviewCopy">Foto lista para adjuntarse al reclamo del premio.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-confirm" id="winnerClaimSubmitBtn">ENVIAR RECLAMO DEL PREMIO</button>
+      <div class="winner-claim-status" id="winnerModalClaimStatus"></div>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">âœ… Â¡Ya sos parte del sorteo! Te contactaremos por WhatsApp.</div>
 <div class="live-feed" id="liveFeed">
   <div class="live-feed-card">
     <div class="live-feed-kicker">Actividad en vivo</div>
-    <div class="live-feed-text" id="liveFeedText">Se actualiza con ingresos reales y demo.</div>
+    <div class="live-feed-text" id="liveFeedText">Se actualiza con ingresos reales y actividad oficial.</div>
     <div class="live-feed-sub" id="liveFeedSub">Ahora mismo</div>
   </div>
 </div>
@@ -3023,14 +3184,17 @@ const DEFAULT_SHARE_DESCRIPTION = 'Participa de este sorteo por un Fiat Uno 2014
 const COURSE_PAGE_PATH = './curso-guia-auto-argentina.html';
 const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
-const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
+const DEMO_TARGET_PARTICIPANT = '';
+const WINNER_CLAIM_CODE = 'FIAT201420261';
 
 let activeCampaign = null;
 let packages = [];
 let participants = [];
 let demoResults = [];
+let officialDrawResult = null;
 let selectedPkg = null;
 let selectedPhotoFile = null;
+let selectedWinnerClaimPhoto = null;
 let selectedPaymentProvider = 'galiopay';
 let countdownInterval = null;
 let liveFeedTimeout = null;
@@ -3154,6 +3318,19 @@ function showToast(msg){
   setTimeout(() => t.classList.remove('show'), 4500);
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve('');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '');
+    reader.onerror = () => reject(reader.error || new Error('No se pudo leer el archivo.'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function cleanMojibakeText(value) {
   if (value == null) return value;
   let text = String(value);
@@ -3213,6 +3390,23 @@ function updatePhotoPreview(file) {
   const objectUrl = URL.createObjectURL(file);
   image.src = objectUrl;
   copy.textContent = `${file.name} listo para acompaÃ±ar tu participacion.`;
+  preview.classList.add('show');
+}
+
+function updateWinnerClaimPhotoPreview(file) {
+  const preview = document.getElementById('winnerClaimPhotoPreview');
+  const image = document.getElementById('winnerClaimPhotoPreviewImage');
+  const copy = document.getElementById('winnerClaimPhotoPreviewCopy');
+  if (!preview || !image || !copy) return;
+  if (!file) {
+    preview.classList.remove('show');
+    image.removeAttribute('src');
+    copy.textContent = 'Foto lista para adjuntarse al reclamo del premio.';
+    return;
+  }
+  const objectUrl = URL.createObjectURL(file);
+  image.src = objectUrl;
+  copy.textContent = `${file.name} listo para adjuntarse al reclamo del premio.`;
   preview.classList.add('show');
 }
 
@@ -3781,6 +3975,18 @@ function getActiveDemoParticipant() {
   return ensureDrawShowcaseController()?.getActiveParticipant() || null;
 }
 
+function getDrawRecordingBlob() {
+  return ensureDrawShowcaseController()?.getRecordingBlob?.() || null;
+}
+
+function getDrawRecordingUrl() {
+  return ensureDrawShowcaseController()?.getRecordingUrl?.() || '';
+}
+
+function getDrawRecordingMimeType() {
+  return ensureDrawShowcaseController()?.getRecordingMimeType?.() || 'video/webm';
+}
+
 function renderDemoHistory() {
   ensureDrawShowcaseController()?.renderHistory(demoResults);
 }
@@ -3800,7 +4006,7 @@ function launchSelectionDemo() {
     ensureDrawShowcaseController()?.toggleShowcase();
   }
   if (toggleBtn) {
-    toggleBtn.textContent = 'Ocultar demostracion';
+    toggleBtn.textContent = 'Ocultar sorteo oficial';
   }
   showcase?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   window.setTimeout(() => {
@@ -3836,47 +4042,128 @@ function renderDrawShowcaseEmpty() {
   ensureDrawShowcaseController()?.renderEmpty();
 }
 
+function setWinnerModalOpen(isOpen) {
+  document.getElementById('winnerModal')?.classList.toggle('open', isOpen);
+  document.body.classList.toggle('modal-open', isOpen);
+}
+
+function formatDateTime(value) {
+  if (!value) return '';
+  return new Date(value).toLocaleString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function renderOfficialDrawResult() {
+  const card = document.getElementById('winnerResultCard');
+  const openBtn = document.getElementById('openWinnerModalBtn');
+  const cardVideo = document.getElementById('winnerResultVideo');
+  const modalVideo = document.getElementById('winnerModalVideo');
+  const result = officialDrawResult;
+
+  if (!result) {
+    card?.classList.remove('show');
+    if (cardVideo) cardVideo.removeAttribute('src');
+    if (modalVideo) modalVideo.removeAttribute('src');
+    return;
+  }
+
+  const winnerName = result.display_name || result.full_name || 'Ganador confirmado';
+  const publicCode = result.participant_public_code || 'Sin código público';
+  const savedAt = formatDateTime(result.saved_at);
+  const claimSubmitted = Boolean(result.claim_submitted_at);
+  const claimMessage = claimSubmitted
+    ? `Reclamo enviado el ${formatDateTime(result.claim_submitted_at)}.`
+    : 'Pendiente de reclamo del premio.';
+  const videoSource = result.video_data_url || getDrawRecordingUrl();
+
+  document.getElementById('winnerResultName').textContent = winnerName;
+  document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
+  document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 190)} en vivo`;
+  document.getElementById('winnerClaimStatus').textContent = claimMessage;
+  document.getElementById('winnerModalName').textContent = winnerName;
+  document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
+  document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
+
+  if (videoSource) {
+    if (cardVideo) {
+      cardVideo.src = videoSource;
+      cardVideo.load();
+    }
+    if (modalVideo) {
+      modalVideo.src = videoSource;
+      modalVideo.load();
+    }
+  }
+
+  card?.classList.add('show');
+  openBtn && (openBtn.disabled = false);
+}
+
 async function loadDemoResults() {
   try {
-    const { data, error } = await supabaseClient.rpc('list_demo_draw_results', {
+    const { data, error } = await supabaseClient.rpc('get_official_draw_result', {
       p_campaign_slug: CAMPAIGN_SLUG
     });
     if (error) throw error;
-    demoResults = (data || []).map((row) => ({
-      ...row,
-      recorded_at_label: row.recorded_at
-        ? new Date(row.recorded_at).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-        : ''
-    }));
+    officialDrawResult = data || null;
+    demoResults = officialDrawResult ? [{
+      ...officialDrawResult,
+      city: officialDrawResult.city || '',
+      province: officialDrawResult.province || '',
+      chances: officialDrawResult.chances || 0,
+      public_code: officialDrawResult.participant_public_code || '',
+      display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+      full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+      recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+    }] : [];
   } catch (error) {
-    console.warn('No se pudo cargar el historial demo.', error);
+    console.warn('No se pudo cargar el resultado oficial.', error);
+    officialDrawResult = null;
     demoResults = [];
   }
   renderDemoHistory();
+  renderOfficialDrawResult();
 }
 
 async function saveCurrentDemoResult() {
   const participant = getActiveDemoParticipant();
   if (!participant) {
-    showToast('Todavia no hay un participante seleccionado donde freno la prueba.');
+    showToast('Todavía no hay un participante ganador seleccionado.');
+    return;
+  }
+  const recordingBlob = getDrawRecordingBlob();
+  if (!recordingBlob) {
+    showToast('Primero graba el sorteo para poder guardar el video en la base de datos.');
     return;
   }
   try {
-    const { error } = await supabaseClient.rpc('record_demo_draw_result', {
+    const videoDataUrl = await fileToDataUrl(recordingBlob);
+    const { data, error } = await supabaseClient.rpc('save_official_draw_result', {
       p_campaign_slug: CAMPAIGN_SLUG,
       p_participant_public_code: participant.publicCode || '',
       p_display_name: participant.displayName || participant.name,
-      p_full_name: participant.name || participant.displayName || ''
+      p_full_name: participant.name || participant.displayName || '',
+      p_video_data_url: videoDataUrl,
+      p_video_mime_type: getDrawRecordingMimeType(),
+      p_live_count: 190
     });
     if (error) throw error;
+    officialDrawResult = data || officialDrawResult;
     await loadDemoResults();
     if (!drawShowcaseState.historyOpen) {
       toggleDemoHistory();
     }
-    showToast(`Resultado registrado donde freno: ${participant.displayName || participant.name}.`);
+    renderOfficialDrawResult();
+    setWinnerModalOpen(true);
+    showToast(`Ganador oficial guardado: ${participant.displayName || participant.name}.`);
   } catch (error) {
     console.error(error);
-    showToast('No se pudo registrar donde freno la prueba. Revisa la migracion SQL.');
+    showToast('No se pudo guardar el ganador oficial. Revisa la migración SQL.');
   }
 }
 
@@ -4231,8 +4518,71 @@ document.getElementById('f-photo').addEventListener('change', (event) => {
   selectedPhotoFile = file || null;
   updatePhotoPreview(selectedPhotoFile);
 });
+document.getElementById('winnerClaimPhoto')?.addEventListener('change', (event) => {
+  const [file] = event.target.files || [];
+  selectedWinnerClaimPhoto = file || null;
+  updateWinnerClaimPhotoPreview(selectedWinnerClaimPhoto);
+});
 document.getElementById('opinionModalClose').onclick = () => document.getElementById('opinionModal').classList.remove('open');
 document.getElementById('opinionModal').onclick = e => { if (e.target === document.getElementById('opinionModal')) document.getElementById('opinionModal').classList.remove('open'); };
+document.getElementById('winnerModalClose')?.addEventListener('click', () => setWinnerModalOpen(false));
+document.getElementById('winnerModal')?.addEventListener('click', (event) => {
+  if (event.target === document.getElementById('winnerModal')) {
+    setWinnerModalOpen(false);
+  }
+});
+document.getElementById('openWinnerModalBtn')?.addEventListener('click', () => {
+  if (!officialDrawResult) {
+    showToast('Todavía no hay un ganador oficial guardado.');
+    return;
+  }
+  setWinnerModalOpen(true);
+});
+document.getElementById('winnerClaimScrollBtn')?.addEventListener('click', () => {
+  document.getElementById('winnerClaimCode')?.focus();
+});
+
+async function submitWinnerClaim() {
+  if (!officialDrawResult) {
+    showToast('Todavía no hay un ganador oficial guardado.');
+    return;
+  }
+
+  const claimCode = (document.getElementById('winnerClaimCode')?.value || '').trim().toUpperCase();
+  const experience = (document.getElementById('winnerClaimExperience')?.value || '').trim();
+  const feeling = (document.getElementById('winnerClaimFeeling')?.value || '').trim();
+  const statusNode = document.getElementById('winnerModalClaimStatus');
+
+  if (claimCode !== WINNER_CLAIM_CODE) {
+    statusNode.textContent = 'El código ingresado no coincide con el código único enviado.';
+    return;
+  }
+  if (!experience || !feeling || !selectedWinnerClaimPhoto) {
+    statusNode.textContent = 'Completa el código, la experiencia, lo que sentiste y la foto del ganador.';
+    return;
+  }
+
+  try {
+    statusNode.textContent = 'Enviando reclamo del premio...';
+    const photoDataUrl = await fileToDataUrl(selectedWinnerClaimPhoto);
+    const { data, error } = await supabaseClient.rpc('submit_winner_claim', {
+      p_campaign_slug: CAMPAIGN_SLUG,
+      p_claim_code: claimCode,
+      p_experience: experience,
+      p_feeling: feeling,
+      p_photo_data_url: photoDataUrl
+    });
+    if (error) throw error;
+    officialDrawResult = data || officialDrawResult;
+    await loadDemoResults();
+    statusNode.textContent = 'Reclamo del premio enviado correctamente.';
+    showToast('Reclamo del premio enviado correctamente.');
+  } catch (error) {
+    console.error(error);
+    statusNode.textContent = 'No se pudo enviar el reclamo del premio.';
+    showToast('No se pudo enviar el reclamo del premio.');
+  }
+}
 
 function openOpinionModal({ message, author, city }) {
   document.getElementById('opinionAuthor').textContent = author;
@@ -4646,6 +4996,7 @@ document.getElementById('recordDemoBtn').onclick = recordDemoTrial;
 document.getElementById('saveDemoResultBtn').onclick = saveCurrentDemoResult;
 document.getElementById('viewDemoVideoBtn').onclick = toggleDemoVideoPanel;
 document.getElementById('toggleDemoHistoryBtn').onclick = toggleDemoHistory;
+document.getElementById('winnerClaimSubmitBtn').onclick = submitWinnerClaim;
 
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.onclick = () => {
@@ -4678,6 +5029,9 @@ async function bootLanding(){
     await loadPackages();
     await loadParticipants();
     await loadDemoResults();
+    if (officialDrawResult) {
+      setWinnerModalOpen(true);
+    }
     renderPackages();
     renderParticipants();
     repairDocumentText();
