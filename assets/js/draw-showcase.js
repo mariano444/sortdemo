@@ -44,6 +44,8 @@
       return participants.findIndex((participant) => {
         const haystack = [
           participant?.source,
+          participant?.seed,
+          participant?.originalSource,
           participant?.publicCode,
           participant?.displayName,
           participant?.name,
