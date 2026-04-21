@@ -677,7 +677,7 @@
       }, delay);
     }
 
-    function startTrial() {
+    function beginTrialPlayback() {
       if (!getParticipants().length) {
         renderEmpty();
         return;
@@ -699,14 +699,27 @@
       tick();
     }
 
+    async function startTrial() {
+      if (!getParticipants().length) {
+        renderEmpty();
+        return;
+      }
+      if (!mediaRecorder || mediaRecorder.state !== 'recording') {
+        await startRecording();
+      }
+      beginTrialPlayback();
+    }
+
     async function recordTrial() {
       if (!getParticipants().length) {
         renderEmpty();
         return;
       }
-      const started = await startRecording();
-      if (!started) return;
-      startTrial();
+      if (!mediaRecorder || mediaRecorder.state !== 'recording') {
+        const started = await startRecording();
+        if (!started) return;
+      }
+      beginTrialPlayback();
     }
 
     function reset() {
