@@ -2191,6 +2191,10 @@
     display: none;
     gap: 0.9rem;
   }
+  .winner-claim-public {
+    display: grid;
+    gap: 0.9rem;
+  }
   .winner-claim-gated.show {
     display: grid;
   }
@@ -3205,10 +3209,13 @@
       <div class="winner-modal-actions">
         <button class="draw-control-btn accent" type="button" id="winnerClaimScrollBtn">Reclamar premio</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Código único *</label>
-        <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
-        <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
+      <div class="winner-claim-status" id="winnerDeliveryStatus">En proceso de entrega.</div>
+      <div class="winner-claim-public" id="winnerClaimPublic">
+        <div class="form-group">
+          <label class="form-label">Código único *</label>
+          <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
+          <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
+        </div>
       </div>
       <div class="winner-claim-gated" id="winnerClaimGated">
         <div class="form-group">
@@ -3529,9 +3536,11 @@ function updateWinnerClaimGate() {
   const claimCodeInput = document.getElementById('winnerClaimCode');
   const gated = document.getElementById('winnerClaimGated');
   const statusNode = document.getElementById('winnerModalClaimStatus');
+  const publicBlock = document.getElementById('winnerClaimPublic');
   const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
   const isValid = normalizedCode === WINNER_CLAIM_CODE;
   gated?.classList.toggle('show', isValid);
+  publicBlock?.classList.toggle('show-validated', isValid);
 
   if (!normalizedCode) {
     if (statusNode && !officialDrawResult?.claim_submitted_at) {
@@ -4244,9 +4253,11 @@ function renderOfficialDrawResult() {
   const feelingInput = document.getElementById('winnerClaimFeeling');
   const submitBtn = document.getElementById('winnerClaimSubmitBtn');
   const gated = document.getElementById('winnerClaimGated');
+  const publicBlock = document.getElementById('winnerClaimPublic');
   const summary = document.getElementById('winnerClaimSummary');
   const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
+  const deliveryStatus = document.getElementById('winnerDeliveryStatus');
 
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
@@ -4255,6 +4266,9 @@ function renderOfficialDrawResult() {
   document.getElementById('winnerModalName').textContent = winnerName;
   document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
   document.getElementById('winnerModalClaimStatus').textContent = claimMessage;
+  if (deliveryStatus) {
+    deliveryStatus.textContent = claimSubmitted ? 'Entregado.' : 'En proceso de entrega.';
+  }
   if (claimCodeInput && !claimSubmitted) {
     claimCodeInput.value = '';
   }
@@ -4277,6 +4291,7 @@ function renderOfficialDrawResult() {
     submitBtn.disabled = claimSubmitted;
     submitBtn.style.opacity = claimSubmitted ? '0.55' : '1';
   }
+  publicBlock?.classList.toggle('show', !claimSubmitted);
   gated?.classList.toggle('show', claimSubmitted);
   summary?.classList.toggle('show', claimSubmitted);
   if (summaryExperience) {
