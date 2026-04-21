@@ -1386,7 +1386,7 @@
   .search-input:focus { border-color: var(--gold); }
   .search-input::placeholder { color: var(--text2); }
 
-  table { width: 100%; min-width: 980px; border-collapse: collapse; table-layout: auto; }
+  table { width: 100%; min-width: 100%; border-collapse: collapse; table-layout: auto; }
   th {
     background: var(--dark3);
     font-size: 0.7rem; font-weight: 700;
@@ -2504,12 +2504,10 @@
       <div style="overflow-x:auto" id="participantsTableScroller">
         <table>
           <colgroup>
-            <col style="width:34%">
-            <col style="width:15%">
-            <col style="width:15%">
-            <col style="width:12%">
-            <col style="width:12%">
-            <col style="width:12%">
+            <col style="width:40%">
+            <col style="width:20%">
+            <col style="width:16%">
+            <col style="width:24%">
           </colgroup>
           <thead>
             <tr>
@@ -3820,7 +3818,7 @@ function renderParticipants(filter=''){
   });
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
   }
 
   updateStats();
@@ -4184,7 +4182,7 @@ function renderParticipants(filter=''){
     : participants;
 
   if (!filtered.length) {
-    body.innerHTML = '<tr><td colspan="6" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
+    body.innerHTML = '<tr><td colspan="4" style="padding:1rem;color:var(--text2)">Todavia no hay compras aprobadas para mostrar.</td></tr>';
     updateStats();
     return;
   }
