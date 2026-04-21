@@ -12,6 +12,15 @@
     const targetCriteria = Array.isArray(config.targetCriteria)
       ? config.targetCriteria.map((item) => String(item || '').trim().toLowerCase()).filter(Boolean)
       : [];
+    const targetParticipant = config.targetParticipant || null;
+
+    function normalizeText(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+        .toLowerCase();
+    }
 
     const MAX_DEMO_DURATION_MS = 118000;
     const MIN_DEMO_DURATION_MS = 12000;
@@ -45,6 +54,25 @@
     function getTargetIndex(participants) {
       if (!targetToken && !targetCriteria.length) return -1;
       return participants.findIndex((participant) => {
+        if (targetParticipant) {
+          const participantId = normalizeText(participant?.participantId);
+          const participantSeed = normalizeText(participant?.seed || participant?.source || participant?.originalSource);
+          const participantName = normalizeText(participant?.name || participant?.displayName);
+          const exactIdMatch = targetParticipant.id && participantId === normalizeText(targetParticipant.id);
+          const exactSeedMatch = targetParticipant.seed && participantSeed === normalizeText(targetParticipant.seed);
+          const exactNameMatch = targetParticipant.name && participantName === normalizeText(targetParticipant.name);
+
+          if (exactIdMatch) {
+            if (targetParticipant.seed && !exactSeedMatch) return false;
+            if (targetParticipant.name && !exactNameMatch) return false;
+            return true;
+          }
+
+          if (targetParticipant.seed && targetParticipant.name) {
+            return exactSeedMatch && exactNameMatch;
+          }
+        }
+
         const haystack = [
           participant?.participantId,
           participant?.source,
