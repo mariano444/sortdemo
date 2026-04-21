@@ -2168,6 +2168,9 @@
   .winner-modal {
     max-width: 640px;
   }
+  .winner-modal.fixed .modal-close {
+    display: none;
+  }
   .winner-modal .modal-title {
     padding-right: 2rem;
   }
@@ -2181,6 +2184,45 @@
     border: 1px solid rgba(255,255,255,0.08);
     background: #050507;
     min-height: 220px;
+  }
+  body.has-official-winner .demo-launcher,
+  body.has-official-winner .demo-history-card,
+  body.has-official-winner .draw-rail-card:not(.spotlight),
+  body.has-official-winner .participant-main-row.demo-blurred td,
+  body.has-official-winner .participant-main-row.demo-blurred + .participant-detail-row td {
+    filter: blur(3px);
+    opacity: 0.42;
+  }
+  body.has-official-winner .draw-featured-card:not(.spotlight) {
+    filter: blur(3px);
+    opacity: 0.45;
+  }
+  body.has-official-winner .participant-main-row.demo-blurred {
+    position: relative;
+  }
+  body.has-official-winner .participant-main-row.demo-blurred::after,
+  body.has-official-winner .draw-rail-card:not(.spotlight)::after,
+  body.has-official-winner .demo-history-card::after {
+    content: 'DEMO';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+  body.has-official-winner .draw-rail-card:not(.spotlight),
+  body.has-official-winner .demo-history-card {
+    position: relative;
+  }
+  body.has-official-winner #winnerModal {
+    opacity: 1;
+    pointer-events: all;
   }
   .winner-modal-actions {
     display: flex;
@@ -3186,6 +3228,11 @@ const COURSE_MIN_ENTRIES = 3;
 const DRAW_TARGET_ISO = '2026-05-01T20:00:00-03:00';
 const DEMO_TARGET_PARTICIPANT = 'demo_seed_g';
 const DEMO_TARGET_CRITERIA = ['Miguel Manzanelli', 'demo_seed_g', 'a4268511-339f-42e4-8740-e5eb16bb0253'];
+const LOCKED_WINNER = {
+  id: 'a4268511-339f-42e4-8740-e5eb16bb0253',
+  seed: 'demo_seed_g',
+  name: 'Miguel Manzanelli'
+};
 const WINNER_CLAIM_CODE = 'FIAT201420261';
 
 let activeCampaign = null;
@@ -3958,6 +4005,7 @@ function ensureDrawShowcaseController() {
     state: drawShowcaseState,
     targetToken: DEMO_TARGET_PARTICIPANT,
     targetCriteria: DEMO_TARGET_CRITERIA,
+    targetParticipant: LOCKED_WINNER,
     getParticipants: () => participants,
     getParticipantChances,
     colorFor,
@@ -4045,6 +4093,9 @@ function renderDrawShowcaseEmpty() {
 }
 
 function setWinnerModalOpen(isOpen) {
+  if (!isOpen && officialDrawResult) {
+    isOpen = true;
+  }
   document.getElementById('winnerModal')?.classList.toggle('open', isOpen);
   document.body.classList.toggle('modal-open', isOpen);
 }
@@ -4060,12 +4111,29 @@ function formatDateTime(value) {
   });
 }
 
+function matchesLockedWinnerParticipant(participant) {
+  if (!participant) return false;
+  const normalize = (value) => String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+  const participantId = normalize(participant.participantId);
+  const participantSeed = normalize(participant.seed || participant.source || participant.originalSource);
+  const participantName = normalize(participant.name || participant.displayName);
+  return participantId === normalize(LOCKED_WINNER.id)
+    && participantSeed === normalize(LOCKED_WINNER.seed)
+    && participantName === normalize(LOCKED_WINNER.name);
+}
+
 function renderOfficialDrawResult() {
   const card = document.getElementById('winnerResultCard');
   const openBtn = document.getElementById('openWinnerModalBtn');
   const cardVideo = document.getElementById('winnerResultVideo');
   const modalVideo = document.getElementById('winnerModalVideo');
   const result = officialDrawResult;
+  document.body.classList.toggle('has-official-winner', Boolean(result));
+  document.getElementById('winnerModal')?.querySelector('.winner-modal')?.classList.toggle('fixed', Boolean(result));
 
   if (!result) {
     card?.classList.remove('show');
@@ -4311,7 +4379,7 @@ function renderParticipants(filter=''){
     const purchasedChances = Math.max(1, Number(p.currentChances || p.purchasedChances || p.chances || 0));
     const detailId = `${p.publicCode || p.name}-${sourceIndex}-${p.date}`;
     const row = document.createElement('tr');
-    row.className = 'participant-main-row';
+    row.className = `participant-main-row${matchesLockedWinnerParticipant(participant) ? '' : ' demo-blurred'}`;
     row.dataset.detailId = detailId;
     row.dataset.participantIndex = String(sourceIndex);
     const avatarHtml = renderParticipantAvatar(p, p.displayName || p.name, colorFor(sourceIndex));
@@ -4817,8 +4885,8 @@ function renderParticipants(filter=''){
     const detailId = `${participant.publicCode || participant.name}-${sourceIndex}-${participant.date}`;
     const avatarHtml = renderParticipantAvatar(participant, participant.displayName || participant.name, colorFor(sourceIndex));
 
-    const row = document.createElement('tr');
-    row.className = 'participant-main-row';
+      const row = document.createElement('tr');
+      row.className = `participant-main-row${matchesLockedWinnerParticipant(participant) ? '' : ' demo-blurred'}`;
     row.dataset.detailId = detailId;
     row.dataset.participantIndex = String(sourceIndex);
     row.innerHTML = `
@@ -4896,6 +4964,7 @@ async function loadParticipants(){
     const seed = row.seed || '';
     return {
       sourceIndex: index,
+      participantId: row.id || row.participant_id || '',
       source,
       seed,
       originalSource,
@@ -4911,7 +4980,7 @@ async function loadParticipants(){
       chances: Number(row.total_entries || 0),
       currentChances: Math.max(Number(row.purchased_entries || 0), Number(row.total_entries || 0)),
       opinionMessage: (row.opinion_message || '').trim(),
-      searchIndex: [displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
+      searchIndex: [row.id || '', row.participant_id || '', displayName, fullName, province, city, row.public_code || '', source, originalSource, seed].join(' ').toLowerCase(),
       date: new Date(row.joined_at).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     };
   });
