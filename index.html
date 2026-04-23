@@ -4291,12 +4291,18 @@ function renderOfficialDrawResult() {
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
   document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 190)} en vivo`;
-  document.getElementById('winnerClaimStatus').textContent = delivered ? 'Premio entregado.' : claimMessage;
+  document.getElementById('winnerClaimStatus').textContent = delivered
+    ? (result.delivery_received_message || 'Premio entregado.')
+    : claimMessage;
   document.getElementById('winnerModalName').textContent = winnerName;
   document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
-  document.getElementById('winnerModalClaimStatus').textContent = delivered ? 'Premio entregado.' : claimMessage;
+  document.getElementById('winnerModalClaimStatus').textContent = delivered
+    ? (result.delivery_received_message || 'Premio entregado.')
+    : claimMessage;
   if (deliveryStatus) {
-    deliveryStatus.textContent = delivered ? 'Premio entregado.' : (result.delivery_status_label || 'En proceso de entrega.');
+    deliveryStatus.textContent = delivered
+      ? (result.delivery_status_label || 'Premio entregado.')
+      : (result.delivery_status_label || 'En proceso de entrega.');
   }
   if (claimCodeInput && !claimSubmitted) {
     claimCodeInput.value = '';
@@ -4345,6 +4351,9 @@ function renderOfficialDrawResult() {
     summaryFeeling.textContent = claimSubmitted
       ? `Al enterarse: ${result.claim_feeling || ''}`
       : '';
+  }
+  if (delivered && summaryFeeling) {
+    summaryFeeling.textContent = `${summaryFeeling.textContent}\nPremio recibido por el ganador.`;
   }
 
   if (videoSource) {
@@ -4909,6 +4918,9 @@ async function submitWinnerClaim() {
     officialDrawResult = rpcData || {
       ...officialDrawResult,
       claim_submitted_at: new Date().toISOString(),
+      claim_status_label: 'Reclamo enviado',
+      delivery_status: 'in_progress',
+      delivery_status_label: 'En proceso de entrega',
       claim_experience: experience,
       claim_feeling: feeling,
       claim_photo_data_url: photoDataUrl
@@ -4946,6 +4958,7 @@ async function confirmWinnerDelivery() {
     ...officialDrawResult,
     delivery_status: 'delivered',
     delivery_status_label: 'Premio entregado',
+    delivery_received_message: 'Premio recibido por el ganador.',
     delivery_confirmed_at: new Date().toISOString()
   };
   persistOfficialDrawResult(officialDrawResult);
