@@ -3242,6 +3242,7 @@
       <div class="winner-claim-status" id="winnerModalClaimStatus"></div>
       <div class="winner-claim-summary" id="winnerClaimSummary">
         <strong id="winnerClaimSummaryTitle">Reclamo enviado</strong>
+        <span id="winnerClaimSummaryDate"></span>
         <span id="winnerClaimSummaryExperience"></span>
         <span id="winnerClaimSummaryFeeling"></span>
         <textarea class="form-input form-textarea" id="winnerReceivedNote" placeholder="Escribe qué premio recibió el ganador."></textarea>
@@ -3556,7 +3557,7 @@ function updateWinnerClaimGate() {
   const delivered = officialDrawResult?.delivery_status === 'delivered';
   gated?.classList.toggle('show', isValid && !claimSubmitted);
   publicBlock?.classList.toggle('show-validated', isValid);
-  summary?.classList.toggle('show', isValid && claimSubmitted);
+  summary?.classList.toggle('show', delivered || (isValid && claimSubmitted));
   if (confirmBtn) {
     confirmBtn.style.display = isValid && claimSubmitted && !delivered ? 'block' : 'none';
     confirmBtn.disabled = delivered;
@@ -3572,7 +3573,9 @@ function updateWinnerClaimGate() {
   }
 
   if (!normalizedCode) {
-    if (statusNode && !officialDrawResult?.claim_submitted_at) {
+    if (statusNode && delivered) {
+      statusNode.textContent = officialDrawResult?.delivery_status_label || 'Premio entregado.';
+    } else if (statusNode && !officialDrawResult?.claim_submitted_at) {
       statusNode.textContent = officialDrawResult?.delivery_status_label || 'En proceso de entrega.';
     }
     return;
@@ -4291,6 +4294,7 @@ function renderOfficialDrawResult() {
   const publicBlock = document.getElementById('winnerClaimPublic');
   const summary = document.getElementById('winnerClaimSummary');
   const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
+  const summaryDate = document.getElementById('winnerClaimSummaryDate');
   const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
   const receivedInput = document.getElementById('winnerReceivedNote');
@@ -4353,14 +4357,18 @@ function renderOfficialDrawResult() {
   }
   publicBlock?.classList.toggle('show', !delivered);
   gated?.classList.toggle('show', false);
-  summary?.classList.toggle('show', claimSubmitted);
+  summary?.classList.toggle('show', delivered || claimSubmitted);
+  if (summaryDate) {
+    const deliveredAt = delivered ? formatDateTime(result.delivery_confirmed_at) : '';
+    summaryDate.textContent = deliveredAt ? `Fecha de entrega: ${deliveredAt}` : '';
+  }
   if (summaryExperience) {
-    summaryExperience.textContent = claimSubmitted
+    summaryExperience.textContent = (claimSubmitted || delivered)
       ? `Experiencia: ${result.claim_experience || ''}`
       : '';
   }
   if (summaryFeeling) {
-    summaryFeeling.textContent = claimSubmitted
+    summaryFeeling.textContent = (claimSubmitted || delivered)
       ? `Al enterarse: ${result.claim_feeling || ''}`
       : '';
   }
