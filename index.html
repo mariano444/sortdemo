@@ -3213,7 +3213,7 @@
       <div class="winner-claim-public" id="winnerClaimPublic">
         <div class="form-group">
           <label class="form-label">Código único *</label>
-          <input class="form-input" type="text" id="winnerClaimCode" placeholder="FIAT201420261">
+          <input class="form-input" type="text" id="winnerClaimCode" placeholder="Ingresa tu código único">
           <div class="form-help">Ingresa el código único recibido para validar el reclamo del premio.</div>
         </div>
       </div>
@@ -4314,11 +4314,11 @@ function renderOfficialDrawResult() {
     feelingInput.disabled = false;
   }
   if (claimCodeInput) {
-    claimCodeInput.readOnly = claimSubmitted;
+    claimCodeInput.readOnly = false;
   }
   if (submitBtn) {
-    submitBtn.disabled = claimSubmitted;
-    submitBtn.style.opacity = claimSubmitted ? '0.55' : '1';
+    submitBtn.disabled = delivered;
+    submitBtn.style.opacity = delivered ? '0.55' : '1';
   }
   if (confirmBtn) {
     confirmBtn.style.display = claimSubmitted && !delivered ? 'block' : 'none';
