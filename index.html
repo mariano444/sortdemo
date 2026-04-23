@@ -4339,9 +4339,9 @@ function renderOfficialDrawResult() {
   if (openBtn) {
     openBtn.textContent = delivered ? 'Ver experiencia' : 'Reclamar premio';
   }
-  publicBlock?.classList.toggle('show', true);
+  publicBlock?.classList.toggle('show', !delivered);
   gated?.classList.toggle('show', false);
-  summary?.classList.toggle('show', false);
+  summary?.classList.toggle('show', claimSubmitted);
   if (summaryExperience) {
     summaryExperience.textContent = claimSubmitted
       ? `Experiencia: ${result.claim_experience || ''}`
@@ -4954,7 +4954,23 @@ async function confirmWinnerDelivery() {
     return;
   }
 
-  officialDrawResult = {
+  const claimCode = (document.getElementById('winnerClaimCode')?.value || '').trim().toUpperCase();
+  let rpcData = null;
+  let usedRemoteDelivery = false;
+
+  try {
+    const { data, error } = await supabaseClient.rpc('confirm_winner_delivery', {
+      p_campaign_slug: CAMPAIGN_SLUG,
+      p_claim_code: claimCode
+    });
+    if (error) throw error;
+    rpcData = data || null;
+    usedRemoteDelivery = true;
+  } catch (rpcError) {
+    console.warn('No se pudo confirmar la entrega en Supabase. Se guardará localmente.', rpcError);
+  }
+
+  officialDrawResult = rpcData || {
     ...officialDrawResult,
     delivery_status: 'delivered',
     delivery_status_label: 'Premio entregado',
@@ -4962,17 +4978,27 @@ async function confirmWinnerDelivery() {
     delivery_confirmed_at: new Date().toISOString()
   };
   persistOfficialDrawResult(officialDrawResult);
-  demoResults = [{
-    ...officialDrawResult,
-    public_code: officialDrawResult.participant_public_code || '',
-    display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
-    full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
-    recorded_at_label: formatDateTime(officialDrawResult.saved_at)
-  }];
-  renderDemoHistory();
-  renderOfficialDrawResult();
+
+  if (usedRemoteDelivery) {
+    await loadDemoResults();
+  } else {
+    demoResults = [{
+      ...officialDrawResult,
+      public_code: officialDrawResult.participant_public_code || '',
+      display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+      full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+      recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+    }];
+    renderDemoHistory();
+    renderOfficialDrawResult();
+  }
+
   document.getElementById('winnerModalClaimStatus').textContent = 'Premio entregado.';
-  showToast('Premio entregado confirmado.');
+  showToast(
+    usedRemoteDelivery
+      ? 'Premio entregado confirmado en Supabase.'
+      : 'Premio entregado confirmado localmente.'
+  );
 }
 
 function openOpinionModal({ message, author, city }) {
