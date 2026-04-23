@@ -3244,6 +3244,8 @@
         <strong id="winnerClaimSummaryTitle">Reclamo enviado</strong>
         <span id="winnerClaimSummaryExperience"></span>
         <span id="winnerClaimSummaryFeeling"></span>
+        <textarea class="form-input form-textarea" id="winnerReceivedNote" placeholder="Escribe qué premio recibió el ganador."></textarea>
+        <span id="winnerClaimSummaryReceived"></span>
         <button class="modal-confirm" type="button" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
       </div>
     </div>
@@ -3545,6 +3547,8 @@ function updateWinnerClaimGate() {
   const publicBlock = document.getElementById('winnerClaimPublic');
   const summary = document.getElementById('winnerClaimSummary');
   const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
+  const receivedInput = document.getElementById('winnerReceivedNote');
+  const summaryReceived = document.getElementById('winnerClaimSummaryReceived');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
   const isValid = normalizedCode === WINNER_CLAIM_CODE;
@@ -3559,6 +3563,12 @@ function updateWinnerClaimGate() {
   }
   if (summaryTitle) {
     summaryTitle.textContent = delivered ? 'Premio entregado' : 'Reclamo enviado';
+  }
+  if (receivedInput) {
+    receivedInput.style.display = isValid && claimSubmitted && !delivered ? 'block' : 'none';
+  }
+  if (summaryReceived) {
+    summaryReceived.style.display = delivered ? 'block' : 'none';
   }
 
   if (!normalizedCode) {
@@ -4283,6 +4293,8 @@ function renderOfficialDrawResult() {
   const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
   const summaryExperience = document.getElementById('winnerClaimSummaryExperience');
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
+  const receivedInput = document.getElementById('winnerReceivedNote');
+  const summaryReceived = document.getElementById('winnerClaimSummaryReceived');
   const deliveryStatus = document.getElementById('winnerDeliveryStatus');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const delivered = result.delivery_status === 'delivered';
@@ -4351,6 +4363,16 @@ function renderOfficialDrawResult() {
     summaryFeeling.textContent = claimSubmitted
       ? `Al enterarse: ${result.claim_feeling || ''}`
       : '';
+  }
+  if (receivedInput) {
+    receivedInput.value = delivered ? '' : (result.delivery_received_item || '');
+    receivedInput.style.display = claimSubmitted && !delivered ? 'block' : 'none';
+  }
+  if (summaryReceived) {
+    summaryReceived.textContent = delivered
+      ? `Recibió: ${result.delivery_received_item || 'Premio entregado'}`
+      : '';
+    summaryReceived.style.display = delivered ? 'block' : 'none';
   }
   if (delivered && summaryFeeling) {
     summaryFeeling.textContent = `${summaryFeeling.textContent}\nPremio recibido por el ganador.`;
@@ -4955,6 +4977,11 @@ async function confirmWinnerDelivery() {
   }
 
   const claimCode = (document.getElementById('winnerClaimCode')?.value || '').trim().toUpperCase();
+  const receivedItem = (document.getElementById('winnerReceivedNote')?.value || '').trim();
+  if (!receivedItem) {
+    showToast('Escribe qué recibió el ganador antes de confirmar la entrega.');
+    return;
+  }
   let rpcData = null;
   let usedRemoteDelivery = false;
 
@@ -4974,6 +5001,7 @@ async function confirmWinnerDelivery() {
     ...officialDrawResult,
     delivery_status: 'delivered',
     delivery_status_label: 'Premio entregado',
+    delivery_received_item: receivedItem,
     delivery_received_message: 'Premio recibido por el ganador.',
     delivery_confirmed_at: new Date().toISOString()
   };
