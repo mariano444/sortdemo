@@ -3244,7 +3244,7 @@
         <strong id="winnerClaimSummaryTitle">Reclamo enviado</strong>
         <span id="winnerClaimSummaryExperience"></span>
         <span id="winnerClaimSummaryFeeling"></span>
-        <button class="modal-confirm" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
+        <button class="modal-confirm" type="button" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
       </div>
     </div>
   </div>
@@ -4949,7 +4949,15 @@ async function confirmWinnerDelivery() {
     delivery_confirmed_at: new Date().toISOString()
   };
   persistOfficialDrawResult(officialDrawResult);
-  await loadDemoResults();
+  demoResults = [{
+    ...officialDrawResult,
+    public_code: officialDrawResult.participant_public_code || '',
+    display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+    full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+    recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+  }];
+  renderDemoHistory();
+  renderOfficialDrawResult();
   document.getElementById('winnerModalClaimStatus').textContent = 'Premio entregado.';
   showToast('Premio entregado confirmado.');
 }
