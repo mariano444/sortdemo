@@ -4392,7 +4392,9 @@ async function loadDemoResults() {
       recorded_at_label: formatDateTime(officialDrawResult.saved_at)
     }] : [];
   } catch (error) {
-    console.warn('No se pudo cargar el resultado oficial.', error);
+    if (!readPersistedOfficialDrawResult()) {
+      console.warn('No se pudo cargar el resultado oficial.', error);
+    }
     officialDrawResult = readPersistedOfficialDrawResult();
     demoResults = officialDrawResult ? [{
       ...officialDrawResult,
@@ -4423,6 +4425,7 @@ async function saveCurrentDemoResult() {
   try {
     const videoDataUrl = await fileToDataUrl(recordingBlob);
     let rpcData = null;
+    let usedRemoteSave = false;
     try {
       const { data, error } = await supabaseClient.rpc('save_official_draw_result', {
         p_campaign_slug: CAMPAIGN_SLUG,
@@ -4436,6 +4439,7 @@ async function saveCurrentDemoResult() {
       });
       if (error) throw error;
       rpcData = data || null;
+      usedRemoteSave = true;
     } catch (rpcError) {
       console.warn('No se pudo guardar en Supabase. Se usará almacenamiento local.', rpcError);
     }
@@ -4457,7 +4461,19 @@ async function saveCurrentDemoResult() {
       chances: Number(participant.chances || participant.purchasedChances || 0)
     };
     persistOfficialDrawResult(officialDrawResult);
-    await loadDemoResults();
+    if (usedRemoteSave) {
+      await loadDemoResults();
+    } else {
+      demoResults = [{
+        ...officialDrawResult,
+        public_code: officialDrawResult.participant_public_code || '',
+        display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+        full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+        recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+      }];
+      renderDemoHistory();
+      renderOfficialDrawResult();
+    }
     if (!drawShowcaseState.historyOpen) {
       toggleDemoHistory();
     }
@@ -4874,6 +4890,7 @@ async function submitWinnerClaim() {
     statusNode.textContent = 'Enviando reclamo del premio...';
     const photoDataUrl = selectedWinnerClaimPhoto ? await fileToDataUrl(selectedWinnerClaimPhoto) : '';
     let rpcData = null;
+    let usedRemoteClaim = false;
     try {
       const { data, error } = await supabaseClient.rpc('submit_winner_claim', {
         p_campaign_slug: CAMPAIGN_SLUG,
@@ -4884,6 +4901,7 @@ async function submitWinnerClaim() {
       });
       if (error) throw error;
       rpcData = data || null;
+      usedRemoteClaim = true;
     } catch (rpcError) {
       console.warn('No se pudo enviar el reclamo a Supabase. Se guardará localmente.', rpcError);
     }
@@ -4896,7 +4914,19 @@ async function submitWinnerClaim() {
       claim_photo_data_url: photoDataUrl
     };
     persistOfficialDrawResult(officialDrawResult);
-    await loadDemoResults();
+    if (usedRemoteClaim) {
+      await loadDemoResults();
+    } else {
+      demoResults = [{
+        ...officialDrawResult,
+        public_code: officialDrawResult.participant_public_code || '',
+        display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+        full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+        recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+      }];
+      renderDemoHistory();
+      renderOfficialDrawResult();
+    }
     statusNode.textContent = 'Reclamo del premio enviado correctamente.';
     showToast('Reclamo del premio enviado correctamente.');
   } catch (error) {
