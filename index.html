@@ -1255,33 +1255,6 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-  .draw-intel-bar {
-    position: relative;
-    height: 9px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .draw-intel-fill {
-    width: 24%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--blue), var(--gold), #fff2b8);
-    box-shadow: 0 0 16px rgba(245,200,66,0.22);
-    transition: width 0.28s ease;
-  }
-  .draw-intel-glow {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
-    transform: translateX(-100%);
-    animation: drawSweep 1.8s linear infinite;
-    opacity: 0.45;
-  }
-  @keyframes drawSweep {
-    to { transform: translateX(100%); }
-  }
   .draw-controls {
     display: flex;
     flex-wrap: wrap;
@@ -1320,10 +1293,6 @@
     background: linear-gradient(135deg, rgba(232,25,44,0.18), rgba(232,25,44,0.08));
     border-color: rgba(232,25,44,0.35);
     color: #ffd6da;
-  }
-  .draw-showcase.paused .draw-intel-glow {
-    animation-play-state: paused;
-    opacity: 0.18;
   }
   .draw-showcase.paused .draw-featured-card {
     border-color: rgba(255,255,255,0.12);
@@ -2812,15 +2781,11 @@
           <div class="draw-showcase-status">
             <div class="draw-status-topline">
               <span class="draw-showcase-status-label" id="drawPhaseLabel">Estado del sistema</span>
-              <span class="draw-live-badge" id="drawLiveBadge">120 en vivo</span>
+              <span class="draw-live-badge" id="drawLiveBadge">51 en vivo</span>
             </div>
             <strong class="draw-showcase-status-name" id="drawPhaseName">Esperando el listado en vivo</strong>
             <span class="draw-showcase-status-hint" id="drawPhaseHint">Cuando haya participantes cargados, el sorteo mostrara una pasada completa por cada chance antes del cierre.</span>
             <span class="draw-recording-state" id="drawRecordingState">Listo para grabar en esta pestaña</span>
-            <div class="draw-intel-bar">
-              <div class="draw-intel-fill" id="drawIntelFill"></div>
-              <div class="draw-intel-glow"></div>
-            </div>
           </div>
         </div>
       </div>
@@ -4529,7 +4494,6 @@ function renderDrawShowcaseEmpty() {
   document.getElementById('drawPhaseLabel').textContent = 'Prueba disponible';
   document.getElementById('drawPhaseName').textContent = 'Lista para iniciar la demostracion del funcionamiento';
   document.getElementById('drawPhaseHint').textContent = 'Pulsa iniciar prueba, deja que el sistema recorra la lista y luego registra el punto exacto donde freno.';
-  document.getElementById('drawIntelFill').style.width = '18%';
   updateDrawControls();
   if (rail) {
     rail.innerHTML = '<div class="draw-rail-empty">Todavia no hay participantes visibles para iniciar el recorrido animado.</div>';
@@ -4608,7 +4572,6 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
   const phaseLabel = document.getElementById('drawPhaseLabel');
   const phaseName = document.getElementById('drawPhaseName');
   const phaseHint = document.getElementById('drawPhaseHint');
-  const intelFill = document.getElementById('drawIntelFill');
   const cycleProgress = drawShowcaseState.cycle.length
     ? (drawShowcaseState.cyclePosition + 1) / drawShowcaseState.cycle.length
     : 0;
@@ -4633,8 +4596,6 @@ function renderDrawShowcase(entry, isSpotlight, delay) {
     ? `${participant.displayName || participant.name} quedo seleccionado en la demostracion`
     : 'La lista esta recorriendo participantes en tiempo real';
   phaseHint.textContent = getDrawNarrative(participant, isSpotlight, cycleProgress);
-  intelFill.style.width = `${Math.max(16, Math.min(100, cycleProgress * 100))}%`;
-
   const visibleCards = [];
   const cardCount = Math.min(Math.max(drawShowcaseState.cycle.length, 1), 5);
   for (let offset = 0; offset < cardCount; offset += 1) {
