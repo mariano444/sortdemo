@@ -2268,29 +2268,20 @@
   body.has-official-winner .demo-launcher,
   body.has-official-winner #drawShowcase,
   body.has-official-winner .participants-table-wrap,
-  body.has-official-winner .countdown-bar,
-  body.has-official-winner .countdown-note,
-  body.has-official-winner .bonus-section,
-  body.has-official-winner .bottom-cta,
-  body.has-official-winner .faq-section,
-  body.has-official-winner footer {
-    display: none !important;
-  }
+  body.has-official-winner section:not(.course-hook-section),
+  body.has-official-winner .hero,
+  body.has-official-winner footer,
+  body.has-official-winner .live-feed,
+  body.has-official-winner .whatsapp-float,
+  body.has-official-winner .toast,
   body.has-official-winner .winner-result-card {
-    margin-bottom: 2.4rem;
-  }
-  body.has-official-winner #participantes > .section-head,
-  body.has-official-winner #participantes > .trust-note,
-  body.has-official-winner #participantes > .section-sub,
-  body.has-official-winner #participantes > .auto-showcase,
-  body.has-official-winner #participantes > .table-header,
-  body.has-official-winner #participantes > .stats-grid {
     display: none !important;
   }
   body.has-official-winner .course-hook-section {
     filter: none;
     opacity: 1;
     transition: filter 0.3s ease, opacity 0.3s ease;
+    display: block !important;
   }
   body.has-official-winner.modal-open .course-hook-section {
     filter: blur(8px);
@@ -3855,7 +3846,7 @@ const FIXED_OFFICIAL_DRAW_RESULT = {
   claim_status_label: 'Reclamo enviado',
   delivery_status: 'delivered',
   delivery_status_label: 'Premio entregado',
-  delivery_confirmed_at: '2026-04-24T12:32:00-03:00',
+  delivery_confirmed_at: '2026-04-24T13:15:00-03:00',
   delivery_received_message: 'Premio recibido por el ganador.',
   delivery_received_item: 'El dinero equivalente al premio',
   claim_experience: 'No lo puedo creer estoy muy contento. me hace muchisima falta porque me echaron del trabajo hace un mes y esto me sirve muchisimo no lo puedo creer.',
@@ -3864,7 +3855,7 @@ const FIXED_OFFICIAL_DRAW_RESULT = {
   city: 'Resistencia',
   province: 'Chaco',
   chances: 1000,
-  public_announcement: 'El sorteo oficial se realizó a las 09:23, el reclamo del premio se confirmó a las 12:10 y la entrega quedó registrada a las 12:32.',
+  public_announcement: 'El sorteo oficial se realizó a las 09:23, el reclamo del premio se confirmó a las 12:10 y la entrega quedó registrada a las 13:15.',
   public_story: 'Miguel Manzanelli fue confirmado como ganador oficial. El sorteo se adelantó porque se agotaron los cupos y el premio ya fue entregado.'
 };
 
