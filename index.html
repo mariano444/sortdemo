@@ -2287,11 +2287,8 @@
     background: #050507;
     min-height: 220px;
   }
-  body.has-official-winner .demo-launcher,
   body.has-official-winner .demo-history-card,
-  body.has-official-winner .draw-rail-card:not(.spotlight),
-  body.has-official-winner .participant-main-row.demo-blurred td,
-  body.has-official-winner .participant-main-row.demo-blurred + .participant-detail-row td {
+  body.has-official-winner .draw-rail-card:not(.spotlight) {
     filter: blur(3px);
     opacity: 0.42;
   }
@@ -2299,9 +2296,6 @@
     filter: blur(3px);
     opacity: 0.45;
   }
-  body.has-official-winner .demo-launcher,
-  body.has-official-winner #drawShowcase,
-  body.has-official-winner .participants-table-wrap,
   body.has-official-winner .countdown-bar,
   body.has-official-winner .countdown-note,
   body.has-official-winner .bonus-section,
@@ -2330,10 +2324,6 @@
     filter: blur(8px);
     opacity: 0.38;
   }
-  body.has-official-winner .participant-main-row.demo-blurred {
-    position: relative;
-  }
-  body.has-official-winner .participant-main-row.demo-blurred::after,
   body.has-official-winner .draw-rail-card:not(.spotlight)::after,
   body.has-official-winner .demo-history-card::after {
     content: 'DEMO';
@@ -2788,6 +2778,11 @@
       <div class="demo-launcher-actions">
         <button class="draw-control-btn primary" type="button" id="trySelectionSystemBtn">Iniciar sorteo oficial</button>
         <button class="draw-control-btn" type="button" id="toggleDemoBtn">Mostrar sorteo oficial</button>
+        <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
+        <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar sorteo</button>
+        <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar ganador oficial</button>
+        <button class="draw-control-btn" type="button" id="viewDemoVideoBtn">Ver ultimo video</button>
+        <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Ganadores guardados</button>
       </div>
     </div>
 
@@ -2800,13 +2795,6 @@
           </div>
           <h3 class="draw-showcase-title">Recorrido visual del <span>software de seleccion</span></h3>
           <p class="draw-showcase-sub">Inicia el sorteo oficial para ver el recorrido por las chances activas. El sistema mezcla focos, cambios de ritmo y seguimiento visual de la lista, luego fija al ganador real y permite guardar el resultado con su video.</p>
-          <div class="draw-controls">
-            <button class="draw-control-btn primary" type="button" id="drawStartBtn">Recorrer todas las chances</button>
-            <button class="draw-control-btn record" type="button" id="recordDemoBtn">Grabar sorteo</button>
-            <button class="draw-control-btn accent" type="button" id="saveDemoResultBtn">Guardar ganador oficial</button>
-            <button class="draw-control-btn" type="button" id="viewDemoVideoBtn">Ver ultimo video</button>
-            <button class="draw-control-btn" type="button" id="toggleDemoHistoryBtn">Ganadores guardados</button>
-          </div>
         </div>
         <div class="draw-showcase-stage">
           <div class="draw-stage-chip">Ronda actual <strong id="drawRoundCounter">0</strong></div>
@@ -3370,6 +3358,7 @@
 const SUPABASE_URL = 'https://asokopamdmuvuupywjzt.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_zBhxdMJHw_uy_m3uRDj-ng_0yXz42EN';
 const CAMPAIGN_SLUG = 'sorteo-moto-tv-dinero';
+const OFFLINE_CAMPAIGN_ID = 'f2af2649-4246-4c6c-a420-36d5d6bc1dc2';
 const MAX_FALLBACK_CHANCES = 5000;
 const FUNCTIONS_BASE_URL = `${SUPABASE_URL}/functions/v1`;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -3388,6 +3377,7 @@ const LOCKED_WINNER = {
 };
 const WINNER_CLAIM_CODE = 'FIAT201420261';
 const FIXED_OFFICIAL_WINNER_MODE = true;
+const OFFLINE_PARTICIPANTS_FILE_URL = './assets/data/participants_rows.json';
 const OFFLINE_PARTICIPANT_ROWS = [
   {
     id: 'a4268511-339f-42e4-8740-e5eb16bb0253',
@@ -4540,8 +4530,34 @@ function setWinnerPreloading(isOpen) {
   document.body.classList.toggle('winner-preloading', Boolean(isOpen));
 }
 
-function buildOfflineParticipants() {
-  return OFFLINE_PARTICIPANT_ROWS.map((row, index) => {
+async function loadOfflineParticipantRowsFromFile() {
+  try {
+    const response = await fetch(OFFLINE_PARTICIPANTS_FILE_URL, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`No se pudo leer el archivo local (${response.status}).`);
+    }
+    const rows = await response.json();
+    if (!Array.isArray(rows)) {
+      throw new Error('El archivo local de participantes no tiene un arreglo JSON válido.');
+    }
+    return rows.filter((row) => (
+      String(row?.status || '').toLowerCase() === 'active'
+      && String(row?.campaign_id || '') === OFFLINE_CAMPAIGN_ID
+    ));
+  } catch (error) {
+    console.warn('No se pudo leer participants_rows.json. Se usará la urna offline embebida.', error);
+    return OFFLINE_PARTICIPANT_ROWS;
+  }
+}
+
+function buildOfflineParticipants(rows = OFFLINE_PARTICIPANT_ROWS) {
+  const hydratedRows = Array.isArray(rows) ? [...rows] : [...OFFLINE_PARTICIPANT_ROWS];
+  const hasLockedWinner = hydratedRows.some((row) => String(row?.id || '').toLowerCase() === String(LOCKED_WINNER.id).toLowerCase());
+  if (!hasLockedWinner) {
+    hydratedRows.unshift(OFFLINE_PARTICIPANT_ROWS[0]);
+  }
+
+  return hydratedRows.map((row, index) => {
     const location = normalizeParticipantLocation(row);
     const displayName = row.display_name || row.displayName || row.full_name;
     const fullName = row.full_name || displayName;
@@ -4587,7 +4603,7 @@ function buildOfflineParticipants() {
   });
 }
 
-function applyFixedOfficialWinnerMode() {
+async function applyFixedOfficialWinnerMode() {
   activeCampaign = {
     id: 'fixed-official-campaign',
     slug: CAMPAIGN_SLUG,
@@ -4596,7 +4612,8 @@ function applyFixedOfficialWinnerMode() {
     max_entries: 5000
   };
   packages = [];
-  participants = buildOfflineParticipants();
+  const offlineRows = await loadOfflineParticipantRowsFromFile();
+  participants = buildOfflineParticipants(offlineRows);
   officialDrawResult = { ...FIXED_OFFICIAL_DRAW_RESULT };
   demoResults = [{
     ...officialDrawResult,
@@ -5884,7 +5901,7 @@ async function bootLanding(){
     });
     createSparks();
     if (FIXED_OFFICIAL_WINNER_MODE) {
-      applyFixedOfficialWinnerMode();
+      await applyFixedOfficialWinnerMode();
       renderPackages();
       renderParticipants();
       repairDocumentText();
