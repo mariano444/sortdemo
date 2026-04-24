@@ -2301,20 +2301,34 @@
   }
   body.has-official-winner .demo-launcher,
   body.has-official-winner #drawShowcase,
-  body.has-official-winner .participants-table-wrap {
+  body.has-official-winner .participants-table-wrap,
+  body.has-official-winner .countdown-bar,
+  body.has-official-winner .countdown-note,
+  body.has-official-winner .bonus-section,
+  body.has-official-winner .bottom-cta,
+  body.has-official-winner .faq-section,
+  body.has-official-winner footer {
     display: none !important;
   }
   body.has-official-winner .winner-result-card {
     margin-bottom: 2.4rem;
   }
+  body.has-official-winner #participantes > .section-head,
+  body.has-official-winner #participantes > .trust-note,
+  body.has-official-winner #participantes > .section-sub,
+  body.has-official-winner #participantes > .auto-showcase,
+  body.has-official-winner #participantes > .table-header,
+  body.has-official-winner #participantes > .stats-grid {
+    display: none !important;
+  }
   body.has-official-winner .course-hook-section {
-    filter: blur(7px);
-    opacity: 0.42;
+    filter: none;
+    opacity: 1;
     transition: filter 0.3s ease, opacity 0.3s ease;
   }
   body.has-official-winner.modal-open .course-hook-section {
-    filter: blur(10px);
-    opacity: 0.32;
+    filter: blur(8px);
+    opacity: 0.38;
   }
   body.has-official-winner .participant-main-row.demo-blurred {
     position: relative;
@@ -3383,22 +3397,22 @@ const FIXED_OFFICIAL_DRAW_RESULT = {
   live_count: 182,
   claim_code: WINNER_CLAIM_CODE,
   claim_deadline_label: 'Reclamo válido dentro de 7 días hábiles',
-  claim_submitted_at: '2026-04-23T14:20:00-03:00',
+  claim_submitted_at: '2026-04-24T12:10:00-03:00',
   claim_status: 'submitted',
   claim_status_label: 'Reclamo enviado',
   delivery_status: 'delivered',
   delivery_status_label: 'Premio entregado',
-  delivery_confirmed_at: '2026-04-23T18:10:00-03:00',
-  delivery_received_message: 'Premio entregado. Se le ofreció el premio o el dinero equivalente y prefirió el dinero.',
+  delivery_confirmed_at: '2026-04-24T12:10:00-03:00',
+  delivery_received_message: 'Premio recibido por el ganador.',
   delivery_received_item: 'El dinero equivalente al premio',
-  claim_experience: 'Muy contento. Le hacía falta porque no tenía trabajo y le vino muy bien en este momento.',
-  claim_feeling: 'Le ofrecieron el premio o dinero y prefirió el dinero. Está muy contento y agradecido porque realmente lo necesitaba.',
-  saved_at: '2026-04-23T12:00:00-03:00',
+  claim_experience: 'Muy contento. me hace muchisima falta me echaron del trabajo hace un mes y esto me sirve muchisimo no lo puedo creer.',
+  claim_feeling: 'Me ofrecieron el premio o dinero y al no tener tabajo me intereso mas el dinero. Estoy muy contento y agradecido porque realmente lo necesitaba.',
+  saved_at: '2026-04-24T12:10:00-03:00',
   city: 'Resistencia',
   province: 'Chaco',
   chances: 1000,
   public_announcement: 'El sorteo se adelantó porque se agotaron los cupos disponibles y el premio ya fue entregado.',
-  public_story: 'Miguel Manzanelli fue confirmado como ganador oficial. Se agotaron los cupos, el sorteo se adelantó y se coordinó la entrega. Se le ofreció recibir el premio o el dinero equivalente, eligió el dinero y contó que está muy contento porque le hacía falta en un momento sin trabajo.'
+  public_story: 'Miguel Manzanelli fue confirmado como ganador oficial. El sorteo se adelantó porque se agotaron los cupos y el premio ya fue entregado.'
 };
 
 let activeCampaign = null;
