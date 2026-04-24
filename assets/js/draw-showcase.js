@@ -41,7 +41,7 @@
     let recordingMimeType = 'video/webm';
     let recordingUrl = '';
     let previewOpen = false;
-    let liveAudience = 120;
+    let liveAudience = 51;
     let liveAudienceInterval = null;
 
     function stop() {
@@ -114,7 +114,7 @@
         return cycle;
       }
 
-      const sampleSize = Math.max(42, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
+      const sampleSize = Math.max(34, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
       const result = [];
       const lastIndex = Math.max(cycle.length - (finalEntry ? 2 : 1), 0);
 
@@ -145,6 +145,17 @@
         const filtered = result.filter((item) => !(
           item.participantIndex === finalEntry.participantIndex && item.chanceNumber === finalEntry.chanceNumber
         ));
+        const leadIn = [];
+        for (let index = filtered.length - 1; index >= 0; index -= 1) {
+          const item = filtered[index];
+          if (!item) continue;
+          if (item.participantIndex === finalEntry.participantIndex) continue;
+          if (leadIn.some((entry) => entry.participantIndex === item.participantIndex)) continue;
+          leadIn.unshift(item);
+          filtered.splice(index, 1);
+          if (leadIn.length >= 3) break;
+        }
+        filtered.push(...leadIn);
         filtered.push(finalEntry);
         return filtered;
       }
@@ -207,9 +218,9 @@
       badge.textContent = isRecording ? `${liveAudience} en vivo · grabando` : `${liveAudience} en vivo`;
     }
 
-    function animateLiveAudience(target = 182) {
+    function animateLiveAudience(target = 82) {
       stopLiveAudienceAnimation();
-      const finalTarget = Math.max(120, Number(target) || 182);
+      const finalTarget = Math.max(51, Math.min(82, Number(target) || 82));
       let ticks = 0;
 
       liveAudienceInterval = window.setInterval(() => {
@@ -222,9 +233,9 @@
         }
         const drift = Math.ceil((finalTarget - liveAudience) / 5);
         const swing = Math.floor(Math.random() * 9) - 4;
-        liveAudience = Math.max(120, Math.min(186, liveAudience + drift + swing));
+        liveAudience = Math.max(51, Math.min(82, liveAudience + drift + swing));
         setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
-      }, 780);
+      }, 560);
     }
 
     function updateVideoPanel() {
@@ -329,7 +340,7 @@
 
         mediaRecorder.start(1000);
         setRecordingState('Grabando esta pestaña en tiempo real');
-        animateLiveAudience(182);
+        animateLiveAudience(82);
         setLiveBadge(true);
         return true;
       } catch (_) {
@@ -536,7 +547,7 @@
     function getDelay(participant, isSpotlight) {
       const remainingSteps = Math.max(1, state.cycle.length - state.cyclePosition);
       const elapsed = demoStartedAt ? Date.now() - demoStartedAt : 0;
-      const remainingDuration = Math.max(1200, (state.durationTargetMs || MAX_DEMO_DURATION_MS) - elapsed);
+      const remainingDuration = Math.max(900, (state.durationTargetMs || MAX_DEMO_DURATION_MS) - elapsed);
       const baseline = remainingDuration / remainingSteps;
       const chanceWeight = Math.min(getParticipantChances(participant), 25);
       const motionBoost = Math.min(lastHopDistance, 12) * 6;
@@ -546,22 +557,22 @@
       const bigChanceBoost = chanceWeight > 20 ? Math.min(32, (chanceWeight - 20) * 1.8) : 0;
 
       if (isSpotlight) {
-        return Math.min(1800, Math.max(850, remainingDuration));
+        return Math.min(1250, Math.max(620, remainingDuration));
       }
 
       return Math.max(
-        8,
+        6,
         Math.min(
-          120,
+          82,
           baseline
             - motionBoost
             + streakPenalty
             + (chanceWeight * 0.6)
             - densityBoost
             - bigChanceBoost
-            + (progress < 0.12 ? -24 : 0)
-            + (progress > 0.85 ? -18 : 0)
-            + Math.random() * 10
+            + (progress < 0.12 ? -30 : 0)
+            + (progress > 0.85 ? -24 : 0)
+            + Math.random() * 8
         )
       );
     }
@@ -592,7 +603,6 @@
       document.getElementById('drawPhaseLabel').textContent = 'Demo lista';
       document.getElementById('drawPhaseName').textContent = 'Esperando participantes para mostrar el recorrido';
       document.getElementById('drawPhaseHint').textContent = 'Cuando haya participantes visibles, el sorteo recorrerá la urna antes de cerrar el resultado oficial.';
-      document.getElementById('drawIntelFill').style.width = '14%';
       setRecordingState(recordingUrl ? 'Grabacion lista para reproducir o descargar' : 'Listo para grabar en esta pestaña');
       setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
       const rail = document.getElementById('drawRail');
@@ -653,7 +663,6 @@
         ? `${participant.displayName || participant.name} quedó seleccionado como ganador`
         : 'El sistema sigue recorriendo participantes visibles antes del cierre final';
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
-      document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
 
       const visibleCards = [];
       const rail = document.getElementById('drawRail');
@@ -760,8 +769,8 @@
       demoStartedAt = Date.now();
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      liveAudience = 120;
-      animateLiveAudience(182);
+      liveAudience = 51;
+      animateLiveAudience(82);
       document.getElementById('drawPhaseLabel').textContent = 'Sorteo en curso';
       document.getElementById('drawPhaseName').textContent = 'El sistema está recorriendo participantes visibles en tiempo real';
       document.getElementById('drawPhaseHint').textContent = targetToken
