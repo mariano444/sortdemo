@@ -1909,9 +1909,63 @@
     pointer-events: none;
     user-select: none;
   }
+  body.winner-preloading > *:not(#winnerModalPreload) {
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+  }
   body.modal-open #winnerModal {
     filter: none;
     pointer-events: all;
+  }
+  .winner-preload {
+    position: fixed;
+    inset: 0;
+    z-index: 1800;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at top, rgba(245,200,66,0.18), transparent 38%),
+      rgba(8,8,12,0.94);
+  }
+  body.winner-preloading .winner-preload {
+    display: flex;
+  }
+  .winner-preload-card {
+    width: min(100%, 420px);
+    padding: 1.35rem 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(245,200,66,0.24);
+    background: linear-gradient(145deg, rgba(20,20,28,0.96), rgba(10,10,14,0.98));
+    box-shadow: 0 28px 60px rgba(0,0,0,0.36);
+    text-align: center;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .winner-preload-spinner {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.14);
+    border-top-color: var(--gold);
+    animation: spin 0.9s linear infinite;
+  }
+  .winner-preload-title {
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.03em;
+  }
+  .winner-preload-copy {
+    color: var(--text2);
+    line-height: 1.6;
+    font-size: 0.92rem;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
   .modal {
     background: var(--dark2);
@@ -2220,6 +2274,12 @@
     line-height: 1.6;
     white-space: pre-wrap;
   }
+  .winner-claim-summary .winner-claim-received-quote {
+    color: var(--gold);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
   .winner-modal-video {
     width: 100%;
     border-radius: 1rem;
@@ -2238,6 +2298,23 @@
   body.has-official-winner .draw-featured-card:not(.spotlight) {
     filter: blur(3px);
     opacity: 0.45;
+  }
+  body.has-official-winner .demo-launcher,
+  body.has-official-winner #drawShowcase,
+  body.has-official-winner .participants-table-wrap {
+    display: none !important;
+  }
+  body.has-official-winner .winner-result-card {
+    margin-bottom: 2.4rem;
+  }
+  body.has-official-winner .course-hook-section {
+    filter: blur(7px);
+    opacity: 0.42;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  body.has-official-winner.modal-open .course-hook-section {
+    filter: blur(10px);
+    opacity: 0.32;
   }
   body.has-official-winner .participant-main-row.demo-blurred {
     position: relative;
@@ -2728,10 +2805,7 @@
                 <span class="draw-featured-pill">Se mostrara aqui</span>
               </div>
             </div>
-            <div class="draw-featured-score">
-              <span class="draw-featured-score-label">Chances</span>
-              <strong class="draw-featured-score-value" id="drawFeaturedScore">0</strong>
-            </div>
+            <strong class="draw-featured-score-value" id="drawFeaturedScore" style="display:none">0</strong>
           </div>
           <div class="draw-showcase-status">
             <div class="draw-status-topline">
@@ -3247,9 +3321,18 @@
         <span id="winnerClaimSummaryFeeling"></span>
         <textarea class="form-input form-textarea" id="winnerReceivedNote" placeholder="Escribe qué premio recibió el ganador."></textarea>
         <span id="winnerClaimSummaryReceived"></span>
+        <span class="winner-claim-received-quote" id="winnerClaimSummaryReceivedQuote"></span>
         <button class="modal-confirm" type="button" id="winnerConfirmDeliveryBtn">CONFIRMAR PREMIO RECIBIDO</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="winner-preload" id="winnerModalPreload">
+  <div class="winner-preload-card">
+    <div class="winner-preload-spinner"></div>
+    <div class="winner-preload-title">Cargando ganador oficial</div>
+    <div class="winner-preload-copy">Estamos preparando el modal del ganador y el estado público de entrega.</div>
   </div>
 </div>
 
@@ -3550,6 +3633,7 @@ function updateWinnerClaimGate() {
   const summaryTitle = document.getElementById('winnerClaimSummaryTitle');
   const receivedInput = document.getElementById('winnerReceivedNote');
   const summaryReceived = document.getElementById('winnerClaimSummaryReceived');
+  const summaryReceivedQuote = document.getElementById('winnerClaimSummaryReceivedQuote');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const normalizedCode = String(claimCodeInput?.value || '').trim().toUpperCase();
   const isValid = normalizedCode === WINNER_CLAIM_CODE;
@@ -3570,6 +3654,9 @@ function updateWinnerClaimGate() {
   }
   if (summaryReceived) {
     summaryReceived.style.display = delivered ? 'block' : 'none';
+  }
+  if (summaryReceivedQuote) {
+    summaryReceivedQuote.style.display = delivered ? 'block' : 'none';
   }
 
   if (!normalizedCode) {
@@ -3926,6 +4013,7 @@ function renderDrawShowcaseEmpty() {
 }
 
 async function loadDemoResults() {
+  setWinnerPreloading(true);
   try {
     const { data, error } = await supabaseClient.rpc('list_demo_draw_results', {
       p_campaign_slug: CAMPAIGN_SLUG
@@ -4236,6 +4324,10 @@ function setWinnerModalOpen(isOpen) {
   document.body.classList.toggle('modal-open', isOpen);
 }
 
+function setWinnerPreloading(isOpen) {
+  document.body.classList.toggle('winner-preloading', Boolean(isOpen));
+}
+
 function formatDateTime(value) {
   if (!value) return '';
   return new Date(value).toLocaleString('es-AR', {
@@ -4299,6 +4391,7 @@ function renderOfficialDrawResult() {
   const summaryFeeling = document.getElementById('winnerClaimSummaryFeeling');
   const receivedInput = document.getElementById('winnerReceivedNote');
   const summaryReceived = document.getElementById('winnerClaimSummaryReceived');
+  const summaryReceivedQuote = document.getElementById('winnerClaimSummaryReceivedQuote');
   const deliveryStatus = document.getElementById('winnerDeliveryStatus');
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const delivered = result.delivery_status === 'delivered';
@@ -4306,7 +4399,7 @@ function renderOfficialDrawResult() {
 
   document.getElementById('winnerResultName').textContent = winnerName;
   document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
-  document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 190)} en vivo`;
+  document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 182)} en vivo`;
   document.getElementById('winnerClaimStatus').textContent = delivered
     ? (result.delivery_received_message || 'Premio entregado.')
     : claimMessage;
@@ -4378,9 +4471,14 @@ function renderOfficialDrawResult() {
   }
   if (summaryReceived) {
     summaryReceived.textContent = delivered
-      ? `Recibió: ${result.delivery_received_item || 'Premio entregado'}`
+      ? 'Recibió: Premio entregado'
       : '';
     summaryReceived.style.display = delivered ? 'block' : 'none';
+  }
+  if (summaryReceivedQuote) {
+    const receivedQuote = String(result.delivery_received_item || '').trim();
+    summaryReceivedQuote.textContent = delivered && receivedQuote ? `"${receivedQuote}"` : '';
+    summaryReceivedQuote.style.display = delivered && receivedQuote ? 'block' : 'none';
   }
   if (delivered && summaryFeeling) {
     summaryFeeling.textContent = `${summaryFeeling.textContent}\nPremio recibido por el ganador.`;
@@ -4448,6 +4546,7 @@ async function loadDemoResults() {
   }
   renderDemoHistory();
   renderOfficialDrawResult();
+  setWinnerPreloading(false);
 }
 
 async function saveCurrentDemoResult() {
@@ -4474,7 +4573,7 @@ async function saveCurrentDemoResult() {
         p_full_name: participant.name || participant.displayName || '',
         p_video_data_url: videoDataUrl,
         p_video_mime_type: getDrawRecordingMimeType(),
-        p_live_count: 190
+        p_live_count: 182
       });
       if (error) throw error;
       rpcData = data || null;
@@ -4491,7 +4590,7 @@ async function saveCurrentDemoResult() {
       full_name: participant.name || participant.displayName || '',
       video_data_url: videoDataUrl,
       video_mime_type: getDrawRecordingMimeType(),
-      live_count: 190,
+      live_count: 182,
       claim_code: WINNER_CLAIM_CODE,
       claim_deadline_label: 'Reclamo válido dentro de 7 días hábiles',
       saved_at: new Date().toISOString(),
@@ -4996,7 +5095,8 @@ async function confirmWinnerDelivery() {
   try {
     const { data, error } = await supabaseClient.rpc('confirm_winner_delivery', {
       p_campaign_slug: CAMPAIGN_SLUG,
-      p_claim_code: claimCode
+      p_claim_code: claimCode,
+      p_delivery_received_item: receivedItem
     });
     if (error) throw error;
     rpcData = data || null;
@@ -5481,6 +5581,7 @@ function observeReveal(){
 
 async function bootLanding(){
   try {
+    setWinnerPreloading(true);
     repairDocumentText();
     updateShareMetadata({
       title: DEFAULT_SHARE_TITLE,
@@ -5510,6 +5611,8 @@ async function bootLanding(){
   } catch (error) {
     console.error(error);
     showToast('No se pudo cargar la landing conectada a Supabase.');
+  } finally {
+    setWinnerPreloading(false);
   }
 }
 
