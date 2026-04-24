@@ -3373,6 +3373,33 @@ const LOCKED_WINNER = {
   name: 'Miguel Manzanelli'
 };
 const WINNER_CLAIM_CODE = 'FIAT201420261';
+const FIXED_OFFICIAL_WINNER_MODE = true;
+const FIXED_OFFICIAL_DRAW_RESULT = {
+  campaign_slug: CAMPAIGN_SLUG,
+  participant_public_code: '',
+  participant_source: 'demo_seed_g',
+  display_name: 'Miguel Manzanelli',
+  full_name: 'Miguel Manzanelli',
+  live_count: 182,
+  claim_code: WINNER_CLAIM_CODE,
+  claim_deadline_label: 'Reclamo válido dentro de 7 días hábiles',
+  claim_submitted_at: '2026-04-23T14:20:00-03:00',
+  claim_status: 'submitted',
+  claim_status_label: 'Reclamo enviado',
+  delivery_status: 'delivered',
+  delivery_status_label: 'Premio entregado',
+  delivery_confirmed_at: '2026-04-23T18:10:00-03:00',
+  delivery_received_message: 'Premio entregado. Se le ofreció el premio o el dinero equivalente y prefirió el dinero.',
+  delivery_received_item: 'El dinero equivalente al premio',
+  claim_experience: 'Muy contento. Le hacía falta porque no tenía trabajo y le vino muy bien en este momento.',
+  claim_feeling: 'Le ofrecieron el premio o dinero y prefirió el dinero. Está muy contento y agradecido porque realmente lo necesitaba.',
+  saved_at: '2026-04-23T12:00:00-03:00',
+  city: 'Resistencia',
+  province: 'Chaco',
+  chances: 1000,
+  public_announcement: 'El sorteo se adelantó porque se agotaron los cupos disponibles y el premio ya fue entregado.',
+  public_story: 'Miguel Manzanelli fue confirmado como ganador oficial. Se agotaron los cupos, el sorteo se adelantó y se coordinó la entrega. Se le ofreció recibir el premio o el dinero equivalente, eligió el dinero y contó que está muy contento porque le hacía falta en un momento sin trabajo.'
+};
 
 let activeCampaign = null;
 let packages = [];
@@ -4328,6 +4355,36 @@ function setWinnerPreloading(isOpen) {
   document.body.classList.toggle('winner-preloading', Boolean(isOpen));
 }
 
+function applyFixedOfficialWinnerMode() {
+  activeCampaign = {
+    id: 'fixed-official-campaign',
+    slug: CAMPAIGN_SLUG,
+    title: DEFAULT_SHARE_TITLE,
+    status: 'active',
+    max_entries: 5000
+  };
+  packages = [];
+  participants = [];
+  officialDrawResult = { ...FIXED_OFFICIAL_DRAW_RESULT };
+  demoResults = [{
+    ...officialDrawResult,
+    public_code: officialDrawResult.participant_public_code || '',
+    display_name: officialDrawResult.display_name || officialDrawResult.full_name || 'Ganador',
+    full_name: officialDrawResult.full_name || officialDrawResult.display_name || 'Ganador',
+    recorded_at_label: formatDateTime(officialDrawResult.saved_at)
+  }];
+  persistOfficialDrawResult(officialDrawResult);
+  setCountdown(DRAW_TARGET_ISO);
+  const countdownNote = document.getElementById('countdownNote');
+  if (countdownNote) {
+    countdownNote.textContent = 'El sorteo se adelantó porque se agotaron los cupos y el premio ya fue entregado.';
+  }
+  renderProofMessages();
+  renderDemoHistory();
+  renderOfficialDrawResult();
+  setWinnerModalOpen(true);
+}
+
 function formatDateTime(value) {
   if (!value) return '';
   return new Date(value).toLocaleString('es-AR', {
@@ -4396,15 +4453,18 @@ function renderOfficialDrawResult() {
   const confirmBtn = document.getElementById('winnerConfirmDeliveryBtn');
   const delivered = result.delivery_status === 'delivered';
   const modalActionBtn = document.getElementById('winnerClaimScrollBtn');
+  const publicAnnouncement = result.public_announcement || '';
+  const publicStory = result.public_story || '';
 
   document.getElementById('winnerResultName').textContent = winnerName;
-  document.getElementById('winnerResultCopy').textContent = 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
+  document.getElementById('winnerResultCopy').textContent = publicStory || 'Ganador del premio: le enviaremos un código único para reclamar el premio.';
   document.getElementById('winnerResultMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${Number(result.live_count || 182)} en vivo`;
   document.getElementById('winnerClaimStatus').textContent = delivered
     ? (result.delivery_received_message || 'Premio entregado.')
     : claimMessage;
   document.getElementById('winnerModalName').textContent = winnerName;
-  document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · Reclamo válido dentro de 7 días hábiles.`;
+  document.getElementById('winnerModalSub').textContent = publicAnnouncement || 'Te enviaremos un código único para reclamar el premio. El reclamo debe completarse dentro de los 7 días hábiles.';
+  document.getElementById('winnerModalMeta').textContent = `${publicCode} · ${savedAt || 'Resultado oficial guardado'} · ${publicAnnouncement || 'Reclamo válido dentro de 7 días hábiles.'}`;
   document.getElementById('winnerModalClaimStatus').textContent = delivered
     ? (result.delivery_received_message || 'Premio entregado.')
     : claimMessage;
@@ -5590,6 +5650,14 @@ async function bootLanding(){
       url: window.location.href
     });
     createSparks();
+    if (FIXED_OFFICIAL_WINNER_MODE) {
+      applyFixedOfficialWinnerMode();
+      renderPackages();
+      renderParticipants();
+      repairDocumentText();
+      observeReveal();
+      return;
+    }
     await loadCampaign();
     await loadPackages();
     await loadParticipants();
