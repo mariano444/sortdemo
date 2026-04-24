@@ -114,7 +114,7 @@
         return cycle;
       }
 
-      const sampleSize = Math.max(24, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
+      const sampleSize = Math.max(42, MAX_DEMO_STEPS - (finalEntry ? 1 : 0));
       const result = [];
       const lastIndex = Math.max(cycle.length - (finalEntry ? 2 : 1), 0);
 
@@ -207,26 +207,24 @@
       badge.textContent = isRecording ? `${liveAudience} en vivo · grabando` : `${liveAudience} en vivo`;
     }
 
-    function animateLiveAudience(target = 190) {
+    function animateLiveAudience(target = 182) {
       stopLiveAudienceAnimation();
-      const finalTarget = Math.max(120, Number(target) || 190);
-      if (liveAudience >= finalTarget) {
-        liveAudience = finalTarget;
-        setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
-        return;
-      }
+      const finalTarget = Math.max(120, Number(target) || 182);
+      let ticks = 0;
 
       liveAudienceInterval = window.setInterval(() => {
-        if (liveAudience >= finalTarget) {
+        ticks += 1;
+        if (ticks >= 26 || Math.abs(finalTarget - liveAudience) <= 3) {
+          liveAudience = finalTarget;
+          setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
           stopLiveAudienceAnimation();
           return;
         }
-        liveAudience += Math.max(1, Math.ceil((finalTarget - liveAudience) / 9));
-        if (liveAudience > finalTarget) {
-          liveAudience = finalTarget;
-        }
+        const drift = Math.ceil((finalTarget - liveAudience) / 5);
+        const swing = Math.floor(Math.random() * 9) - 4;
+        liveAudience = Math.max(120, Math.min(186, liveAudience + drift + swing));
         setLiveBadge(Boolean(mediaRecorder && mediaRecorder.state === 'recording'));
-      }, 900);
+      }, 780);
     }
 
     function updateVideoPanel() {
@@ -331,7 +329,7 @@
 
         mediaRecorder.start(1000);
         setRecordingState('Grabando esta pestaña en tiempo real');
-        animateLiveAudience(190);
+        animateLiveAudience(182);
         setLiveBadge(true);
         return true;
       } catch (_) {
@@ -389,7 +387,7 @@
             + Math.random() * 0.8;
 
           if (participantIndex !== lastParticipantIndex) weight += 1.4;
-          if (!visitedParticipants.has(participantIndex)) weight += 1.2;
+          if (!visitedParticipants.has(participantIndex)) weight += 2.4;
           if (participantIndex === lastParticipantIndex && available.length > 1) {
             weight *= sameParticipantStreak >= 1 ? 0.1 : 0.35;
           }
@@ -646,15 +644,14 @@
       document.getElementById('drawFeaturedMeta').innerHTML = `
         <span class="draw-featured-pill">${escapeHtml(participant.province || 'Argentina')}</span>
         <span class="draw-featured-pill">${escapeHtml(participant.city || 'Sin ciudad')}</span>
-        <span class="draw-featured-pill">Chance ${entry.chanceNumber} de ${getParticipantChances(participant)}</span>
         <span class="draw-featured-pill">${participant.publicCode ? escapeHtml(participant.publicCode) : 'Registro visible'}</span>
       `;
-      document.getElementById('drawFeaturedScore').textContent = getParticipantChances(participant).toLocaleString('es-AR');
+      document.getElementById('drawFeaturedScore').textContent = '';
       document.getElementById('drawRoundCounter').textContent = String(state.round);
       document.getElementById('drawPhaseLabel').textContent = isSpotlight ? 'Resultado oficial' : 'Recorrido en vivo';
       document.getElementById('drawPhaseName').textContent = isSpotlight
         ? `${participant.displayName || participant.name} quedó seleccionado como ganador`
-        : `Saltando por ${state.activeEntryPosition.toLocaleString('es-AR')} de ${state.cycle.length.toLocaleString('es-AR')} focos de muestra`;
+        : 'El sistema sigue recorriendo participantes visibles antes del cierre final';
       document.getElementById('drawPhaseHint').textContent = getNarrative(participant, isSpotlight, cycleProgress);
       document.getElementById('drawIntelFill').style.width = `${Math.max(14, Math.min(100, cycleProgress * 100))}%`;
 
@@ -672,7 +669,7 @@
             <span class="draw-rail-name">${escapeHtml(item.displayName || item.name)}</span>
             <div class="draw-rail-meta">
               <span>${escapeHtml(participantLocation(item))}</span>
-              <span>Chance ${cycleEntry.chanceNumber}</span>
+              <span>Seguimiento oficial</span>
             </div>
           </div>
         `);
@@ -764,9 +761,9 @@
       updateControls();
       document.getElementById('participantsTableScroller')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       liveAudience = 120;
-      animateLiveAudience(190);
+      animateLiveAudience(182);
       document.getElementById('drawPhaseLabel').textContent = 'Sorteo en curso';
-      document.getElementById('drawPhaseName').textContent = 'El sistema está recorriendo en vivo todas las chances activas';
+      document.getElementById('drawPhaseName').textContent = 'El sistema está recorriendo participantes visibles en tiempo real';
       document.getElementById('drawPhaseHint').textContent = targetToken
         ? `Este sorteo terminará sobre el participante objetivo: ${targetToken}.`
         : 'El sorteo recorrerá una muestra dinámica de la urna y se detendrá automáticamente al finalizar.';
