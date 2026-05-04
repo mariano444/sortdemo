@@ -3933,8 +3933,10 @@ function renderProofMessages() {
   const grid = document.getElementById('proofGrid');
   if (!grid) return;
 
+  const proofCutOff = new Date('2026-05-01T00:00:00-03:00');
+
   const dynamicMessages = participants
-    .filter((p) => p.opinionMessage)
+    .filter((p) => p.opinionMessage && p.joinedAt >= proofCutOff)
     .map((p) => ({
       name: p.displayName || p.name,
       city: participantLocation(p),
@@ -4449,7 +4451,7 @@ async function loadParticipants(){
 
   if (error) throw error;
   
-  const cutOffDate = new Date('2026-06-01T00:00:00-03:00');
+  const cutOffDate = new Date('2026-05-01T00:00:00-03:00');
   
   participants = (data || []).map((row, index) => {
     const location = normalizeParticipantLocation(row);
