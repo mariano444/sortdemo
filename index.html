@@ -681,7 +681,7 @@
     margin-top: 1.5rem;
     background: rgba(255,255,255,0.02);
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding: 1rem;
+    padding: 1.2rem 1rem;
     overflow: hidden;
     position: relative;
   }
@@ -690,25 +690,24 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--text2);
-    margin-bottom: 0.8rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
     text-align: center;
   }
   .past-participants-track {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: center;
-    transition: transform 0.5s ease-in-out;
+    width: max-content;
+    will-change: transform;
   }
   .past-participant-item {
     display: flex;
     align-items: center;
     gap: 0.6rem;
     flex-shrink: 0;
-    opacity: 0.7;
-    transition: opacity 0.3s;
+    white-space: nowrap;
   }
-  .past-participant-item:hover { opacity: 1; }
   .past-participant-avatar {
     width: 28px; height: 28px; border-radius: 50%;
     object-fit: cover;
@@ -716,10 +715,51 @@
   }
   .past-participant-info {
     font-size: 0.8rem;
-    white-space: nowrap;
   }
   .past-participant-name { font-weight: 600; color: var(--text); }
   .past-participant-date { color: var(--text2); font-size: 0.7rem; margin-left: 0.3rem; }
+
+  /* Past Comments Scroller */
+  .past-comments-scroller {
+    margin-top: 1rem;
+    background: rgba(10,10,15,0.4);
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+  .past-comment-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 0.8rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    max-width: 320px;
+  }
+  .past-comment-location {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .past-comment-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text2);
+    font-style: italic;
+  }
+  .past-comment-tag {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.2);
+    text-align: right;
+    margin-top: 0.2rem;
+  }
   .live-feed-sub {
     color: var(--text2);
     font-size: 0.76rem;
@@ -2571,6 +2611,10 @@
         <div class="past-participants-title">Participantes de sorteos anteriores</div>
         <div class="past-participants-track" id="pastParticipantsTrack"></div>
       </div>
+      <div class="past-comments-scroller hidden" id="pastCommentsSection">
+        <div class="past-participants-title">Mensajes de sorteos anteriores</div>
+        <div class="past-participants-track" id="pastCommentsTrack"></div>
+      </div>
     </div>
 
     <div class="payment-status-card reveal" id="paymentStatusCard">
@@ -2978,8 +3022,10 @@ let packages = [];
 let participants = [];
 let currentParticipants = [];
 let pastParticipants = [];
+let pastComments = [];
 let pastParticipantsIndex = 0;
 let pastParticipantsInterval = null;
+let pastCommentsInterval = null;
 let demoResults = [];
 let selectedPkg = null;
 let selectedPhotoFile = null;
@@ -4336,7 +4382,7 @@ function renderPastParticipants() {
 
   section.classList.remove('hidden');
   
-  // Create double list for seamless loop if needed, but here we'll do rotative
+  // Render past participants
   track.innerHTML = pastParticipants.map(p => `
     <div class="past-participant-item">
       <div class="td-avatar" style="width:28px; height:28px; font-size:10px; background:${colorFor(participants.indexOf(p))}22; color:${colorFor(participants.indexOf(p))}">${p.photoUrl ? `<img src="${p.photoUrl}" class="past-participant-avatar">` : initials(p.displayName || p.name)}</div>
@@ -4347,22 +4393,53 @@ function renderPastParticipants() {
     </div>
   `).join('');
 
-  if (pastParticipantsInterval) clearInterval(pastParticipantsInterval);
+  // Infinite scroll logic for participants
+  setupInfiniteScroll(track, pastParticipantsInterval, (interval) => pastParticipantsInterval = interval);
+}
+
+function renderPastMessages() {
+  const track = document.getElementById('pastCommentsTrack');
+  const section = document.getElementById('pastCommentsSection');
+  if (!track || !section) return;
+
+  if (!pastComments.length) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  section.classList.remove('hidden');
+
+  track.innerHTML = pastComments.map(p => `
+    <div class="past-comment-item">
+      <div class="past-comment-location">${escapeHtml(p.city || p.province || 'Argentina')}</div>
+      <div class="past-comment-text">"${escapeHtml(p.opinionMessage)}"</div>
+      <div class="past-comment-tag">Sorteo anterior</div>
+    </div>
+  `).join('');
+
+  // Infinite scroll logic for comments
+  setupInfiniteScroll(track, pastCommentsInterval, (interval) => pastCommentsInterval = interval);
+}
+
+function setupInfiniteScroll(track, currentInterval, setIntervalCallback) {
+  if (currentInterval) clearInterval(currentInterval);
   
+  // Duplicate items to ensure smooth loop if content is short
+  const originalContent = track.innerHTML;
+  track.innerHTML = originalContent + originalContent;
+
   let currentX = 0;
-  pastParticipantsInterval = setInterval(() => {
-    const firstItem = track.firstElementChild;
-    if (!firstItem) return;
+  const interval = setInterval(() => {
+    currentX -= 0.8; // Constant speed
     
-    const itemWidth = firstItem.offsetWidth + 24; // width + gap
-    currentX -= 1; // slow scroll
-    
-    if (Math.abs(currentX) >= itemWidth) {
+    // Reset position when half of the track has passed (since we duplicated it)
+    if (Math.abs(currentX) >= track.scrollWidth / 2) {
       currentX = 0;
-      track.appendChild(firstItem);
     }
-    track.style.transform = `translateX(${currentX}px)`;
-  }, 30);
+    track.style.transform = `translate3d(${currentX}px, 0, 0)`;
+  }, 20);
+  
+  setIntervalCallback(interval);
 }
 
 async function loadParticipants(){
@@ -4402,10 +4479,12 @@ async function loadParticipants(){
   // Split into current and past
   currentParticipants = participants.filter(p => p.joinedAt >= cutOffDate);
   pastParticipants = participants.filter(p => p.joinedAt < cutOffDate);
+  pastComments = pastParticipants.filter(p => p.opinionMessage.length > 0);
 
   refreshDrawEntryPool();
   renderProofMessages();
   renderPastParticipants();
+  renderPastMessages();
   startDrawShowcase();
 }
 
